@@ -65,40 +65,48 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
     )
 
   return (
-    <Dialog open={isWalletsModalOpen} onOpenChange={setIsWalletsModalOpen}>
-      <DialogTrigger asChild>
-        {isAnyWalletConncted ? (
-          <Link
-            href="/"
-            className={cn(buttonVariants(), "mt-12 text-lg", triggerClasses)}
-          >
-            Get Started
-          </Link>
-        ) : (
-          <Button className={cn("mt-12 text-lg", triggerClasses)}>
-            Connect Wallet
-          </Button>
-        )}
-      </DialogTrigger>
-      <DialogContent className="w-full p-9 sm:max-w-xl md:max-w-[874px]">
-        <DialogHeader className="w-full flex-row items-center justify-between">
-          <DialogTitle className="font-manrope text-3xl font-bold">
-            Connect Wallet
-          </DialogTitle>
-          <DialogClose
-            className={buttonVariants({ variant: "outline", size: "icon" })}
-          >
-            <X className="text-primary h-4 w-4 font-bold" strokeWidth={4} />
-            <span className="sr-only">Close</span>
-          </DialogClose>
-        </DialogHeader>
-        <div className="flex flex-col items-center justify-between sm:flex-row">
-          <RainbowConnectButton setIsWalletsModalOpen={setIsWalletsModalOpen} />
-          <SolanaConnectBtutton setIsWalletsModalOpen={setIsWalletsModalOpen} />
-          <AptosConnectButton setIsWalletsModalOpen={setIsWalletsModalOpen} />
-        </div>
-      </DialogContent>
-    </Dialog>
+    <>
+      {isAnyWalletConncted ? (
+        <Link
+          href="/requests"
+          className={cn(buttonVariants(), "mt-12 text-lg", triggerClasses)}
+        >
+          Get Started
+        </Link>
+      ) : (
+        <Dialog open={isWalletsModalOpen} onOpenChange={setIsWalletsModalOpen}>
+          <DialogTrigger asChild>
+            <Button className={cn("mt-12 text-lg", triggerClasses)}>
+              Connect Wallet
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="w-full p-9 sm:max-w-xl md:max-w-[874px]">
+            <DialogHeader className="w-full flex-row items-center justify-between">
+              <DialogTitle className="font-manrope text-3xl font-bold">
+                Connect Wallet
+              </DialogTitle>
+              <DialogClose
+                className={buttonVariants({ variant: "outline", size: "icon" })}
+              >
+                <X className="h-4 w-4 font-bold text-primary" strokeWidth={4} />
+                <span className="sr-only">Close</span>
+              </DialogClose>
+            </DialogHeader>
+            <div className="flex flex-col items-center justify-between sm:flex-row">
+              <RainbowConnectButton
+                setIsWalletsModalOpen={setIsWalletsModalOpen}
+              />
+              <SolanaConnectBtutton
+                setIsWalletsModalOpen={setIsWalletsModalOpen}
+              />
+              <AptosConnectButton
+                setIsWalletsModalOpen={setIsWalletsModalOpen}
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
   )
 }
 

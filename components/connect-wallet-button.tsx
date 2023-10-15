@@ -1,7 +1,6 @@
 "use client"
 
 import React from "react"
-import Link from "next/link"
 import { useWallet as useAptosWallet } from "@aptos-labs/wallet-adapter-react"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { Loader2 } from "lucide-react"
@@ -13,7 +12,6 @@ import { useConnectedWallet } from "./providers/providers"
 import { Button } from "./ui/button"
 import WalletsModal from "./wallets-modal"
 import AptosaccountModal from "./wallets/aptos-account-modal"
-import AptosConnectButton from "./wallets/aptos-connect-btn"
 import RainbowAccountModal from "./wallets/rainbow-account-modal"
 import SolanaAccountModal from "./wallets/solana-account-modal"
 
@@ -43,7 +41,7 @@ const ConnectWalletButton = () => {
     setConnectedWallet(null)
   }
 
-  if (!mounted)
+  if (!mounted && isAnyWalletConncted)
     return (
       <Button>
         <Loader2 className="mr-3 animate-spin" />
