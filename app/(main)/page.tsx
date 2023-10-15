@@ -23,7 +23,7 @@ const LandingPage = () => {
           priority
           className="absolute hidden select-none lg:-top-60 lg:right-56 lg:block lg:w-3/12 xl:-top-64 xl:right-72 2xl:-top-72 2xl:right-96 2xl:w-1/5"
         />
-        <h1 className="font-manrope text-left text-5xl font-bold md:text-6xl lg:text-center xl:text-7xl 2xl:text-8xl">
+        <h1 className="text-left font-manrope text-5xl font-bold md:text-6xl lg:text-center xl:text-7xl 2xl:text-8xl">
           Payment Requests
         </h1>
         <p className="mt-8 w-full max-w-md text-left text-[18px] md:max-w-lg lg:mx-auto lg:text-center xl:max-w-xl 2xl:max-w-full">
@@ -37,9 +37,9 @@ const LandingPage = () => {
           priority
           className="absolute -bottom-96 w-9/12 select-none md:w-6/12 lg:-bottom-28 lg:left-20 lg:w-4/12 xl:-bottom-28 xl:left-52 xl:w-3/12 2xl:-bottom-36 2xl:left-80 2xl:w-1/4"
         />
-        <div className="mt-12">
-          <WalletsModal />
-        </div>
+
+        <WalletsModal triggerClasses="flex items-start lg:items-center lg:mx-auto" />
+
         <Image
           src={collection4}
           alt="collection1"
