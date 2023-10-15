@@ -7,6 +7,7 @@ import "@rainbow-me/rainbowkit/styles.css"
 import type { Metadata } from "next"
 import { Inter, Manrope } from "next/font/google"
 
+import Footer from "@/components/footer"
 import Providers from "@/components/providers/providers"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
@@ -31,7 +32,10 @@ export default function RootLayout({
           manrope.variable
         )}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <Footer />
+        </Providers>
       </body>
     </html>
   )

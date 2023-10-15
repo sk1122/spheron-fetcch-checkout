@@ -6,7 +6,7 @@ import MainNav from "@/components/main-nav"
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <main className="max-w-screen relative h-screen w-full overflow-hidden overflow-y-scroll md:overflow-hidden">
+    <main className="max-w-screen relative h-screen w-full overflow-hidden md:overflow-hidden">
       <MainNav />
       <Image
         src={decoration}
