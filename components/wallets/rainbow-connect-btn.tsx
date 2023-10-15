@@ -32,7 +32,7 @@ const RainbowConnectButton = ({ setIsWalletsModalOpen }: WalletBtnProps) => {
     <Dialog>
       <DialogTrigger>
         <button
-          className="focus:border-primary relative flex h-56 w-60 flex-col items-center justify-center rounded-[20px] bg-[#E3ECFF] focus:border-[3px] focus:bg-[#D4E2FF] focus:outline-none"
+          className="relative flex h-56 w-60 flex-col items-center justify-center rounded-[20px] bg-[#E3ECFF] focus:border-[3px] focus:border-primary focus:bg-[#D4E2FF] focus:outline-none"
           type="button"
         >
           <Image
@@ -42,7 +42,7 @@ const RainbowConnectButton = ({ setIsWalletsModalOpen }: WalletBtnProps) => {
             width={128}
             height={128}
           />
-          <span className="font-manrope absolute bottom-4 text-xl font-semibold">
+          <span className="absolute bottom-4 font-manrope text-xl font-semibold">
             {isConnected ? truncatePublicKey(address as string) : "Ethereum"}
           </span>
         </button>
@@ -55,7 +55,7 @@ const RainbowConnectButton = ({ setIsWalletsModalOpen }: WalletBtnProps) => {
           <DialogClose
             className={buttonVariants({ variant: "outline", size: "icon" })}
           >
-            <X className="text-primary h-4 w-4 font-bold" strokeWidth={4} />
+            <X className="h-4 w-4 font-bold text-primary" strokeWidth={4} />
             <span className="sr-only">Close</span>
           </DialogClose>
         </DialogHeader>
@@ -68,12 +68,12 @@ const RainbowConnectButton = ({ setIsWalletsModalOpen }: WalletBtnProps) => {
               onClick={() =>
                 connectAsync({ connector }).then(() => {
                   if (connectedWallet === null) {
-                    setConnectedWallet("rainbow")
+                    setConnectedWallet("evm")
                   }
                   setIsWalletsModalOpen(false)
                 })
               }
-              className="hover:bg-input w-full p-3"
+              className="w-full p-3 hover:bg-input"
             >
               <span className="flex w-full items-center text-left text-lg font-semibold">
                 {connector.name}

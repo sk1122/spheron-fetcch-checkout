@@ -22,14 +22,15 @@ const ConnectWalletButton = () => {
   const { connected: isSolanaConnected } = useWallet()
   const { connected: isAptosConnected } = useAptosWallet()
 
-  const { connectedWallet, setConnectedWallet } = useConnectedWallet()
+  const { connectedWallet, setConnectedWallet, setAddressChain } =
+    useConnectedWallet()
 
   const isAnyWalletConncted =
     isRainbowConnected || isSolanaConnected || isAptosConnected
 
   if (isAnyWalletConncted) {
-    if (isRainbowConnected && connectedWallet != "rainbow") {
-      setConnectedWallet("rainbow")
+    if (isRainbowConnected && connectedWallet != "evm") {
+      setConnectedWallet("evm")
     }
     if (isSolanaConnected && connectedWallet != "solana") {
       setConnectedWallet("solana")
@@ -44,7 +45,7 @@ const ConnectWalletButton = () => {
   if (!mounted && isAnyWalletConncted)
     return (
       <Button>
-        <Loader2 className="mr-3 animate-spin" />
+        <Loader2 className="mr-3 h-4 w-4 animate-spin" />
         <span>Loading</span>
       </Button>
     )

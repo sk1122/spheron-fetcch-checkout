@@ -38,8 +38,8 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
     isRainbowConnected || isSolanaConnected || isAptosConnected
 
   if (isAnyWalletConncted) {
-    if (isRainbowConnected && connectedWallet != "rainbow") {
-      setConnectedWallet("rainbow")
+    if (isRainbowConnected && connectedWallet != "evm") {
+      setConnectedWallet("evm")
     }
     if (isSolanaConnected && connectedWallet != "solana") {
       setConnectedWallet("solana")
@@ -51,15 +51,15 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
     setConnectedWallet(null)
   }
 
-  console.log("Wallet -> ", connectedWallet)
-  console.log("🦊 ", address)
-  console.log("🟣 ", publicKey?.toBase58())
-  console.log("⚪ ", account?.address)
+  // console.log("Wallet -> ", connectedWallet)
+  // console.log("🦊 ", address)
+  // console.log("🟣 ", publicKey?.toBase58())
+  // console.log("⚪ ", account?.address)
 
   if (!mounted)
     return (
-      <Button className="mt-12 text-lg">
-        <Loader2 className="mr-3 animate-spin" />
+      <Button className={cn("mt-12 text-lg", triggerClasses)}>
+        <Loader2 className="mr-3 h-4 w-4 animate-spin" />
         <span>Loading</span>
       </Button>
     )

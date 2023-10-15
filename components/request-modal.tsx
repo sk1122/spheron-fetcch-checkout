@@ -1,26 +1,46 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import Image from "next/image"
 import { useSearchParams } from "next/navigation"
 import { Close as DialogClose } from "@radix-ui/react-dialog"
 import { useFilter } from "@react-aria/i18n"
 import { User, X } from "lucide-react"
 
-import { Chain, chainData } from "@/lib/data"
+import {
+  aptosChainData,
+  Chain,
+  evmChainData,
+  solanaChainData,
+} from "@/lib/data"
 import ChainSelectModal from "@/components/chain-select-modal"
 import TokensList from "@/components/token-list"
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog"
+import { useConnectedWallet } from "./providers/providers"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog"
 
-const RequestModal = ({ children }: { children: React.ReactNode }) => {
+const RequestModal = ({
+  open,
+  setOpen,
+}: {
+  open: boolean
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+}) => {
   const [chainSelect, setChainSelect] = useState(false)
+  const [chainData, setChainData] = useState<Chain[]>(evmChainData)
+  const { addressChain } = useConnectedWallet()
+
+  useEffect(() => {
+    console.log("addressChain: ", addressChain)
+    if (addressChain === "evm") {
+      setChainData(evmChainData)
+    } else if (addressChain === "solana") {
+      setChainData(solanaChainData)
+    } else if (addressChain === "aptos") {
+      setChainData(aptosChainData)
+    }
+  }, [addressChain, open])
+
   const searchParams = useSearchParams()
 
   const selectedChain = searchParams.get("chain")
@@ -44,13 +64,13 @@ const RequestModal = ({ children }: { children: React.ReactNode }) => {
   const tokenImg = selectedTokenData && selectedTokenData[0]?.logoURI
   const chainImg = selectedChainData && selectedChainData[0]?.logoURI
 
+  console.log("🔗 ", chainData[0].name)
+
   return (
-    <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="w-full overflow-hidden p-6 sm:max-w-[392px] sm:rounded-[20px]">
         {chainSelect ? (
           <ChainSelectModal chains={chainData} setOpen={setChainSelect}>
-            <div></div>
             <TokensList
               selectedChain={
                 selectedChainData ? selectedChainData[0] : chainData[0]
@@ -100,6 +120,8 @@ const RequestModal = ({ children }: { children: React.ReactNode }) => {
                           <Image
                             src={tokenImg}
                             alt="token_image"
+                            priority
+                            className="rounded-full"
                             width={32}
                             height={32}
                           />
@@ -110,6 +132,8 @@ const RequestModal = ({ children }: { children: React.ReactNode }) => {
                           <Image
                             src={chainImg}
                             alt="token_image"
+                            priority
+                            className="rounded-full"
                             width={32}
                             height={32}
                           />
@@ -136,6 +160,8 @@ const RequestModal = ({ children }: { children: React.ReactNode }) => {
                         <Image
                           src={tokenImg}
                           alt="token_image"
+                          priority
+                          className="rounded-full"
                           width={32}
                           height={32}
                         />
@@ -146,21 +172,19 @@ const RequestModal = ({ children }: { children: React.ReactNode }) => {
                         <Image
                           src={chainImg}
                           alt="token_image"
+                          priority
+                          className="rounded-full"
                           width={32}
                           height={32}
                         />
                       ) : null}
                     </div>
                   </div>
-                  <div className="flex flex-col items-start">
+                  <div className="w-full">
                     <input
                       className="overflow-clip truncate border-none bg-transparent text-lg text-primary outline-none placeholder:text-[#6893F0] focus:outline-none group-hover:placeholder:text-primary"
+                      type="number"
                       placeholder="0"
-                    />
-                    <input
-                      className="pointer-events-none overflow-clip truncate border-none bg-transparent text-xs text-primary outline-none placeholder:text-[#6893F0] focus:outline-none group-hover:placeholder:text-primary"
-                      placeholder="0.00"
-                      readOnly
                     />
                   </div>
                 </div>

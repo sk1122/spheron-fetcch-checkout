@@ -6,11 +6,13 @@ import AptosProvider from "./aptos-provider"
 import RainbowProvider from "./rainbow-wallet-provider"
 import SolanaProvider from "./solana-provider"
 
-export type WALLET = "rainbow" | "solana" | "aptos" | null
+export type WALLET = "evm" | "solana" | "aptos" | null
 
 type WalletContextTypes = {
   connectedWallet: WALLET
   setConnectedWallet: React.Dispatch<React.SetStateAction<WALLET>>
+  addressChain: WALLET
+  setAddressChain: React.Dispatch<React.SetStateAction<WALLET>>
 }
 
 const WalletContext = createContext<WalletContextTypes | null>(null)
@@ -25,9 +27,17 @@ export const useConnectedWallet = () => {
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [connectedWallet, setConnectedWallet] = useState<WALLET | null>(null)
+  const [addressChain, setAddressChain] = useState<WALLET | null>(null)
 
   return (
-    <WalletContext.Provider value={{ connectedWallet, setConnectedWallet }}>
+    <WalletContext.Provider
+      value={{
+        connectedWallet,
+        setConnectedWallet,
+        addressChain,
+        setAddressChain,
+      }}
+    >
       <RainbowProvider>
         <SolanaProvider>
           <AptosProvider>{children}</AptosProvider>

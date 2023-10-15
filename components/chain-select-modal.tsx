@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useCallback } from "react"
+import React, { Suspense, useCallback } from "react"
 import Image from "next/image"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { ChevronLeft } from "lucide-react"
@@ -33,7 +33,7 @@ const ChainSelectModal = ({
     [searchParams]
   )
 
-  const selectedChain = searchParams.get("chain") ?? "Ethereum"
+  const selectedChain = searchParams.get("chain") ?? chains[0].name
 
   return (
     <>
@@ -63,12 +63,20 @@ const ChainSelectModal = ({
               )
             }}
           >
-            <Image
-              src={chain.logoURI}
-              alt="chain_image"
-              width={42}
-              height={42}
-            />
+            <Suspense
+              fallback={
+                <div className="h-8 w-8 flex-shrink-0 rounded-full bg-[#B0C8FE]" />
+              }
+            >
+              <Image
+                src={chain.logoURI}
+                alt="chain_image"
+                priority
+                className="rounded-full"
+                width={42}
+                height={42}
+              />
+            </Suspense>
           </button>
         ))}
       </div>

@@ -1,12 +1,12 @@
 "use client"
 
 import type { Dispatch, SetStateAction } from "react"
-import { useCallback, useState } from "react"
+import { Suspense, useCallback, useState } from "react"
 import Image from "next/image"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import * as ScrollArea from "@radix-ui/react-scroll-area"
 import { useFilter } from "@react-aria/i18n"
-import { ExternalLink, Search } from "lucide-react"
+import { Divide, ExternalLink, Search } from "lucide-react"
 
 import { type Chain } from "@/lib/data"
 import { cn } from "@/lib/utils"
@@ -72,22 +72,27 @@ const TokensList = ({
                 )}
                 key={idx}
               >
-                <Image
-                  src={token.logoURI}
-                  alt="token_logo"
-                  width={48}
-                  height={48}
-                  className="h-12 w-12 flex-shrink-0 rounded-full"
-                />
+                <Suspense
+                  fallback={
+                    <div className="h-8 w-8 flex-shrink-0 rounded-full bg-[#B0C8FE]" />
+                  }
+                >
+                  <Image
+                    src={token.logoURI}
+                    alt="token_logo"
+                    priority
+                    width={48}
+                    height={48}
+                    className="h-12 w-12 flex-shrink-0 rounded-full"
+                  />
+                </Suspense>
                 <div className="flex flex-col items-start space-y-1">
                   <h4 className="text-lg font-medium text-primary">
                     {token.symbol}
                   </h4>
                   <div className="text-xs text-primary">
-                    <span className="transition-all duration-200 group-hover:hidden">
-                      {token.symbol}
-                    </span>
-                    <span className="hidden items-center transition-all duration-200 group-hover:flex">
+                    <span className="group-hover:hidden">{token.symbol}</span>
+                    <span className="hidden items-center group-hover:flex">
                       <span className="w-20 truncate ">{token.address}</span>
                       <ExternalLink className="storke-primary inline h-3 w-3" />
                     </span>

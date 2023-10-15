@@ -23,10 +23,10 @@ const SolanaAccountModal = () => {
   return (
     <Dialog>
       <DialogTrigger>
-        <button className="bg-input flex flex-shrink-0 items-center space-x-2 rounded-full p-2">
+        <button className="flex flex-shrink-0 items-center space-x-2 rounded-full bg-input p-2">
           <Image
             src={solana}
-            alt="ethereum_image"
+            alt="solana_image"
             className="h-8 w-8 rounded-full"
             width={32}
             height={32}
@@ -45,13 +45,13 @@ const SolanaAccountModal = () => {
               "flex-shrink-0"
             )}
           >
-            <X className="text-primary h-4 w-4 font-bold" strokeWidth={4} />
+            <X className="h-4 w-4 font-bold text-primary" strokeWidth={4} />
             <span className="sr-only">Close</span>
           </DialogClose>
         </DialogHeader>
         <div>
           <button
-            className="bg-input hover:text-primary w-full rounded-md p-4 text-left"
+            className="w-full rounded-md bg-input p-4 text-left hover:text-primary"
             onClick={async () => {
               await disconnect().then(() => setConnectedWallet(null))
             }}
