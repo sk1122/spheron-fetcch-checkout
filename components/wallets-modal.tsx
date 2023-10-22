@@ -1,12 +1,12 @@
 "use client"
 
-import React, { useState } from "react"
-import Link from "next/link"
+import React, { useEffect, useState } from "react"
 import { useWallet as useAptosWallet } from "@aptos-labs/wallet-adapter-react"
 import { Close as DialogClose } from "@radix-ui/react-dialog"
 import { useWallet } from "@solana/wallet-adapter-react"
+import { encode } from "bs58"
 import { Loader2, X } from "lucide-react"
-import { useAccount } from "wagmi"
+import { useAccount, useSignMessage } from "wagmi"
 
 import { useIsMounted } from "@/lib/useIsMounted"
 import { cn } from "@/lib/utils"
@@ -29,50 +29,128 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
   const mounted = useIsMounted()
 
   const { isConnected: isRainbowConnected, address } = useAccount()
-  const { connected: isSolanaConnected, publicKey } = useWallet()
-  const { connected: isAptosConnected, account } = useAptosWallet()
+  const {
+    connected: isSolanaConnected,
+    publicKey,
+    signMessage: signMessageSolana,
+  } = useWallet()
+  const {
+    connected: isAptosConnected,
+    account,
+    signMessage: signAptosMessage,
+  } = useAptosWallet()
+
+  const { signMessageAsync } = useSignMessage()
 
   const { connectedWallet, setConnectedWallet } = useConnectedWallet()
+  const [connectedWalletAddress, setConnectedWalletAddress] =
+    useState<string>("")
+  const [loading, setLoading] = useState(false)
 
   const isAnyWalletConncted =
     isRainbowConnected || isSolanaConnected || isAptosConnected
 
-  if (isAnyWalletConncted) {
-    if (isRainbowConnected && connectedWallet != "evm") {
-      setConnectedWallet("evm")
+  useEffect(() => {
+    if (isAnyWalletConncted) {
+      if (isRainbowConnected && connectedWallet != "evm") {
+        setConnectedWallet("evm")
+        setConnectedWalletAddress(address as string)
+      }
+      if (isSolanaConnected && connectedWallet != "solana") {
+        setConnectedWallet("solana")
+        setConnectedWalletAddress(publicKey?.toBase58() as string)
+      }
+      if (isAptosConnected && connectedWallet != "aptos") {
+        setConnectedWallet("aptos")
+        setConnectedWalletAddress(account?.address as string)
+      }
+    } else {
+      setConnectedWallet(null)
     }
-    if (isSolanaConnected && connectedWallet != "solana") {
-      setConnectedWallet("solana")
-    }
-    if (isAptosConnected && connectedWallet != "aptos") {
-      setConnectedWallet("aptos")
-    }
-  } else {
-    setConnectedWallet(null)
-  }
-
-  // console.log("Wallet -> ", connectedWallet)
-  // console.log("🦊 ", address)
-  // console.log("🟣 ", publicKey?.toBase58())
-  // console.log("⚪ ", account?.address)
+  }, [isAnyWalletConncted])
 
   if (!mounted)
     return (
-      <Button className={cn("mt-12 text-lg", triggerClasses)}>
+      <Button className={cn("mt-12 flex items-center text-lg", triggerClasses)}>
         <Loader2 className="mr-3 h-4 w-4 animate-spin" />
         <span>Loading</span>
       </Button>
     )
 
+  const handleGetStartedClick = async () => {
+    setLoading(true)
+
+    console.log("Owner address: ", connectedWalletAddress)
+
+    const authData = await fetch("/api/getAuthMessage", {
+      method: "POST",
+      body: JSON.stringify({
+        ownerAddress: connectedWalletAddress,
+      }),
+    })
+
+    const signedData = await authData
+      .json()
+      .then(
+        async ({
+          data: { message, timestamp },
+        }: {
+          data: { message: string; timestamp: number }
+        }) => {
+          if (connectedWallet === "evm") {
+            let signedMsg = await signMessageAsync({ message })
+            return { signedMsg, timestamp }
+          } else if (connectedWallet === "solana") {
+            const solanaSignedArray = await signMessageSolana!(
+              Buffer.from(message)
+            )
+            let signedMsg = encode(Uint8Array.from(solanaSignedArray))
+            return { signedMsg, timestamp }
+          } else if (connectedWallet === "aptos") {
+            const aptosSignedMsg = await signAptosMessage({
+              message: message,
+              nonce: timestamp.toString(),
+            })
+
+            console.log("APTOS SINGED MSG: ", aptosSignedMsg)
+            let signedMsg = aptosSignedMsg?.signature as string
+
+            console.log("APTOS: ", signedMsg)
+            return { signedMsg, timestamp }
+          }
+        }
+      )
+
+    const getAuthToken = await fetch("/api/getAuthToken", {
+      method: "POST",
+      body: JSON.stringify({
+        ownerAddress: connectedWalletAddress,
+        signature: signedData?.signedMsg,
+        timestamp: signedData?.timestamp,
+      }),
+    })
+
+    const res = await getAuthToken.json()
+
+    console.log("TOKEN: ", res)
+
+    setLoading(false)
+  }
+
   return (
     <>
       {isAnyWalletConncted ? (
-        <Link
-          href="/requests"
-          className={cn(buttonVariants(), "mt-12 text-lg", triggerClasses)}
+        <Button
+          onClick={() => handleGetStartedClick()}
+          className={cn(
+            buttonVariants(),
+            "mt-12 w-fit text-lg",
+            triggerClasses
+          )}
         >
+          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Get Started
-        </Link>
+        </Button>
       ) : (
         <Dialog open={isWalletsModalOpen} onOpenChange={setIsWalletsModalOpen}>
           <DialogTrigger asChild>
