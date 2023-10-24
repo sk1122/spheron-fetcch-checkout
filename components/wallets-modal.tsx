@@ -24,6 +24,7 @@ import AptosConnectButton from "./wallets/aptos-connect-btn"
 import RainbowConnectButton from "./wallets/rainbow-connect-btn"
 import SolanaConnectBtutton from "./wallets/solana-connect-btn"
 import { redirect } from "next/navigation"
+import { useConnectModal } from "@rainbow-me/rainbowkit"
 
 const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
   const [isWalletsModalOpen, setIsWalletsModalOpen] = useState(false)

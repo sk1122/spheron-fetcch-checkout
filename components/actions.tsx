@@ -108,7 +108,7 @@ const AccordionItem = ({
         className="mx-auto flex h-full w-full flex-col items-start justify-start space-y-5 rounded-xl border border-primary bg-[#E1EBFF] p-5 shadow-[0px_0px_35px_-9px_rgba(0,0,0,0.25)] md:w-[694px]"
         value="item-1"
       >
-        <AccordionTrigger>{receiver}</AccordionTrigger>
+        <AccordionTrigger><p className="w-48 md:w-full truncate">{receiver}</p></AccordionTrigger>
         <AccordionContent>
           <div className="flex h-full w-full flex-col items-start justify-start space-y-5">
             <div className="w-full h-full flex items-center space-x-3">
@@ -122,7 +122,7 @@ const AccordionItem = ({
                 <h4 className="font-manrope text-sm font-bold md:text-base">
                   Receipient
                 </h4>
-                <span className="text-xs md:text-sm">{receiver}</span>
+                <span className="text-xs md:text-sm w-48 md:w-full truncate">{receiver}</span>
               </div>
             </div>
             <div className="w-full flex items-center space-x-3">
@@ -137,7 +137,7 @@ const AccordionItem = ({
                     <h4 className="font-manrope text-sm font-bold md:text-base">
                     Chain & Amount
                     </h4>
-                    <span className="text-xs md:text-sm">{amount} <span className="w-48 truncate">{tokenData?.name as string}</span></span>
+                    <span className="w-full flex space-x-1 text-xs md:text-sm"><p>{amount}</p> <span className="w-20 truncate"> {tokenData?.name as string}</span></span>
                 </div>
                 <button onClick={() => {
                     router.push(
@@ -187,7 +187,7 @@ const Actions = ({
   return (
     <>
       {true ? (
-        <ScrollArea.Root className="mx-auto mt-7 h-96 max-w-3xl overflow-hidden">
+        <ScrollArea.Root className="mx-auto mt-7 h-96 max-w-3xl">
           <ScrollArea.Viewport className="h-full w-full rounded">
             <div className="flex flex-col space-y-3">
               {actions.map((action) => (

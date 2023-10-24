@@ -36,10 +36,10 @@ export default function RainbowProvider({
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider
         chains={chains}
-        modalSize="compact"
+        modalSize="wide"
         theme={lightTheme({
           borderRadius: "small",
-          fontStack: "system",
+          fontStack: "system"
         })}
       >
         {children}

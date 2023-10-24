@@ -275,46 +275,6 @@ const SendModal = ({
                   </div>
                 </div>
               </button>
-              <div className="rounded-xl border-2 border-primary bg-[#E3ECFF] pt-4">
-                <span className="px-4 font-manrope font-bold">
-                  Request Amount
-                </span>
-                <div className="flex items-center space-x-3 p-4">
-                  <div className="relative">
-                    <div className="h-8 w-8 flex-shrink-0 rounded-full bg-[#B0C8FE]">
-                      {tokenImg ? (
-                        <Image
-                          src={tokenImg}
-                          alt="token_image"
-                          priority
-                          className="rounded-full"
-                          width={32}
-                          height={32}
-                        />
-                      ) : null}
-                    </div>
-                    <div className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full border border-[3E3ECFF] bg-[#B0C8FE]">
-                      {chainImg ? (
-                        <Image
-                          src={chainImg}
-                          alt="token_image"
-                          priority
-                          className="rounded-full"
-                          width={32}
-                          height={32}
-                        />
-                      ) : null}
-                    </div>
-                  </div>
-                  <div className="w-full">
-                    <input
-                      className="overflow-clip truncate border-none bg-transparent text-lg text-primary outline-none placeholder:text-[#6893F0] focus:outline-none group-hover:placeholder:text-primary"
-                      type="number"
-                      placeholder="0"
-                    />
-                  </div>
-                </div>
-              </div>
               <button onClick={() => pay()} className="w-full rounded-full bg-primary py-4 text-white">
                 Pay
               </button>
