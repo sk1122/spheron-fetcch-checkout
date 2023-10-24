@@ -23,8 +23,7 @@ export default function RainbowProvider({
       rpc: (chain: any) => ({
         http: `https://rpc.ankr.com/${chain.name}`
       })
-    })],
-    [alchemyProvider({ apiKey: (process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string) ?? "" })]
+    }), alchemyProvider({ apiKey: (process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string) ?? "" })]
   )
 
   const { connectors } = getDefaultWallets({
