@@ -9,7 +9,7 @@ import {
 import { configureChains, createConfig, WagmiConfig } from "wagmi"
 import { arbitrum, avalanche, mainnet, optimism, polygon } from "wagmi/chains"
 import { alchemyProvider } from "wagmi/providers/alchemy"
-import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 
 export default function RainbowProvider({
   children,
