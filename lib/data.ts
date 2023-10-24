@@ -7,6 +7,7 @@ export type Token = {
 }
 
 export type Chain = {
+  id: number
   chainId: number
   logoURI: string
   name: string
@@ -15,6 +16,7 @@ export type Chain = {
 
 export const evmChainData: Chain[] = [
   {
+    id: 1,
     chainId: 1,
     name: "Ethereum",
     logoURI: "/assets/tokens/ethereum.webp",
@@ -50,6 +52,7 @@ export const evmChainData: Chain[] = [
     ],
   },
   {
+    id: 2,
     chainId: 137,
     name: "Polygon",
     logoURI: "/assets/tokens/matic.webp",
@@ -85,6 +88,7 @@ export const evmChainData: Chain[] = [
     ],
   },
   {
+    id: 4,
     chainId: 43114,
     name: "Avalanche",
     logoURI: "/assets/tokens/avalanche.webp",
@@ -120,6 +124,7 @@ export const evmChainData: Chain[] = [
     ],
   },
   {
+    id: 6,
     chainId: 42161,
     name: "Arbitrum",
     logoURI: "/assets/tokens/arb.webp",
@@ -155,6 +160,7 @@ export const evmChainData: Chain[] = [
     ],
   },
   {
+    id: 5,
     chainId: 10,
     name: "Optimism",
     logoURI: "/assets/tokens/opt.webp",
@@ -193,6 +199,7 @@ export const evmChainData: Chain[] = [
 
 export const solanaChainData: Chain[] = [
   {
+    id: 7,
     chainId: 12465,
     name: "Solana",
     logoURI: "/assets/tokens/solana.webp",
@@ -224,6 +231,7 @@ export const solanaChainData: Chain[] = [
 
 export const aptosChainData: Chain[] = [
   {
+    id: 8,
     chainId: 12466,
     name: "Aptos",
     logoURI: "/assets/tokens/aptos.webp",

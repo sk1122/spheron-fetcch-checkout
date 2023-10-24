@@ -23,6 +23,7 @@ import { Button, buttonVariants } from "./ui/button"
 import AptosConnectButton from "./wallets/aptos-connect-btn"
 import RainbowConnectButton from "./wallets/rainbow-connect-btn"
 import SolanaConnectBtutton from "./wallets/solana-connect-btn"
+import { redirect } from "next/navigation"
 
 const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
   const [isWalletsModalOpen, setIsWalletsModalOpen] = useState(false)
@@ -135,6 +136,8 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
     console.log("TOKEN: ", res)
 
     setLoading(false)
+
+    redirect("/requests")
   }
 
   return (
