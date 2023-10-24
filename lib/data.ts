@@ -4,6 +4,7 @@ export type Token = {
   chainId: number
   symbol: string
   logoURI: string
+  decimals: number
 }
 
 export type Chain = {
@@ -27,6 +28,7 @@ export const evmChainData: Chain[] = [
         chainId: 1,
         symbol: "USDC",
         logoURI: "/assets/tokens/usdc.webp",
+        decimals: 6
       },
       {
         name: "USDT",
@@ -34,6 +36,7 @@ export const evmChainData: Chain[] = [
         chainId: 1,
         symbol: "USDT",
         logoURI: "/assets/tokens/usdt.webp",
+        decimals: 6
       },
       {
         name: "DAI",
@@ -41,6 +44,7 @@ export const evmChainData: Chain[] = [
         chainId: 1,
         symbol: "DAI",
         logoURI: "/assets/tokens/dai.webp",
+        decimals: 6
       },
       {
         name: "Eth",
@@ -48,6 +52,7 @@ export const evmChainData: Chain[] = [
         chainId: 1,
         symbol: "ETH",
         logoURI: "/assets/tokens/ethereum.webp",
+        decimals: 18
       },
     ],
   },
@@ -63,6 +68,7 @@ export const evmChainData: Chain[] = [
         chainId: 137,
         symbol: "USDC",
         logoURI: "/assets/tokens/usdc.webp",
+        decimals: 6
       },
       {
         name: "USDT",
@@ -70,6 +76,7 @@ export const evmChainData: Chain[] = [
         chainId: 137,
         symbol: "USDT",
         logoURI: "/assets/tokens/usdt.webp",
+        decimals: 6
       },
       {
         name: "DAI",
@@ -77,6 +84,7 @@ export const evmChainData: Chain[] = [
         chainId: 137,
         symbol: "DAI",
         logoURI: "/assets/tokens/dai.webp",
+        decimals: 6
       },
       {
         name: "MATIC",
@@ -84,6 +92,7 @@ export const evmChainData: Chain[] = [
         chainId: 137,
         symbol: "POL",
         logoURI: "/assets/tokens/matic.webp",
+        decimals: 18
       },
     ],
   },
@@ -99,6 +108,7 @@ export const evmChainData: Chain[] = [
         chainId: 137,
         symbol: "USDC",
         logoURI: "/assets/tokens/usdc.webp",
+        decimals: 6
       },
       {
         name: "USDT",
@@ -106,6 +116,7 @@ export const evmChainData: Chain[] = [
         chainId: 137,
         symbol: "USDT",
         logoURI: "/assets/tokens/usdt.webp",
+        decimals: 6
       },
       {
         name: "DAI",
@@ -113,6 +124,7 @@ export const evmChainData: Chain[] = [
         chainId: 137,
         symbol: "DAI",
         logoURI: "/assets/tokens/dai.webp",
+        decimals: 6
       },
       {
         name: "AVAX",
@@ -120,6 +132,7 @@ export const evmChainData: Chain[] = [
         chainId: 137,
         symbol: "AVAX",
         logoURI: "/assets/tokens/avalanche.webp",
+        decimals: 18
       },
     ],
   },
@@ -135,6 +148,7 @@ export const evmChainData: Chain[] = [
         chainId: 42161,
         symbol: "USDC",
         logoURI: "/assets/tokens/usdc.webp",
+        decimals: 6
       },
       {
         name: "USDT",
@@ -142,6 +156,7 @@ export const evmChainData: Chain[] = [
         chainId: 42161,
         symbol: "USDT",
         logoURI: "/assets/tokens/usdt.webp",
+        decimals: 6
       },
       {
         name: "DAI",
@@ -149,6 +164,7 @@ export const evmChainData: Chain[] = [
         chainId: 42161,
         symbol: "DAI",
         logoURI: "/assets/tokens/dai.webp",
+        decimals: 6
       },
       {
         name: "ETH",
@@ -156,6 +172,7 @@ export const evmChainData: Chain[] = [
         chainId: 42161,
         symbol: "ETH",
         logoURI: "/assets/tokens/ethereum.webp",
+        decimals: 18
       },
     ],
   },
@@ -171,6 +188,7 @@ export const evmChainData: Chain[] = [
         chainId: 10,
         symbol: "USDC",
         logoURI: "/assets/tokens/usdc.webp",
+        decimals: 6
       },
       {
         name: "USDT",
@@ -178,6 +196,7 @@ export const evmChainData: Chain[] = [
         chainId: 10,
         symbol: "USDT",
         logoURI: "/assets/tokens/usdt.webp",
+        decimals: 6
       },
       {
         name: "DAI",
@@ -185,6 +204,7 @@ export const evmChainData: Chain[] = [
         chainId: 10,
         symbol: "DAI",
         logoURI: "/assets/tokens/dai.webp",
+        decimals: 6
       },
       {
         name: "ETH",
@@ -192,6 +212,7 @@ export const evmChainData: Chain[] = [
         chainId: 10,
         symbol: "ETH",
         logoURI: "/assets/tokens/ethereum.webp",
+        decimals: 18
       },
     ],
   },
@@ -210,6 +231,7 @@ export const solanaChainData: Chain[] = [
         chainId: 12465,
         symbol: "USDC",
         logoURI: "/assets/tokens/usdc.webp",
+        decimals: 10
       },
       {
         name: "USDT",
@@ -217,6 +239,7 @@ export const solanaChainData: Chain[] = [
         chainId: 12465,
         symbol: "USDT",
         logoURI: "/assets/tokens/usdt.webp",
+        decimals: 10
       },
       {
         name: "SOL",
@@ -224,6 +247,7 @@ export const solanaChainData: Chain[] = [
         chainId: 12465,
         symbol: "SOL",
         logoURI: "/assets/tokens/solana.webp",
+        decimals: 10
       },
     ],
   },
@@ -243,6 +267,7 @@ export const aptosChainData: Chain[] = [
         chainId: 12466,
         symbol: "USDC",
         logoURI: "/assets/tokens/usdc.webp",
+        decimals: 10
       },
       {
         name: "USDT",
@@ -251,6 +276,7 @@ export const aptosChainData: Chain[] = [
         chainId: 12466,
         symbol: "USDT",
         logoURI: "/assets/tokens/usdt.webp",
+        decimals: 10
       },
       {
         name: "APT",
@@ -258,6 +284,7 @@ export const aptosChainData: Chain[] = [
         chainId: 12466,
         symbol: "APT",
         logoURI: "/assets/tokens/aptos.webp",
+        decimals: 10
       },
     ],
   },

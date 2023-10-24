@@ -7,6 +7,7 @@ import { useFilter } from "@react-aria/i18n"
 import { User, X } from "lucide-react"
 import { useWallet as useAptosWallet } from "@aptos-labs/wallet-adapter-react"
 import * as aptos from "aptos"
+import { useSwitchNetwork, useNetwork } from "wagmi"
 
 import {
   aptosChainData,
@@ -85,25 +86,26 @@ const SendModal = ({
     sensitivity: "base",
   })
 
-  const selectedChainData =
-    selectedChain &&
-    chainData.filter((chain) => contains(chain.name, selectedChain))
+  const selectedChainData: Chain[] =
+    (selectedChain) ?
+    chainData.filter((chain) => contains(chain.name, selectedChain)) : []
 
-  let selectedTokenData =
-    selectedChainData &&
-    selectedToken &&
+  let selectedTokenData: Token[] =
+    ((selectedChainData &&
+    selectedToken) ?
     selectedChainData[0].tokens.filter((token) =>
       contains(token.address, selectedToken)
-    )
+    ) : []) ?? []
 
-  if(selectedTokenData) {
+  if(!selectedTokenData) {
     selectedTokenData = [
       {
         address: token.address,
         name: token.name,
         logoURI: token.logoURI,
         chainId: token.chainId,
-        symbol: token.symbol
+        symbol: token.symbol,
+        decimals: 18
       }
     ]
   }
@@ -113,7 +115,16 @@ const SendModal = ({
 
   console.log("🔗 ", chainData[0].name)
 
+  const { chains, pendingChainId, switchNetworkAsync } = useSwitchNetwork()
+  const { chain: chainD } = useNetwork()
+
   const pay = async () => {
+    console.log({
+      ...action.data,
+      payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
+      fromChain: selectedChainData[0].id,
+      fromToken: (selectedTokenData![0] as Token).address
+    })
     const req = await fetch("/api/buildTransaction", {
       method: "POST",
       body: JSON.stringify({
@@ -122,8 +133,8 @@ const SendModal = ({
           data: {
             ...action.data,
             payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
-            fromChain: chain.id,
-            fromToken: token.address
+            fromChain: selectedChainData[0].id,
+            fromToken: (selectedTokenData![0] as Token).address
           }
         }))
       })
@@ -138,8 +149,12 @@ const SendModal = ({
     for(let i = 0; i < transactions.length; i++) {
       const tx = transactions[i]
 
+      console.log(tx, "transaction")
+
       let hash = ''
       if(connectedWallet === "evm") {
+        if(chainD?.id !== chain.chainId) await switchNetworkAsync!(chain.chainId)
+
         console.log({
           ...tx.tx,
           gasPrice: undefined
@@ -173,38 +188,27 @@ const SendModal = ({
         hash = transaction
       }
 
-      console.log(JSON.stringify({
-        id: id,
-        payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
-        actions: [{
-          type: action[0].type,
-          data: action[0].data,
-          executionData: {
-            hash,
-            chain: chain.id,
-            timestamp: new Date().getTime() * 1000
-          }
-        }]
-      }))
-      await fetch("/api/updatePaymentRequest", {
-        method: "POST",
-        body: JSON.stringify({
-          id: Number(id),
-          payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
-          actions: [{
-            type: action[0].type,
-            data: action[0].data,
-            executionData: {
-              hash,
-              chain: chain.id,
-              timestamp: new Date().getTime() * 1000
-            }
-          }]
+      if(transactions.length === 1 || (tx.type && (tx.type === "PAYMENT_TOKEN" || tx.type === "OTHER" || tx.type === "PAYMENT_NATIVE"))) {
+        await fetch("/api/updatePaymentRequest", {
+          method: "POST",
+          body: JSON.stringify({
+            id: Number(id),
+            payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
+            actions: [{
+              type: action[0].type,
+              data: action[0].data,
+              executionData: {
+                hash,
+                chain: chain.id,
+                timestamp: new Date().getTime() * 1000
+              }
+            }]
+          })
         })
-      })
-
-      toast.success("Payment successfully done!")
-      setOpen(false)
+  
+        toast.success("Payment successfully done!")
+        setOpen(false)
+      }
     }
   }
 
@@ -284,7 +288,7 @@ const SendModal = ({
                     </div>
                     <input
                       className="pointer-events-none overflow-clip truncate border-none bg-transparent text-primary outline-none placeholder:text-[#6893F0] focus:outline-none group-hover:placeholder:text-primary"
-                      placeholder={selectedChainData && selectedTokenData ? `${selectedChainData[0].name} and ${selectedTokenData![0].name}` : "Select Chain and token"}
+                      placeholder={(selectedChainData.length > 0 && selectedTokenData.length > 0) ? `${selectedChainData[0].name} and ${selectedTokenData![0].name}` : "Select Chain and token"}
                       type="text"
                       readOnly
                     />

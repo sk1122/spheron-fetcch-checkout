@@ -6,6 +6,7 @@ import * as Accordion from "@radix-ui/react-accordion"
 import * as ScrollArea from "@radix-ui/react-scroll-area"
 import classNames from "classnames"
 import { Bell, ChevronDownIcon, User } from "lucide-react"
+import { formatUnits } from "viem"
 
 import SendPayment from "@/components/send-payment"
 import { Chain, Token, aptosChainData, evmChainData, solanaChainData } from "@/lib/data"
@@ -89,7 +90,8 @@ const AccordionItem = ({
                         chainId: chainData!.chainId,
                         logoURI: "",
                         name: token,
-                        symbol: token
+                        symbol: token,
+                        decimals: 18
                     })
                 }
 
@@ -137,7 +139,7 @@ const AccordionItem = ({
                     <h4 className="font-manrope text-sm font-bold md:text-base">
                     Chain & Amount
                     </h4>
-                    <span className="w-full flex space-x-1 text-xs md:text-sm"><p>{amount}</p> <span className="w-20 truncate"> {tokenData?.name as string}</span></span>
+                    <span className="w-full flex space-x-1 text-xs md:text-sm"><p>{formatUnits(BigInt(amount), Number(tokenData?.decimals))}</p> <span className="w-20 truncate"> {tokenData?.name as string}</span></span>
                 </div>
                 <button onClick={() => {
                     router.push(
@@ -151,7 +153,7 @@ const AccordionItem = ({
             </div>
           </div>
           {/* {openRequestModal &&  */}
-            <SendModal id={id} open={openRequestModal} setOpen={setOpenRequestModal} address={receiver} token={tokenData ? tokenData : { address: token, name: token, chainId: chain, logoURI: "", symbol: token }} amount={amount} chain={chainData!} action={action} />
+            <SendModal id={id} open={openRequestModal} setOpen={setOpenRequestModal} address={receiver} token={tokenData ? tokenData : { address: token, name: token, chainId: chain, logoURI: "", symbol: token, decimals: 18 }} amount={amount} chain={chainData!} action={action} />
           {/* } */}
         </AccordionContent>
       </Accordion.Item>
