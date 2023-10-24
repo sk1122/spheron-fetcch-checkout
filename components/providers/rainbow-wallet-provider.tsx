@@ -7,8 +7,9 @@ import {
   RainbowKitProvider,
 } from "@rainbow-me/rainbowkit"
 import { configureChains, createConfig, WagmiConfig } from "wagmi"
-import { mainnet } from "wagmi/chains"
+import { arbitrum, avalanche, mainnet, optimism, polygon } from "wagmi/chains"
 import { alchemyProvider } from "wagmi/providers/alchemy"
+import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 
 export default function RainbowProvider({
   children,
@@ -16,8 +17,14 @@ export default function RainbowProvider({
   children: React.ReactNode
 }) {
   const { chains, publicClient } = configureChains(
-    [mainnet],
-    [alchemyProvider({ apiKey: (process.env.ALCHEMY_API_KEY as string) ?? "" })]
+    // @ts-ignore
+    [mainnet, polygon, arbitrum, optimism, avalanche],
+    [jsonRpcProvider({
+      rpc: (chain: any) => ({
+        http: `https://rpc.ankr.com/${chain.name}`
+      })
+    })],
+    [alchemyProvider({ apiKey: (process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string) ?? "" })]
   )
 
   const { connectors } = getDefaultWallets({

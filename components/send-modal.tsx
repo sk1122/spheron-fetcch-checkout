@@ -24,6 +24,7 @@ import { useWallet } from "@solana/wallet-adapter-react"
 import { useSendTransaction, useAccount } from "wagmi"
 import { Connection, VersionedTransaction } from "@solana/web3.js"
 import base58 from "bs58"
+import toast from "react-hot-toast"
 
 const SendModal = ({
   open,
@@ -172,23 +173,38 @@ const SendModal = ({
         hash = transaction
       }
 
+      console.log(JSON.stringify({
+        id: id,
+        payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
+        actions: [{
+          type: action[0].type,
+          data: action[0].data,
+          executionData: {
+            hash,
+            chain: chain.id,
+            timestamp: new Date().getTime() * 1000
+          }
+        }]
+      }))
       await fetch("/api/updatePaymentRequest", {
         method: "POST",
         body: JSON.stringify({
-          id: id,
+          id: Number(id),
           payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
-          actions: [
-            {
-              ...action,
-              executionData: {
-                hash: hash,
-                chain: chain.id,
-                timestamp: new Date().getTime() * 1000
-              }
+          actions: [{
+            type: action[0].type,
+            data: action[0].data,
+            executionData: {
+              hash,
+              chain: chain.id,
+              timestamp: new Date().getTime() * 1000
             }
-          ]
+          }]
         })
       })
+
+      toast.success("Payment successfully done!")
+      setOpen(false)
     }
   }
 
