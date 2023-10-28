@@ -170,7 +170,19 @@ const SendPayment = ({
       if(transactions.length === 1 || (tx.type && (tx.type === "PAYMENT_TOKEN" || tx.type === "OTHER" || tx.type === "PAYMENT_NATIVE"))) {
         await fetch("/api/updatePaymentRequest", {
           method: "POST",
-          body: JSON.stringify(actions)
+          body: JSON.stringify({
+            id: Number(id),
+            payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
+            actions: [{
+              type: actions.actions[0].type,
+              data: actions.actions[0].data,
+              executionData: {
+                hash,
+                chain: chain,
+                timestamp: new Date().getTime() / 1000
+              }
+            }]
+          })
         })
   
         toast.success("Payment successfully done!")
