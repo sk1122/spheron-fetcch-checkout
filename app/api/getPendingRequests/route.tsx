@@ -35,10 +35,23 @@ export const getToken = async (address: string, rpc: string) => {
             "id": 42
         })
     })
-    const data = await reqs.json()
-    console.log(data, "SERVER")
 
-    return data.result
+    const data = await reqs.json()
+
+    if(data.result) {
+        return data.result
+    } else {
+        const tokens = [...evmChainData.map(x => x.tokens), ...solanaChainData.map(x => x.tokens), ...aptosChainData.map(x => x.tokens)].flat()
+
+        const token = tokens.find(token => token.address.toLowerCase() === address.toLowerCase())
+
+        return {
+            decimals: token?.decimals,
+            name: token?.name,
+            symbol: token?.symbol,
+            logo: token?.logoURI
+        }
+    }
 }
 
 export async function GET(req: Request) {

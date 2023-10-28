@@ -77,7 +77,7 @@ const PendingRequests = () => {
       setRequests(data.data)
       return data
     })
-  }, [connectedWallet])
+  }, [connectedWallet, address, publicKey, account])
   
   return (
     <>
