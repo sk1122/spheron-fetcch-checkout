@@ -6,10 +6,12 @@ import collection3 from "@/public/assets/collection3.avif"
 import collection4 from "@/public/assets/collection4.avif"
 
 import WalletsModal from "@/components/wallets-modal"
+import { Toaster } from "react-hot-toast"
 
 const LandingPage = () => {
   return (
     <div>
+      <Toaster />
       <div className="relative z-20 mt-20 w-full px-6 text-center md:mt-40 lg:mt-[30vh] lg:px-0">
         <Image
           src={collection1}
