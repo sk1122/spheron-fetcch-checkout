@@ -172,6 +172,7 @@ const SendPayment = ({
           method: "POST",
           body: JSON.stringify({
             id: Number(id),
+            executed: true,
             payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
             actions: [{
               type: actions.actions[0].type,

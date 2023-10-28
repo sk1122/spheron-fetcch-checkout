@@ -86,8 +86,10 @@ const PendingRequests = () => {
           <ScrollArea.Viewport className="h-full w-full rounded">
             <div className="flex flex-col space-y-3">
               {/* single request */}
-              {requests.map(request => (
-                <Request request={request} />
+              {requests.map((request: any) => (
+                <>
+                  {!request.executed && <Request request={request} />}
+                </>
               ))}
             </div>
           </ScrollArea.Viewport>

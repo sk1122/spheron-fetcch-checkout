@@ -91,7 +91,7 @@ export async function GET(req: Request) {
             }
         }
     }
-  
+
     console.log("ON server: ", res)
     return Response.json(res)
   }
