@@ -38,7 +38,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
       setToken(token as string)
     }
-  }, [window.localStorage])
+  }, [])
 
   useEffect(() => {
     if(token) {

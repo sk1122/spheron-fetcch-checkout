@@ -1,6 +1,6 @@
 import { aptosChainData, evmChainData, solanaChainData } from "@/lib/data"
 
-export const getToken = async (address: string, rpc: string) => {
+const getToken = async (address: string, rpc: string) => {
     if(address == "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee") {
         return {
             decimals: 18,
