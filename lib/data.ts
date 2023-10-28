@@ -9,6 +9,7 @@ export type Token = {
 
 export type Chain = {
   id: number
+  rpc: string
   chainId: number
   logoURI: string
   name: string
@@ -21,6 +22,7 @@ export const evmChainData: Chain[] = [
     chainId: 1,
     name: "Ethereum",
     logoURI: "/assets/tokens/ethereum.webp",
+    rpc: `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
     tokens: [
       {
         name: "USDC",
@@ -60,6 +62,7 @@ export const evmChainData: Chain[] = [
     id: 2,
     chainId: 137,
     name: "Polygon",
+    rpc: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
     logoURI: "/assets/tokens/matic.webp",
     tokens: [
       {
@@ -96,50 +99,52 @@ export const evmChainData: Chain[] = [
       },
     ],
   },
-  {
-    id: 4,
-    chainId: 43114,
-    name: "Avalanche",
-    logoURI: "/assets/tokens/avalanche.webp",
-    tokens: [
-      {
-        name: "USDC",
-        address: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-        chainId: 137,
-        symbol: "USDC",
-        logoURI: "/assets/tokens/usdc.webp",
-        decimals: 6
-      },
-      {
-        name: "USDT",
-        address: "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
-        chainId: 137,
-        symbol: "USDT",
-        logoURI: "/assets/tokens/usdt.webp",
-        decimals: 6
-      },
-      {
-        name: "DAI",
-        address: "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
-        chainId: 137,
-        symbol: "DAI",
-        logoURI: "/assets/tokens/dai.webp",
-        decimals: 6
-      },
-      {
-        name: "AVAX",
-        address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-        chainId: 137,
-        symbol: "AVAX",
-        logoURI: "/assets/tokens/avalanche.webp",
-        decimals: 18
-      },
-    ],
-  },
+  // {
+  //   id: 4,
+  //   chainId: 43114,
+  //   name: "Avalanche",
+  //   rpc: "https://eth-mainnet.g.alchemy.com/v2/",
+  //   logoURI: "/assets/tokens/avalanche.webp",
+  //   tokens: [
+  //     {
+  //       name: "USDC",
+  //       address: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+  //       chainId: 137,
+  //       symbol: "USDC",
+  //       logoURI: "/assets/tokens/usdc.webp",
+  //       decimals: 6
+  //     },
+  //     {
+  //       name: "USDT",
+  //       address: "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
+  //       chainId: 137,
+  //       symbol: "USDT",
+  //       logoURI: "/assets/tokens/usdt.webp",
+  //       decimals: 6
+  //     },
+  //     {
+  //       name: "DAI",
+  //       address: "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
+  //       chainId: 137,
+  //       symbol: "DAI",
+  //       logoURI: "/assets/tokens/dai.webp",
+  //       decimals: 6
+  //     },
+  //     {
+  //       name: "AVAX",
+  //       address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  //       chainId: 137,
+  //       symbol: "AVAX",
+  //       logoURI: "/assets/tokens/avalanche.webp",
+  //       decimals: 18
+  //     },
+  //   ],
+  // },
   {
     id: 6,
     chainId: 42161,
     name: "Arbitrum",
+    rpc: `https://arb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
     logoURI: "/assets/tokens/arb.webp",
     tokens: [
       {
@@ -180,6 +185,7 @@ export const evmChainData: Chain[] = [
     id: 5,
     chainId: 10,
     name: "Optimism",
+    rpc: `https://opt-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
     logoURI: "/assets/tokens/opt.webp",
     tokens: [
       {
@@ -223,6 +229,7 @@ export const solanaChainData: Chain[] = [
     id: 7,
     chainId: 12465,
     name: "Solana",
+    rpc: `https://solana-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
     logoURI: "/assets/tokens/solana.webp",
     tokens: [
       {
@@ -254,38 +261,39 @@ export const solanaChainData: Chain[] = [
 ]
 
 export const aptosChainData: Chain[] = [
-  {
-    id: 8,
-    chainId: 12466,
-    name: "Aptos",
-    logoURI: "/assets/tokens/aptos.webp",
-    tokens: [
-      {
-        name: "USDC",
-        address:
-          "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDC",
-        chainId: 12466,
-        symbol: "USDC",
-        logoURI: "/assets/tokens/usdc.webp",
-        decimals: 10
-      },
-      {
-        name: "USDT",
-        address:
-          "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDT",
-        chainId: 12466,
-        symbol: "USDT",
-        logoURI: "/assets/tokens/usdt.webp",
-        decimals: 10
-      },
-      {
-        name: "APT",
-        address: "1111111111111111111111111111111111111111111",
-        chainId: 12466,
-        symbol: "APT",
-        logoURI: "/assets/tokens/aptos.webp",
-        decimals: 10
-      },
-    ],
-  },
+  // {
+  //   id: 8,
+  //   chainId: 12466,
+  //   name: "Aptos",
+  //   rpc: "https://eth-mainnet.g.alchemy.com/v2/",
+  //   logoURI: "/assets/tokens/aptos.webp",
+  //   tokens: [
+  //     {
+  //       name: "USDC",
+  //       address:
+  //         "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDC",
+  //       chainId: 12466,
+  //       symbol: "USDC",
+  //       logoURI: "/assets/tokens/usdc.webp",
+  //       decimals: 10
+  //     },
+  //     {
+  //       name: "USDT",
+  //       address:
+  //         "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDT",
+  //       chainId: 12466,
+  //       symbol: "USDT",
+  //       logoURI: "/assets/tokens/usdt.webp",
+  //       decimals: 10
+  //     },
+  //     {
+  //       name: "APT",
+  //       address: "1111111111111111111111111111111111111111111",
+  //       chainId: 12466,
+  //       symbol: "APT",
+  //       logoURI: "/assets/tokens/aptos.webp",
+  //       decimals: 10
+  //     },
+  //   ],
+  // },
 ]

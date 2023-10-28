@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, useContext, useState } from "react"
+import React, { createContext, useContext, useEffect, useState } from "react"
 
 import AptosProvider from "./aptos-provider"
 import RainbowProvider from "./rainbow-wallet-provider"
@@ -13,6 +13,8 @@ type WalletContextTypes = {
   setConnectedWallet: React.Dispatch<React.SetStateAction<WALLET>>
   addressChain: WALLET
   setAddressChain: React.Dispatch<React.SetStateAction<WALLET>>
+  token: string
+  setToken: React.Dispatch<React.SetStateAction<string>>
 }
 
 const WalletContext = createContext<WalletContextTypes | null>(null)
@@ -28,6 +30,21 @@ export const useConnectedWallet = () => {
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [connectedWallet, setConnectedWallet] = useState<WALLET | null>(null)
   const [addressChain, setAddressChain] = useState<WALLET | null>(null)
+  const [token, setToken] = useState<string>("")
+
+  useEffect(() => {
+    if(window && window.localStorage) {
+      const token = window.localStorage.getItem("token")
+
+      setToken(token as string)
+    }
+  }, [window.localStorage])
+
+  useEffect(() => {
+    if(token) {
+      window.localStorage.setItem("token", token)
+    }
+  }, [token])
 
   return (
     <WalletContext.Provider
@@ -36,6 +53,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         setConnectedWallet,
         addressChain,
         setAddressChain,
+        token,
+        setToken
       }}
     >
       <RainbowProvider>

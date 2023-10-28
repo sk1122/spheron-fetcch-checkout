@@ -180,6 +180,13 @@ const Actions = ({
                 chain: Number(action.data.chain)
             })))
 
+            console.log(res.data.actions.filter((action: any) => action.type === "PAYMENT").map((action: any) => ({
+                receiver: action.data.receiver,
+                amount: action.data.amount.amount,
+                token: action.data.token,
+                chain: Number(action.data.chain)
+            })))
+
             setOriginalActions(res.data.actions.filter((action: any) => action.type === "PAYMENT").map((action: any) => ({ data: action.data, type: action.type })))
 
             return

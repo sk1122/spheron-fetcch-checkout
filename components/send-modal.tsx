@@ -218,6 +218,7 @@ const SendModal = ({
         {chainSelect ? (
           <ChainSelectModal chains={chainData} setOpen={setChainSelect}>
             <TokensList
+              chains={chainData}
               selectedChain={
                 selectedChainData ? selectedChainData[0] : chainData[0]
               }

@@ -7,6 +7,7 @@ import { useWallet } from "@solana/wallet-adapter-react"
 import { encode } from "bs58"
 import { Loader2, X } from "lucide-react"
 import { useAccount, useSignMessage } from "wagmi"
+import { useRouter } from "next/navigation"
 
 import { useIsMounted } from "@/lib/useIsMounted"
 import { cn } from "@/lib/utils"
@@ -30,6 +31,8 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
   const [isWalletsModalOpen, setIsWalletsModalOpen] = useState(false)
   const mounted = useIsMounted()
 
+  const { push } = useRouter()
+
   const { isConnected: isRainbowConnected, address } = useAccount()
   const {
     connected: isSolanaConnected,
@@ -44,7 +47,7 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
 
   const { signMessageAsync } = useSignMessage()
 
-  const { connectedWallet, setConnectedWallet } = useConnectedWallet()
+  const { connectedWallet, setConnectedWallet, setToken } = useConnectedWallet()
   const [connectedWalletAddress, setConnectedWalletAddress] =
     useState<string>("")
   const [loading, setLoading] = useState(false)
@@ -136,9 +139,11 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
 
     console.log("TOKEN: ", res)
 
+    setToken(res.data.accessToken)
+
     setLoading(false)
 
-    redirect("/requests")
+    push("/requests")
   }
 
   return (

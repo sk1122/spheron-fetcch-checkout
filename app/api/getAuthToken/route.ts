@@ -19,5 +19,5 @@ export async function POST(req: Request) {
   const res = await myReq.json()
 
   console.log("ON server: ", res)
-  return Response.json({ res })
+  return Response.json(res)
 }

@@ -17,6 +17,7 @@ import RequestModal from "@/components/request-modal"
 import { useConnectedWallet } from "./providers/providers"
 import { Button } from "./ui/button"
 import WalletsModal from "./wallets-modal"
+import { Loader2 } from "lucide-react"
 
 const AddressInput = () => {
   const router = useRouter()
@@ -36,6 +37,7 @@ const AddressInput = () => {
   const [walletAddress, setWalletAddress] = useState<string>("")
   const address = useDeferredValue(walletAddress)
   const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const { address: evmAddress } = useAccount()
   const { publicKey } = useWallet()
@@ -52,31 +54,41 @@ const AddressInput = () => {
 
   const verifyWalletAddress = () => {
     try {
+      router.push(pathname)
+      
       if (
         walletAddress.length > 1 &&
         walletAddress !== null &&
-        walletAddress !== undefined &&
-        !isUserAddress
+        walletAddress !== undefined
       ) {
         setAddressChain(null)
-        if (verifyAddress(address)) {
-          if (verifyAptosAddress(address)) {
-            setAddressChain("aptos")
+        setLoading(true)
+        setError("")
+        fetch(`/api/verify?address=${address}`).then(res => res.json()).then(data => {
+          if(data.data.validity) {
+            console.log("verified", data.data)
+            if (verifyAptosAddress(data.data.address.address)) {
+              setAddressChain("aptos")
+            }
+            if (verifyEvmAddress(data.data.address.address)) {
+              setAddressChain("evm")
+            }
+            if (verifySolanaAddress(data.data.address.address)) {
+              setAddressChain("solana")
+            }
+
+            router.push(pathname + "?" + createQueryString("address", data.data.address.address))
+            setOpenRequestModal(true)
+            setLoading(false)
+            setError("")
+          } else {
+            setError("Please enter a valid address")
+            setLoading(false)
           }
-          if (verifyEvmAddress(address)) {
-            setAddressChain("evm")
-          }
-          if (verifySolanaAddress(address)) {
-            setAddressChain("solana")
-          }
-          router.push(pathname + "?" + createQueryString("address", address))
-          setOpenRequestModal(true)
-        } else {
-          setError("Please enter a valid address")
-        }
-        setWalletAddress("")
+        })
       } else {
         setError("Please enter a valid address you want to request to.")
+        setLoading(false)
       }
     } catch (err) {
       console.error(err)
@@ -103,6 +115,7 @@ const AddressInput = () => {
             className="absolute right-[6px]"
             onClick={verifyWalletAddress}
           >
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Request
           </Button>
         )}

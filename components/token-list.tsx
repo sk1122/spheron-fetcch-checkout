@@ -1,7 +1,7 @@
 "use client"
 
 import type { Dispatch, SetStateAction } from "react"
-import { Suspense, useCallback, useState } from "react"
+import { Suspense, useCallback, useEffect, useState } from "react"
 import Image from "next/image"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import * as ScrollArea from "@radix-ui/react-scroll-area"
@@ -14,10 +14,12 @@ import { cn } from "@/lib/utils"
 type TokensListProps = {
   selectedChain: Chain
   setSelectToken: Dispatch<SetStateAction<boolean>>
+  chains: Chain[]
 }
 
 const TokensList = ({
   selectedChain: { tokens },
+  chains,
   setSelectToken,
 }: TokensListProps) => {
   const router = useRouter()
@@ -60,7 +62,7 @@ const TokensList = ({
               <button
                 onClick={() => {
                   router.push(
-                    pathname + "?" + createQueryString("token", token.address)
+                    pathname + "?" + createQueryString("token", token.address) + "&" + createQueryString("chain", chains[0].name)
                   )
                   setSelectToken(false)
                 }}
