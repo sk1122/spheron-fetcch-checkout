@@ -1,9 +1,15 @@
 "use client"
 
-import React, { useCallback, useDeferredValue, useState } from "react"
+import React, {
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useState,
+} from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useWallet as useAptosWallet } from "@aptos-labs/wallet-adapter-react"
 import { useWallet } from "@solana/wallet-adapter-react"
+import { Loader2 } from "lucide-react"
 import { useAccount } from "wagmi"
 
 import {
@@ -17,7 +23,6 @@ import RequestModal from "@/components/request-modal"
 import { useConnectedWallet } from "./providers/providers"
 import { Button } from "./ui/button"
 import WalletsModal from "./wallets-modal"
-import { Loader2 } from "lucide-react"
 
 const AddressInput = () => {
   const router = useRouter()
@@ -52,10 +57,21 @@ const AddressInput = () => {
     useConnectedWallet()
   const [openRequestModal, setOpenRequestModal] = useState(false)
 
+  useEffect(() => {
+    console.log("HERE", connectedWallet, evmAddress, publicKey?.toBase58(), account?.address.toString())
+    if (connectedWallet == "evm") {
+      setWalletAddress(evmAddress as string)
+    } else if (connectedWallet == "solana") {
+      setWalletAddress(publicKey?.toBase58() as string)
+    } else if (connectedWallet == "aptos") {
+      setWalletAddress(account?.address.toString() as string)
+    }
+  }, [connectedWallet, address, publicKey, account])
+
   const verifyWalletAddress = () => {
     try {
       router.push(pathname)
-      
+
       if (
         walletAddress.length > 1 &&
         walletAddress !== null &&
@@ -64,28 +80,34 @@ const AddressInput = () => {
         setAddressChain(null)
         setLoading(true)
         setError("")
-        fetch(`/api/verify?address=${address}`).then(res => res.json()).then(data => {
-          if(data.data.validity) {
-            console.log("verified", data.data)
-            if (verifyAptosAddress(data.data.address.address)) {
-              setAddressChain("aptos")
-            }
-            if (verifyEvmAddress(data.data.address.address)) {
-              setAddressChain("evm")
-            }
-            if (verifySolanaAddress(data.data.address.address)) {
-              setAddressChain("solana")
-            }
+        fetch(`/api/verify?address=${address}`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.data.validity) {
+              console.log("verified", data.data)
+              if (verifyAptosAddress(data.data.address.address)) {
+                setAddressChain("aptos")
+              }
+              if (verifyEvmAddress(data.data.address.address)) {
+                setAddressChain("evm")
+              }
+              if (verifySolanaAddress(data.data.address.address)) {
+                setAddressChain("solana")
+              }
 
-            router.push(pathname + "?" + createQueryString("address", data.data.address.address))
-            setOpenRequestModal(true)
-            setLoading(false)
-            setError("")
-          } else {
-            setError("Please enter a valid address")
-            setLoading(false)
-          }
-        })
+              router.push(
+                pathname +
+                  "?" +
+                  createQueryString("address", data.data.address.address)
+              )
+              setOpenRequestModal(true)
+              setLoading(false)
+              setError("")
+            } else {
+              setError("Please enter a valid address")
+              setLoading(false)
+            }
+          })
       } else {
         setError("Please enter a valid address you want to request to.")
         setLoading(false)
@@ -98,11 +120,14 @@ const AddressInput = () => {
   console.log("😎 ", addressChain)
 
   return (
-    <>
-      <div className="relative mx-auto mt-7 flex h-16 w-full max-w-[699px] items-center rounded-full border border-primary p-8 shadow-[inset_0px_1px_4px_1px_rgba(0,0,0,0.25)]">
+    <div className="w-full h-full flex flex-col justify-center items-start max-w-[699px] mt-7">
+      <label className="px-4">
+        Request address
+      </label>
+      <div className="relative mx-auto flex h-16 w-full max-w-[699px] items-center rounded-full border border-primary p-8 shadow-[inset_0px_1px_4px_1px_rgba(0,0,0,0.25)]">
         <input
           type="text"
-          placeholder="Enter Wallet Id/Address to request"
+          placeholder="Request address"
           value={walletAddress}
           spellCheck={false}
           onChange={(e) => setWalletAddress(e.target.value)}
@@ -124,7 +149,7 @@ const AddressInput = () => {
       {error && (
         <span className="mt-4 text-sm text-destructive/80">{error}</span>
       )}
-    </>
+    </div>
   )
 }
 

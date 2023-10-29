@@ -11,6 +11,8 @@ import { useAccount } from "wagmi"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { useWallet as useAptosWallet } from "@aptos-labs/wallet-adapter-react"
 import { formatUnits } from "viem"
+import toast from "react-hot-toast"
+import { useRouter } from "next/navigation"
 
 const Request = ({
   request
@@ -32,13 +34,13 @@ const Request = ({
               payment request received
             </h4>
             <div className="text-xs md:text-sm flex">
-              <p className="w-36 truncate" title="Coming Soon" data-tooltip-placement="bottom">{receiver}</p> is requesting {request.actions[0].data.tokenData?.decimals ? formatUnits(request.actions[0].data.amount.amount, request.actions[0].data.tokenData.decimals) : 0} {request.actions[0].data.tokenData?.symbol}
+              <p className="w-20 truncate" title="Coming Soon" data-tooltip-placement="bottom">{receiver}</p> is requesting {request.actions[0].data.tokenData?.decimals ? formatUnits(request.actions[0].data.amount.amount, request.actions[0].data.tokenData.decimals) : 0} {request.actions[0].data.tokenData?.symbol}
             </div>
           </div>
         </div>
         <div className="flex items-center space-x-3">
-          <button className="rounded-full border border-[#7C98F9] bg-white px-3 py-2 text-sm md:px-7 md:py-4 md:text-base">
-            Dismiss
+          <button onClick={() => {window.navigator.clipboard.writeText(`https://request.fetcch.xyz/request/${request.id}`);toast.success("Copied link")}} className="rounded-full border border-[#7C98F9] bg-white px-3 py-2 text-sm md:px-7 md:py-4 md:text-base whitespace-nowrap">
+            Copy Link
           </button>
           <SendPayment id={request.id} chain={request.actions[0].data.chain} receiver={receiver} amount={request.actions[0].data.amount.amount} token={request.actions[0].data.token} decimals={request.actions[0].data.tokenData?.decimals ?? 0} tokenName={request.actions[0].data.tokenData?.symbol ?? ""} />
         </div>
@@ -50,6 +52,8 @@ const PendingRequests = () => {
   const { connectedWallet, token } = useConnectedWallet()
   const [requests, setRequests] = useState([])
   
+  const router = useRouter()
+
   const { address } = useAccount()
   const {
     publicKey,
@@ -71,12 +75,19 @@ const PendingRequests = () => {
       addr = account?.address.toString() as string
     }
     console.log("TOKEN: ", token)
-    fetch(`/api/getPendingRequests?address=${addr}&accessToken=${token}`).then(res => res.json()).then(data => {
-      console.log("REQUESTS: ", data)
-
-      setRequests(data.data)
-      return data
-    })
+    if(addr && token) {
+      fetch(`/api/getPendingRequests?address=${addr}&accessToken=${token}`).then(res => res.json()).then(data => {
+        console.log("REQUESTS: ", data)
+  
+        setRequests(data.data)
+        return data
+      }).catch((e) => {
+        toast.error("Token expired, login again")
+        router.push(
+          "/"
+        )
+      })
+    }
   }, [connectedWallet, address, publicKey, account])
   
   return (

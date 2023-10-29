@@ -1,12 +1,12 @@
 import { aptosChainData, evmChainData, solanaChainData } from "@/lib/data"
 
-const getToken = async (address: string, rpc: string) => {
+const getToken = async (address: string, id: number, rpc: string) => {
     if(address == "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee") {
         return {
             decimals: 18,
             logo: "",
-            name: "Ethereum",
-            symbol: "ETH"
+            name: id === 1 || id === 5 || id === 6 ? "Ethereum" : id === 2 ? "Polygon" : id === 3 ? "Avalanche" : "BSC",
+            symbol: id === 1 || id === 5 || id === 6 ? "ETH" : id === 2 ? "POL" : id === 3 ? "AVAX" : "BSC"
         }
     } else if (address == "1111111111111111111111111111111111111111111") {
         return {
@@ -38,6 +38,7 @@ const getToken = async (address: string, rpc: string) => {
 
     const data = await reqs.json()
 
+    console.log(data.result, rpc, address, "on server")
     if(data.result) {
         return data.result
     } else {
@@ -72,6 +73,7 @@ export async function GET(req: Request) {
   
     let res = await myReq.json()
 
+
     let cachedTokens: any = {}
     for(let i = 0; i < res.data.length; i++) {
         const req = res.data[i]
@@ -83,7 +85,7 @@ export async function GET(req: Request) {
             if(cachedTokens[action.token]) {
                 req.actions[j].data.tokenData = cachedTokens[action.token]
             } else {
-                const data = await getToken(action.token, chain.rpc)
+                const data = await getToken(action.token, chain.id, chain.rpc)
 
                 req.actions[j].data.tokenData = data
 
@@ -92,7 +94,11 @@ export async function GET(req: Request) {
         }
     }
 
-    console.log("ON server: ", res)
-    return Response.json(res)
+    console.log("ON server: ", res.data)
+
+    const sorted = (res.data as any[]).sort((a, b) => new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime())
+
+    console.log(sorted)
+    return Response.json({ data: sorted })
   }
   

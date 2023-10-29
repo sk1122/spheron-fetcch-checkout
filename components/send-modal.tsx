@@ -4,7 +4,7 @@ import Image from "next/image"
 import { useSearchParams } from "next/navigation"
 import { Close as DialogClose } from "@radix-ui/react-dialog"
 import { useFilter } from "@react-aria/i18n"
-import { User, X } from "lucide-react"
+import { Loader2, User, X } from "lucide-react"
 import { useWallet as useAptosWallet } from "@aptos-labs/wallet-adapter-react"
 import * as aptos from "aptos"
 import { useSwitchNetwork, useNetwork } from "wagmi"
@@ -47,6 +47,7 @@ const SendModal = ({
   id: string
 }) => {
   const [chainSelect, setChainSelect] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [chainData, setChainData] = useState<Chain[]>([...evmChainData,  ...solanaChainData, ...aptosChainData])
   const { addressChain, connectedWallet } = useConnectedWallet()
 
@@ -119,97 +120,111 @@ const SendModal = ({
   const { chain: chainD } = useNetwork()
 
   const pay = async () => {
-    console.log({
-      ...action.data,
-      payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
-      fromChain: selectedChainData[0].id,
-      fromToken: (selectedTokenData![0] as Token).address
-    })
-    const req = await fetch("/api/buildTransaction", {
-      method: "POST",
-      body: JSON.stringify({
-        actions: action.map((action: any) => ({
-          ...action,
-          data: {
-            ...action.data,
-            payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
-            fromChain: selectedChainData[0].id,
-            fromToken: (selectedTokenData![0] as Token).address
-          }
-        }))
+    setLoading(true)
+    const toastId = toast.loading("Executing payment...")
+    try {
+      console.log({
+        ...action.data,
+        payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
+        fromChain: selectedChainData[0].id,
+        fromToken: (selectedTokenData![0] as Token).address
       })
-    })
-
-    const res = await req.json()
-
-    const transactions = res.data[0]
-
-    console.log(res, transactions)
-
-    for(let i = 0; i < transactions.length; i++) {
-      const tx = transactions[i]
-
-      console.log(tx, "transaction")
-
-      let hash = ''
-      if(connectedWallet === "evm") {
-        if(chainD?.id !== chain.chainId) await switchNetworkAsync!(chain.chainId)
-
-        console.log({
-          ...tx.tx,
-          gasPrice: undefined
+      const req = await fetch("/api/buildTransaction", {
+        method: "POST",
+        body: JSON.stringify({
+          actions: action.map((action: any) => ({
+            ...action,
+            data: {
+              ...action.data,
+              payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
+              fromChain: selectedChainData[0].id,
+              fromToken: (selectedTokenData![0] as Token).address
+            }
+          }))
         })
-        const transaction = await sendTransactionAsync({
-          ...tx.tx,
-          gasPrice: undefined
-        })
-
-        console.log(transaction)
-
-        hash = transaction.hash
-      } else if (connectedWallet === "solana") {
-        const txData = VersionedTransaction.deserialize(base58.decode(tx.tx))
-        const connection = new Connection("https://solana-mainnet.g.alchemy.com/v2/LZLe8tHrIZ06MnZlxn-L4Fo5aj7iIdgI")
-
-        const transaction = await sendTransaction!(txData, connection)
-
-        console.log(transaction)
-
-        hash = transaction
-      } else if (connectedWallet === "aptos") {
-        const txData = aptos.TxnBuilderTypes.RawTransaction.deserialize(
-          new aptos.BCS.Deserializer(base58.decode(tx.tx))
-        )
-
-        const transaction = await signAndSubmitBCSTransaction(txData)
-
-        console.log(transaction)
-
-        hash = transaction
-      }
-
-      if(transactions.length === 1 || (tx.type && (tx.type === "PAYMENT_TOKEN" || tx.type === "OTHER" || tx.type === "PAYMENT_NATIVE"))) {
-        await fetch("/api/updatePaymentRequest", {
-          method: "POST",
-          body: JSON.stringify({
-            id: Number(id),
-            payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
-            actions: [{
-              type: action[0].type,
-              data: action[0].data,
-              executionData: {
-                hash,
-                chain: chain.id,
-                timestamp: new Date().getTime() * 1000
-              }
-            }]
-          })
-        })
+      })
   
-        toast.success("Payment successfully done!")
-        setOpen(false)
+      const res = await req.json()
+  
+      const transactions = res.data[0]
+  
+      console.log(res, transactions)
+  
+      for(let i = 0; i < transactions.length; i++) {
+        const tx = transactions[i]
+  
+        console.log(tx, "transaction")
+  
+        let hash = ''
+        if(connectedWallet === "evm") {
+          if(chainD?.id !== selectedChainData[0].chainId) await switchNetworkAsync!(selectedChainData[0].chainId)
+  
+          console.log({
+            ...tx.tx,
+            gasPrice: undefined
+          })
+          const transaction = await sendTransactionAsync({
+            ...tx.tx,
+            gasPrice: undefined
+          })
+  
+          console.log(transaction)
+  
+          hash = transaction.hash
+        } else if (connectedWallet === "solana") {
+          const txData = VersionedTransaction.deserialize(base58.decode(tx.tx))
+          const connection = new Connection("https://solana-mainnet.g.alchemy.com/v2/LZLe8tHrIZ06MnZlxn-L4Fo5aj7iIdgI")
+  
+          const transaction = await sendTransaction!(txData, connection)
+  
+          console.log(transaction)
+  
+          hash = transaction
+        } else if (connectedWallet === "aptos") {
+          const txData = aptos.TxnBuilderTypes.RawTransaction.deserialize(
+            new aptos.BCS.Deserializer(base58.decode(tx.tx))
+          )
+  
+          const transaction = await signAndSubmitBCSTransaction(txData)
+  
+          console.log(transaction)
+  
+          hash = transaction
+        }
+  
+        if(transactions.length === 1 || (tx.type && (tx.type === "PAYMENT_TOKEN" || tx.type === "OTHER" || tx.type === "PAYMENT_NATIVE"))) {
+          await fetch("/api/updatePaymentRequest", {
+            method: "POST",
+            body: JSON.stringify({
+              id: Number(id),
+              payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
+              actions: [{
+                type: action[0].type,
+                data: action[0].data,
+                executionData: {
+                  hash,
+                  chain: chain.id,
+                  timestamp: new Date().getTime() * 1000
+                }
+              }],
+              executed: true
+            })
+          })
+    
+          toast.success("Payment successfully done!", {
+            id: toastId
+          })
+          setOpen(false)
+        }
       }
+    } catch (e) {
+      toast.error("Payment not successfully executed!", {
+        id: toastId
+      })
+      setLoading(false)
     }
+
+    setLoading(false)
   }
 
   return (
@@ -296,7 +311,8 @@ const SendModal = ({
                   </div>
                 </div>
               </button>
-              <button onClick={() => pay()} className="w-full rounded-full bg-primary py-4 text-white">
+              <button onClick={() => pay()} className="w-full flex justify-center items-center rounded-full bg-primary py-4 text-white">
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Pay
               </button>
             </div>

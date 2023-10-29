@@ -86,8 +86,9 @@ const RequestModal = ({
     setLoading(true)
 
     let request: any = {
-      receiver: connectedWallet === "evm" ? address : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
-      payer: searchParams.get("address"),
+      // receiver: connectedWallet === "evm" ? address : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
+      receiver: searchParams.get("address"),
+      // payer: searchParams.get("address"),
       actions: [
         {
           type: "PAYMENT",

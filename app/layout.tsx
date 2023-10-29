@@ -9,6 +9,7 @@ import { Inter, Manrope } from "next/font/google"
 
 import Footer from "@/components/footer"
 import Providers from "@/components/providers/providers"
+import { Toaster } from "react-hot-toast"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" })
@@ -33,6 +34,7 @@ export default function RootLayout({
         )}
       >
         <Providers>
+        <Toaster />
           {children}
           <Footer />
         </Providers>

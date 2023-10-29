@@ -2,10 +2,12 @@ import React from "react"
 
 import AddressInput from "@/components/address-input"
 import PendingRequests from "@/components/pending-requests"
+import { Toaster } from "react-hot-toast"
 
 const RequestsPage = async () => {
   return (
     <div>
+      <Toaster />
       <div className="relative z-20 mt-20 w-full px-6 text-center lg:px-0">
         <h1 className="text-center font-manrope text-5xl font-bold md:text-6xl xl:text-7xl 2xl:text-8xl">
           Payment Requests
@@ -15,7 +17,9 @@ const RequestsPage = async () => {
           <span className="text-[#FF7D1F]">request button</span> in wallets
           integrated with Fetcch.{" "}
         </p>
-        <AddressInput />
+        <div className="w-full h-full flex justify-center items-center">
+          <AddressInput />
+        </div>
         <h3 className="mt-12 font-manrope text-2xl font-semibold">
           Your Pending Requests
         </h3>

@@ -92,105 +92,115 @@ const SendPayment = ({
   const { chain: chainD } = useNetwork()
 
   const pay = async () => {
-    setLoading(true)
-    const actions = {
-      actions: [
-        {
-          type: "PAYMENT",
-          data: {
-            receiver: receiver,
-            token,
-            chain: chain,
-            amount: {
-              amount,
-              currency: "CRYPTO"
-            },
-            payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
-            fromChain: selectedChainData[0].id,
-            fromToken: (selectedTokenData![0] as Token).address
+    const toastId = toast.loading("Executing payment...")
+    try {
+      setLoading(true)
+      const actions = {
+        actions: [
+          {
+            type: "PAYMENT",
+            data: {
+              receiver: receiver,
+              token,
+              chain: chain,
+              amount: {
+                amount,
+                currency: "CRYPTO"
+              },
+              payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
+              fromChain: selectedChainData[0].id,
+              fromToken: (selectedTokenData![0] as Token).address
+            }
           }
-        }
-      ]
-    }
-    
-    const req = await fetch("/api/buildTransaction", {
-      method: "POST",
-      body: JSON.stringify(actions)
-    })
-
-    const res = await req.json()
-
-    console.log(res)
-    const transactions = res.data[0]
-
-    console.log(res, transactions)
-
-    for(let i = 0; i < transactions.length; i++) {
-      const tx = transactions[i]
-
-      console.log(tx, "transaction")
-
-      let hash = ''
-      if(connectedWallet === "evm") {
-        if(chainD?.id !== selectedChainData[0].chainId) await switchNetworkAsync!(selectedChainData[0].chainId)
-
-        console.log({
-          ...tx.tx,
-          gasPrice: undefined
-        })
-        const transaction = await sendTransactionAsync({
-          ...tx.tx,
-          gasPrice: undefined
-        })
-
-        console.log(transaction)
-
-        hash = transaction.hash
-      } else if (connectedWallet === "solana") {
-        const txData = VersionedTransaction.deserialize(base58.decode(tx.tx))
-        const connection = new Connection("https://solana-mainnet.g.alchemy.com/v2/LZLe8tHrIZ06MnZlxn-L4Fo5aj7iIdgI")
-
-        const transaction = await sendTransaction!(txData, connection)
-
-        console.log(transaction)
-
-        hash = transaction
-      } else if (connectedWallet === "aptos") {
-        const txData = aptos.TxnBuilderTypes.RawTransaction.deserialize(
-          new aptos.BCS.Deserializer(base58.decode(tx.tx))
-        )
-
-        const transaction = await signAndSubmitBCSTransaction(txData)
-
-        console.log(transaction)
-
-        hash = transaction
+        ]
       }
+      
+      const req = await fetch("/api/buildTransaction", {
+        method: "POST",
+        body: JSON.stringify(actions)
+      })
 
-      if(transactions.length === 1 || (tx.type && (tx.type === "PAYMENT_TOKEN" || tx.type === "OTHER" || tx.type === "PAYMENT_NATIVE"))) {
-        await fetch("/api/updatePaymentRequest", {
-          method: "POST",
-          body: JSON.stringify({
-            id: Number(id),
-            executed: true,
-            payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
-            actions: [{
-              type: actions.actions[0].type,
-              data: actions.actions[0].data,
-              executionData: {
-                hash,
-                chain: chain,
-                timestamp: new Date().getTime() / 1000
-              }
-            }]
+      const res = await req.json()
+
+      console.log(res)
+      const transactions = res.data[0]
+
+      console.log(res, transactions)
+
+      for(let i = 0; i < transactions.length; i++) {
+        const tx = transactions[i]
+
+        console.log(tx, "transaction")
+
+        let hash = ''
+        if(connectedWallet === "evm") {
+          if(chainD?.id !== selectedChainData[0].chainId) await switchNetworkAsync!(selectedChainData[0].chainId)
+
+          console.log({
+            ...tx.tx,
+            gasPrice: undefined
           })
-        })
-  
-        toast.success("Payment successfully done!")
-      }
-    }
+          const transaction = await sendTransactionAsync({
+            ...tx.tx,
+            gasPrice: undefined
+          })
 
-    setLoading(false)
+          console.log(transaction)
+
+          hash = transaction.hash
+        } else if (connectedWallet === "solana") {
+          const txData = VersionedTransaction.deserialize(base58.decode(tx.tx))
+          const connection = new Connection("https://solana-mainnet.g.alchemy.com/v2/LZLe8tHrIZ06MnZlxn-L4Fo5aj7iIdgI")
+
+          const transaction = await sendTransaction!(txData, connection)
+
+          console.log(transaction)
+
+          hash = transaction
+        } else if (connectedWallet === "aptos") {
+          const txData = aptos.TxnBuilderTypes.RawTransaction.deserialize(
+            new aptos.BCS.Deserializer(base58.decode(tx.tx))
+          )
+
+          const transaction = await signAndSubmitBCSTransaction(txData)
+
+          console.log(transaction)
+
+          hash = transaction
+        }
+
+        if(transactions.length === 1 || (tx.type && (tx.type === "PAYMENT_TOKEN" || tx.type === "OTHER" || tx.type === "PAYMENT_NATIVE"))) {
+          await fetch("/api/updatePaymentRequest", {
+            method: "POST",
+            body: JSON.stringify({
+              id: Number(id),
+              executed: true,
+              payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
+              actions: [{
+                type: actions.actions[0].type,
+                data: actions.actions[0].data,
+                executionData: {
+                  hash,
+                  chain: chain,
+                  timestamp: new Date().getTime() / 1000
+                }
+              }]
+            })
+          })
+    
+          toast.success("Payment successfully done!", {
+            id: toastId
+          })
+        }
+      }
+
+      setLoading(false)
+    } catch (e) {
+      setLoading(false)
+      toast.error("Error in executing payment, try again", {
+        id: toastId
+      })
+    }
   }
 
   return (
