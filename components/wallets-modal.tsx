@@ -72,7 +72,22 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
     } else {
       setConnectedWallet(null)
     }
-  }, [isAnyWalletConncted])
+  }, [isAnyWalletConncted, isRainbowConnected, isSolanaConnected, isAptosConnected])
+
+  useEffect(() => {
+    if (address) {
+      setConnectedWallet("evm")
+      setConnectedWalletAddress(address as string)
+    } else if (publicKey) {
+      setConnectedWallet("solana")
+      setConnectedWalletAddress(publicKey?.toBase58() as string)
+    } else if (account) {
+      setConnectedWallet("aptos")
+      setConnectedWalletAddress(account?.address as string)
+    } else {
+      setConnectedWallet(null)
+    }
+  }, [address, publicKey, account])
 
   if (!mounted)
     return (
@@ -83,67 +98,71 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
     )
 
   const handleGetStartedClick = async () => {
-    setLoading(true)
-
-    console.log("Owner address: ", connectedWalletAddress)
-
-    const authData = await fetch("/api/getAuthMessage", {
-      method: "POST",
-      body: JSON.stringify({
-        ownerAddress: connectedWalletAddress,
-      }),
-    })
-
-    const signedData = await authData
-      .json()
-      .then(
-        async ({
-          data: { message, timestamp },
-        }: {
-          data: { message: string; timestamp: number }
-        }) => {
-          if (connectedWallet === "evm") {
-            let signedMsg = await signMessageAsync({ message })
-            return { signedMsg, timestamp }
-          } else if (connectedWallet === "solana") {
-            const solanaSignedArray = await signMessageSolana!(
-              Buffer.from(message)
-            )
-            let signedMsg = encode(Uint8Array.from(solanaSignedArray))
-            return { signedMsg, timestamp }
-          } else if (connectedWallet === "aptos") {
-            const aptosSignedMsg = await signAptosMessage({
-              message: message,
-              nonce: timestamp.toString(),
-            })
-
-            console.log("APTOS SINGED MSG: ", aptosSignedMsg)
-            let signedMsg = aptosSignedMsg?.signature as string
-
-            console.log("APTOS: ", signedMsg)
-            return { signedMsg, timestamp }
+    try {
+      setLoading(true)
+  
+      console.log("Owner address: ", connectedWalletAddress)
+  
+      const authData = await fetch("/api/getAuthMessage", {
+        method: "POST",
+        body: JSON.stringify({
+          ownerAddress: connectedWalletAddress,
+        }),
+      })
+  
+      const signedData = await authData
+        .json()
+        .then(
+          async ({
+            data: { message, timestamp },
+          }: {
+            data: { message: string; timestamp: number }
+          }) => {
+            if (connectedWallet === "evm") {
+              let signedMsg = await signMessageAsync({ message })
+              return { signedMsg, timestamp }
+            } else if (connectedWallet === "solana") {
+              const solanaSignedArray = await signMessageSolana!(
+                Buffer.from(message)
+              )
+              let signedMsg = encode(Uint8Array.from(solanaSignedArray))
+              return { signedMsg, timestamp }
+            } else if (connectedWallet === "aptos") {
+              const aptosSignedMsg = await signAptosMessage({
+                message: message,
+                nonce: timestamp.toString(),
+              })
+  
+              console.log("APTOS SINGED MSG: ", aptosSignedMsg)
+              let signedMsg = aptosSignedMsg?.signature as string
+  
+              console.log("APTOS: ", signedMsg)
+              return { signedMsg, timestamp }
+            }
           }
-        }
-      )
-
-    const getAuthToken = await fetch("/api/getAuthToken", {
-      method: "POST",
-      body: JSON.stringify({
-        ownerAddress: connectedWalletAddress,
-        signature: signedData?.signedMsg,
-        timestamp: signedData?.timestamp,
-      }),
-    })
-
-    const res = await getAuthToken.json()
-
-    console.log("TOKEN: ", res)
-
-    setToken(res.data.accessToken)
-
-    setLoading(false)
-
-    push("/requests")
+        )
+  
+      const getAuthToken = await fetch("/api/getAuthToken", {
+        method: "POST",
+        body: JSON.stringify({
+          ownerAddress: connectedWalletAddress,
+          signature: signedData?.signedMsg,
+          timestamp: signedData?.timestamp,
+        }),
+      })
+  
+      const res = await getAuthToken.json()
+  
+      console.log("TOKEN: ", res)
+  
+      setToken(res.data.accessToken)
+  
+      setLoading(false)
+  
+      push("/requests")
+    } catch (e) {
+      setLoading(false)
+    }
   }
 
   return (
@@ -153,7 +172,7 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
           onClick={() => handleGetStartedClick()}
           className={cn(
             buttonVariants(),
-            "mt-12 w-fit text-lg",
+            "mt-12 w-fit text-lg flex justify-center items-center",
             triggerClasses
           )}
         >
@@ -179,7 +198,7 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
                 <span className="sr-only">Close</span>
               </DialogClose>
             </DialogHeader>
-            <div className="flex flex-col items-center justify-between sm:flex-row">
+            <div className="flex flex-col items-center justify-between space-y-3 sm:flex-row">
               <RainbowConnectButton
                 setIsWalletsModalOpen={setIsWalletsModalOpen}
               />

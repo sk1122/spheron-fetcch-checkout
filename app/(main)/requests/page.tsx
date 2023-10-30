@@ -21,7 +21,7 @@ const RequestsPage = async () => {
           <AddressInput />
         </div>
         <h3 className="mt-12 font-manrope text-2xl font-semibold">
-          Your Pending Requests
+          Your Pending Links
         </h3>
         <PendingRequests />
       </div>

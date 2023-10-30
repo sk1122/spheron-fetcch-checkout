@@ -297,3 +297,14 @@ export const aptosChainData: Chain[] = [
     ],
   },
 ]
+
+export const explorerLinks: any = {
+  1: "https://etherscan.io/tx/",
+  2: "https://polygonscan.com/tx/",
+  3: "https://bscscan.com/tx/",
+  4: "https://avascan.info/blockchain/c/tx/",
+  5: "https://optimistic.etherscan.io/tx/",
+  6: "https://arbiscan.io/tx/",
+  7: "https://solana.fm/tx/",
+  8: "https://explorer.aptoslabs.com/txn/"
+}

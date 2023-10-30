@@ -206,7 +206,7 @@ const SendPayment = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="rounded-full border-none bg-primary px-4 py-2 text-sm text-white shadow-[inset_0px_6px_4px_0px_rgba(255,255,255,0.2)] outline-none focus-visible:outline-none md:px-7 md:py-4 md:text-base">
+        <button className="rounded-full border-none bg-primary px-4 py-2 text-white shadow-[inset_0px_6px_4px_0px_rgba(255,255,255,0.2)] outline-none focus-visible:outline-none md:px-7 md:py-4 text-base">
           Pay
         </button>
       </DialogTrigger>
