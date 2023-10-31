@@ -95,15 +95,15 @@ const PendingRequests = () => {
   
   return (
     <>
-      {true ? (
+      {requests.length > 0 ? (
           <div className="h-screen w-full mt-7">
             <div className="flex h-full flex-col space-y-3">
               {/* single request */}
-              {/* {requests.map((request: any) => ( */}
+              {requests.map((request: any) => (
                 <>
-                  <Request request={requests[0]} />
+                  <Request request={request} />
                 </>
-              {/* ))} */}
+               ))}
             </div>
           </div>
       ) : (
