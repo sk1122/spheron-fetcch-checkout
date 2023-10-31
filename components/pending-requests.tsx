@@ -21,7 +21,7 @@ const Request = ({
   const receiver = request.recevier.ownerId ?? request.recevier.owner
 
   return (
-    <div className={"md:mx-auto space-y-3 py-3 md:space-y-0 flex flex-col md:flex-row h-full w-full items-center justify-center md:justify-between rounded-full md:rounded-full border border-primary px-3 shadow-[0px_0px_35px_-9px_rgba(0,0,0,0.25)] md:h-[84px] md:w-[694px] " + (request.executed ? "bg-[#fff3e1]" : "bg-[#E1EBFF]")}>
+    <div className={"md:mx-auto space-y-3 py-3 md:space-y-0 flex flex-col md:flex-row w-full items-center justify-center md:justify-between rounded-full md:rounded-full border border-primary px-3 shadow-[0px_0px_35px_-9px_rgba(0,0,0,0.25)] md:h-[84px] md:w-[694px] " + (request.executed ? "bg-[#fff3e1]" : "bg-[#E1EBFF]")}>
         <div className="flex items-center space-x-3">
           <div className="relative">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#B0C8FE] md:h-[60px] md:w-[60px]">
@@ -99,11 +99,11 @@ const PendingRequests = () => {
           <div className="h-screen w-full mt-7">
             <div className="flex h-full flex-col space-y-3">
               {/* single request */}
-              {requests.map((request: any) => (
+              {/* {requests.map((request: any) => ( */}
                 <>
-                  <Request request={request} />
+                  <Request request={requests[0]} />
                 </>
-              ))}
+              {/* ))} */}
             </div>
           </div>
       ) : (
