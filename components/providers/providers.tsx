@@ -15,6 +15,8 @@ type WalletContextTypes = {
   setAddressChain: React.Dispatch<React.SetStateAction<WALLET>>
   token: string
   setToken: React.Dispatch<React.SetStateAction<string>>
+  requests: any[]
+  setRequests: React.Dispatch<React.SetStateAction<any[]>>
 }
 
 const WalletContext = createContext<WalletContextTypes | null>(null)
@@ -31,6 +33,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   const [connectedWallet, setConnectedWallet] = useState<WALLET | null>(null)
   const [addressChain, setAddressChain] = useState<WALLET | null>(null)
   const [token, setToken] = useState<string>("")
+  const [requests, setRequests] = useState<any[]>([])
 
   useEffect(() => {
     if(window && window.localStorage) {
@@ -54,7 +57,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         addressChain,
         setAddressChain,
         token,
-        setToken
+        setToken,
+        requests,
+        setRequests
       }}
     >
       <RainbowProvider>

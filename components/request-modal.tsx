@@ -37,7 +37,7 @@ const RequestModal = ({
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
-  const { addressChain, connectedWallet } = useConnectedWallet()
+  const { addressChain, connectedWallet, setRequests, token } = useConnectedWallet()
 
   useEffect(() => {
     console.log("addressChain: ", addressChain)
@@ -81,6 +81,34 @@ const RequestModal = ({
   const { signMessageAsync } = useSignMessage()
   const { signMessage, publicKey } = useWallet()
   const { signMessage: signAptosMessage, account } = useAptosWallet()
+
+  const fetchPendingRequests = () => {
+    let addr = ""
+
+    console.log(address, publicKey, account)
+
+    if (connectedWallet == "evm") {
+      addr = address as string
+    } else if (connectedWallet == "solana") {
+      addr = publicKey?.toBase58() as string
+    } else if (connectedWallet == "aptos") {
+      addr = account?.address.toString() as string
+    }
+    console.log("TOKEN: ", token)
+    if(addr && token) {
+      fetch(`/api/getPendingRequests?address=${addr}&accessToken=${token}`).then(res => res.json()).then(data => {
+        console.log("REQUESTS: ", data)
+  
+        setRequests(data.data)
+        return data
+      }).catch((e) => {
+        toast.error("Token expired, login again")
+        router.push(
+          "/"
+        )
+      })
+    }
+  }
 
   const request = async () => {
     setLoading(true)
@@ -167,6 +195,7 @@ const RequestModal = ({
 
     if(req2.status >= 200 && req2.status <= 299) {
       toast.success(`Request successfully created with id ${res2.data.id}!`)
+      fetchPendingRequests()
       navigator.clipboard.writeText(`https://request.fetcch.xyz/request/${res2.data.id}`)
       setOpen(false)
     }

@@ -5,8 +5,8 @@ const getToken = async (address: string, id: number, rpc: string) => {
         return {
             decimals: 18,
             logo: "",
-            name: id === 1 || id === 5 || id === 6 ? "Ethereum" : id === 2 ? "Polygon" : id === 3 ? "Avalanche" : "BSC",
-            symbol: id === 1 || id === 5 || id === 6 ? "ETH" : id === 2 ? "POL" : id === 3 ? "AVAX" : "BSC"
+            name: id === 1 || id === 5 || id === 6 ? "Ethereum" : id === 2 ? "Polygon" : id === 4 ? "Avalanche" : "BSC",
+            symbol: id === 1 || id === 5 || id === 6 ? "ETH" : id === 2 ? "POL" : id === 4 ? "AVAX" : "BSC"
         }
     } else if (address == "1111111111111111111111111111111111111111111") {
         return {
@@ -79,7 +79,6 @@ export async function GET(req: Request) {
         const req = res.data[i]
         for(let j = 0; j < req.actions.length; j++) {
             const action = req.actions[j].data
-            if(action.chain === 8 || action.chain === 4) continue
             const chain = [...evmChainData, ...solanaChainData].find(chain => chain.id === action.chain)!
 
             if(cachedTokens[action.token]) {

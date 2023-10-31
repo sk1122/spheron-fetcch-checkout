@@ -45,6 +45,8 @@ const AccordionContent = React.forwardRef(
 
 const AccordionItem = ({
   receiver,
+  message,
+  label,
   amount,
   token,
   chain,
@@ -52,6 +54,8 @@ const AccordionItem = ({
   id
 }: {
   receiver: string
+  message: string
+  label: string
   amount: string
   token: string
   chain: number,
@@ -76,26 +80,10 @@ const AccordionItem = ({
       )
 
     useEffect(() => {
+      console.log(action, "ACTION")
         if(token) {
-                // evm
-                const chainData = chain <= 6 ? evmChainData.find(data => data.id === chain) : chain === 7 ? solanaChainData[0] : aptosChainData[0]
-
-                const tokenData = chainData!.tokens.find(tokenData => tokenData.address.toLowerCase() === token.toLowerCase())
-                console.log(tokenData, "dsa")
-                if(tokenData) {
-                    setTokenData(tokenData)
-                } else {
-                    setTokenData({
-                        address: token,
-                        chainId: chainData!.chainId,
-                        logoURI: "",
-                        name: token,
-                        symbol: token,
-                        decimals: 18
-                    })
-                }
-
-                setChainData(chainData)
+          setTokenData(action[0].data.tokenData)      
+          setChainData(chainData)
         }
     }, [token])
 
@@ -110,7 +98,7 @@ const AccordionItem = ({
         className="mx-auto flex h-full w-full flex-col items-start justify-start space-y-5 rounded-xl border border-primary bg-[#E1EBFF] p-5 shadow-[0px_0px_35px_-9px_rgba(0,0,0,0.25)] md:w-[694px]"
         value="item-1"
       >
-        <AccordionTrigger><p className="w-48 md:w-full truncate">{receiver}</p></AccordionTrigger>
+        <AccordionTrigger><p className="w-48 md:w-full truncate">{label} - {tokenData?.symbol as string}</p></AccordionTrigger>
         <AccordionContent>
           <div className="flex h-full w-full flex-col items-start justify-start space-y-5">
             <div className="w-full h-full flex items-center space-x-3">
@@ -135,11 +123,11 @@ const AccordionItem = ({
                 <div className="absolute bottom-0 right-0 h-6 w-6 rounded-full bg-red-400" />
               </div>
               <div className="w-full flex justify-between items-center">
-                <div className="flex flex-col items-start">
+                <div className="flex flex-col items-start w-fit">
                     <h4 className="font-manrope text-sm font-bold md:text-base">
-                    Chain & Amount
+                      Chain & Amount
                     </h4>
-                    <span className="w-full flex space-x-1 text-xs md:text-sm"><p>{formatUnits(BigInt(amount), Number(tokenData?.decimals))}</p> <span className="w-20 truncate"> {tokenData?.name as string}</span></span>
+                    <span className="w-full flex space-x-1 text-xs md:text-sm"><p>{formatUnits(BigInt(amount), Number(tokenData?.decimals))}</p> <span className="w-20 flex justify-start items-start truncate"> {tokenData?.symbol as string}</span></span>
                 </div>
                 <button onClick={() => {
                     router.push(
@@ -168,6 +156,7 @@ const Actions = ({
 }) => {
     const [actions, setActions] = useState<{ receiver: string; amount: string; token: string; chain: number }[]>([])
     const [originalActions, setOriginalActions] = useState<any[]>()
+    const [request, setRequest] = useState<any>()
 
     useEffect(() => {
         fetch(`/api/getPaymentRequest?id=${id}`).then(res => res.json()).then(res => {
@@ -179,6 +168,8 @@ const Actions = ({
                 token: action.data.token,
                 chain: Number(action.data.chain)
             })))
+
+            setRequest(res.data)
 
             console.log(res.data.actions.filter((action: any) => action.type === "PAYMENT").map((action: any) => ({
                 receiver: action.data.receiver,
@@ -200,7 +191,7 @@ const Actions = ({
           <ScrollArea.Viewport className="h-full w-full rounded">
             <div className="flex flex-col space-y-3">
               {actions.map((action) => (
-                <AccordionItem {...action} action={originalActions} id={id} />
+                <AccordionItem {...action} message={request.message} label={request.label} action={originalActions} id={id} />
               ))}
             </div>
           </ScrollArea.Viewport>

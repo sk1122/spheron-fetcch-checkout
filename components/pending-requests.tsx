@@ -49,8 +49,7 @@ const Request = ({
 }
 
 const PendingRequests = () => {
-  const { connectedWallet, token } = useConnectedWallet()
-  const [requests, setRequests] = useState([])
+  const { connectedWallet, token, requests, setRequests } = useConnectedWallet()
   
   const router = useRouter()
 
@@ -62,7 +61,7 @@ const PendingRequests = () => {
     account,
   } = useAptosWallet()
   
-  useEffect(() => {
+  const fetchPendingRequests = () => {
     let addr = ""
 
     console.log(address, publicKey, account)
@@ -88,6 +87,10 @@ const PendingRequests = () => {
         )
       })
     }
+  }
+
+  useEffect(() => {
+    fetchPendingRequests()
   }, [connectedWallet, address, publicKey, account])
   
   return (
