@@ -82,7 +82,10 @@ const AccordionItem = ({
     useEffect(() => {
       console.log(action, "ACTION")
         if(token) {
-          setTokenData(action[0].data.tokenData)      
+          const chainData = [...evmChainData, ...solanaChainData, ...aptosChainData].find(chain => chain.id === action[0].data.chain)
+
+          setTokenData(action[0].data.tokenData)
+          console.log(action[0].data.tokenData)
           setChainData(chainData)
         }
     }, [token])
@@ -131,7 +134,7 @@ const AccordionItem = ({
                 </div>
                 <button onClick={() => {
                     router.push(
-                        pathname + "?" + createQueryString("chain", chainData!.name) + "&" + createQueryString("token", tokenData!.address)
+                        pathname + "?" + createQueryString("chain", chainData!.name) + "&" + createQueryString("token", action[0].data.token)
                     )
                     setOpenRequestModal(true)
                 }} className="rounded-full border-none bg-primary px-4 py-2 text-sm text-white shadow-[inset_0px_6px_4px_0px_rgba(255,255,255,0.2)] outline-none focus-visible:outline-none md:px-7 md:py-4 md:text-base">
