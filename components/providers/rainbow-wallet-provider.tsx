@@ -28,7 +28,7 @@ export default function RainbowProvider({
 
   const { connectors } = getDefaultWallets({
     appName: "Fetcch Request",
-    projectId: "YOUR_PROJECT_ID",
+    projectId: "0974b34f25ed7cffd33b4d97ee73fe6d",
     chains,
   })
 
