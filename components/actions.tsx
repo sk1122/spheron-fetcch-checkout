@@ -12,6 +12,8 @@ import SendPayment from "@/components/send-payment"
 import { Chain, Token, aptosChainData, evmChainData, solanaChainData } from "@/lib/data"
 import SendModal from "./send-modal"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useConnectedWallet } from "./providers/providers"
+import ConnectWalletButton from "./connect-wallet-button"
 
 const AccordionTrigger = React.forwardRef(
   ({ children, className, ...props }: any, forwardedRef) => (
@@ -90,6 +92,8 @@ const AccordionItem = ({
         }
     }, [token])
 
+    const { connectedWallet } = useConnectedWallet()
+
   return (
     <Accordion.Root
       className="h-full w-full duration-300"
@@ -132,14 +136,16 @@ const AccordionItem = ({
                     </h4>
                     <span className="w-full flex space-x-1 text-xs md:text-sm"><p>{formatUnits(BigInt(amount), Number(tokenData?.decimals))}</p> <span className="w-20 flex justify-start items-start truncate"> {tokenData?.symbol as string}</span></span>
                 </div>
-                <button onClick={() => {
-                    router.push(
-                        pathname + "?" + createQueryString("chain", chainData!.name) + "&" + createQueryString("token", action[0].data.token)
-                    )
-                    setOpenRequestModal(true)
-                }} className="rounded-full border-none bg-primary px-4 py-2 text-sm text-white shadow-[inset_0px_6px_4px_0px_rgba(255,255,255,0.2)] outline-none focus-visible:outline-none md:px-7 md:py-4 md:text-base">
-                    Pay
-                </button>
+                {connectedWallet ? 
+                  <button onClick={() => {
+                      router.push(
+                          pathname + "?" + createQueryString("chain", chainData!.name) + "&" + createQueryString("token", action[0].data.token)
+                      )
+                      setOpenRequestModal(true)
+                  }} className="rounded-full border-none bg-primary px-4 py-2 text-sm text-white shadow-[inset_0px_6px_4px_0px_rgba(255,255,255,0.2)] outline-none focus-visible:outline-none md:px-7 md:py-4 md:text-base">
+                      Pay
+                  </button>
+                : <ConnectWalletButton />}
               </div>
             </div>
           </div>
