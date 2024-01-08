@@ -238,7 +238,7 @@ export const solanaChainData: Chain[] = [
         chainId: 12465,
         symbol: "USDC",
         logoURI: "/assets/tokens/usdc.webp",
-        decimals: 10
+        decimals: 6
       },
       {
         name: "USDT",
@@ -246,7 +246,7 @@ export const solanaChainData: Chain[] = [
         chainId: 12465,
         symbol: "USDT",
         logoURI: "/assets/tokens/usdt.webp",
-        decimals: 10
+        decimals: 6
       },
       {
         name: "SOL",
