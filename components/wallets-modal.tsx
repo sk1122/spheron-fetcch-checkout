@@ -99,65 +99,65 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
 
   const handleGetStartedClick = async () => {
     try {
-      setLoading(true)
+      // setLoading(true)
   
-      console.log("Owner address: ", connectedWalletAddress)
+      // console.log("Owner address: ", connectedWalletAddress)
   
-      const authData = await fetch("/api/getAuthMessage", {
-        method: "POST",
-        body: JSON.stringify({
-          ownerAddress: connectedWalletAddress,
-        }),
-      })
+      // const authData = await fetch("/api/getAuthMessage", {
+      //   method: "POST",
+      //   body: JSON.stringify({
+      //     ownerAddress: connectedWalletAddress,
+      //   }),
+      // })
   
-      const signedData = await authData
-        .json()
-        .then(
-          async ({
-            data: { message, timestamp },
-          }: {
-            data: { message: string; timestamp: number }
-          }) => {
-            if (connectedWallet === "evm") {
-              let signedMsg = await signMessageAsync({ message })
-              return { signedMsg, timestamp }
-            } else if (connectedWallet === "solana") {
-              const solanaSignedArray = await signMessageSolana!(
-                Buffer.from(message)
-              )
-              let signedMsg = encode(Uint8Array.from(solanaSignedArray))
-              return { signedMsg, timestamp }
-            } else if (connectedWallet === "aptos") {
-              const aptosSignedMsg = await signAptosMessage({
-                message: message,
-                nonce: timestamp.toString(),
-              })
+      // const signedData = await authData
+      //   .json()
+      //   .then(
+      //     async ({
+      //       data: { message, timestamp },
+      //     }: {
+      //       data: { message: string; timestamp: number }
+      //     }) => {
+      //       if (connectedWallet === "evm") {
+      //         let signedMsg = await signMessageAsync({ message })
+      //         return { signedMsg, timestamp }
+      //       } else if (connectedWallet === "solana") {
+      //         const solanaSignedArray = await signMessageSolana!(
+      //           Buffer.from(message)
+      //         )
+      //         let signedMsg = encode(Uint8Array.from(solanaSignedArray))
+      //         return { signedMsg, timestamp }
+      //       } else if (connectedWallet === "aptos") {
+      //         const aptosSignedMsg = await signAptosMessage({
+      //           message: message,
+      //           nonce: timestamp.toString(),
+      //         })
   
-              console.log("APTOS SINGED MSG: ", aptosSignedMsg)
-              let signedMsg = aptosSignedMsg?.signature as string
+      //         console.log("APTOS SINGED MSG: ", aptosSignedMsg)
+      //         let signedMsg = aptosSignedMsg?.signature as string
   
-              console.log("APTOS: ", signedMsg)
-              return { signedMsg, timestamp }
-            }
-          }
-        )
+      //         console.log("APTOS: ", signedMsg)
+      //         return { signedMsg, timestamp }
+      //       }
+      //     }
+      //   )
   
-      const getAuthToken = await fetch("/api/getAuthToken", {
-        method: "POST",
-        body: JSON.stringify({
-          ownerAddress: connectedWalletAddress,
-          signature: signedData?.signedMsg,
-          timestamp: signedData?.timestamp,
-        }),
-      })
+      // const getAuthToken = await fetch("/api/getAuthToken", {
+      //   method: "POST",
+      //   body: JSON.stringify({
+      //     ownerAddress: connectedWalletAddress,
+      //     signature: signedData?.signedMsg,
+      //     timestamp: signedData?.timestamp,
+      //   }),
+      // })
   
-      const res = await getAuthToken.json()
+      // const res = await getAuthToken.json()
   
-      console.log("TOKEN: ", res)
+      // console.log("TOKEN: ", res)
   
-      setToken(res.data.accessToken)
+      // setToken(res.data.accessToken)
   
-      setLoading(false)
+      // setLoading(false)
   
       push("/requests")
     } catch (e) {

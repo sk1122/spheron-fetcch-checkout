@@ -7,6 +7,7 @@ import React, {
   useState,
 } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import useDetailStore from "@/store"
 import { useWallet as useAptosWallet } from "@aptos-labs/wallet-adapter-react"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { Loader2 } from "lucide-react"
@@ -43,6 +44,7 @@ const AddressInput = () => {
   const address = useDeferredValue(walletAddress)
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const { setRequestAddress } = useDetailStore()
 
   const { address: evmAddress } = useAccount()
   const { publicKey } = useWallet()
@@ -58,7 +60,13 @@ const AddressInput = () => {
   const [openRequestModal, setOpenRequestModal] = useState(false)
 
   useEffect(() => {
-    console.log("HERE", connectedWallet, evmAddress, publicKey?.toBase58(), account?.address.toString())
+    console.log(
+      "HERE",
+      connectedWallet,
+      evmAddress,
+      publicKey?.toBase58(),
+      account?.address.toString()
+    )
     if (connectedWallet == "evm") {
       setWalletAddress(evmAddress as string)
     } else if (connectedWallet == "solana") {
@@ -94,12 +102,7 @@ const AddressInput = () => {
               if (verifySolanaAddress(data.data.address.address)) {
                 setAddressChain("solana")
               }
-
-              router.push(
-                pathname +
-                  "?" +
-                  createQueryString("address", data.data.address.address)
-              )
+              setRequestAddress(data?.data?.address?.address)
               setOpenRequestModal(true)
               setLoading(false)
               setError("")
@@ -120,10 +123,8 @@ const AddressInput = () => {
   console.log("😎 ", addressChain)
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-start max-w-[699px] mt-7">
-      <label className="px-4">
-        Request address
-      </label>
+    <div className="mt-7 flex h-full w-full max-w-[699px] flex-col items-start justify-center">
+      <label className="px-4">Request address</label>
       <div className="relative mx-auto flex h-16 w-full max-w-[699px] items-center rounded-full border border-primary p-8 shadow-[inset_0px_1px_4px_1px_rgba(0,0,0,0.25)]">
         <input
           type="text"

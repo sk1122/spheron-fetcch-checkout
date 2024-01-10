@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useState } from "react"
 import Image from "next/image"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import useDetailStore from "@/store"
 import { useWallet as useAptosWallet } from "@aptos-labs/wallet-adapter-react"
 import { Close as DialogClose } from "@radix-ui/react-dialog"
 import { useFilter } from "@react-aria/i18n"
@@ -10,6 +11,7 @@ import { useWallet } from "@solana/wallet-adapter-react"
 import base58 from "bs58"
 import { Loader2, User, X } from "lucide-react"
 import toast from "react-hot-toast"
+import { parseUnits } from "viem"
 import { useAccount, useNetwork, useSignMessage, useSwitchNetwork } from "wagmi"
 
 import {
@@ -23,7 +25,6 @@ import TokensList from "@/components/token-list"
 
 import { useConnectedWallet } from "./providers/providers"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog"
-import { parseUnits } from "viem"
 
 const RequestModal = ({
   open,
@@ -33,11 +34,17 @@ const RequestModal = ({
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
   const [chainSelect, setChainSelect] = useState(false)
-  const [chainData, setChainData] = useState<Chain[]>([...evmChainData, ...solanaChainData, ...aptosChainData])
+  const [chainData, setChainData] = useState<Chain[]>([
+    ...evmChainData,
+    ...solanaChainData,
+    ...aptosChainData,
+  ])
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
-  const { addressChain, connectedWallet, setRequests, token } = useConnectedWallet()
+  const { addressChain, connectedWallet, setRequests, token } =
+    useConnectedWallet()
+  const { requestAddress, setAmount } = useDetailStore()
 
   useEffect(() => {
     console.log("addressChain: ", addressChain)
@@ -60,7 +67,9 @@ const RequestModal = ({
   })
 
   const selectedChainData = selectedChain
-    ? chainData.filter((chain) => contains(chain.name.toLowerCase(), selectedChain.toLowerCase()))
+    ? chainData.filter((chain) =>
+        contains(chain.name.toLowerCase(), selectedChain.toLowerCase())
+      )
     : chainData
 
   const selectedTokenData =
@@ -95,18 +104,19 @@ const RequestModal = ({
       addr = account?.address.toString() as string
     }
     console.log("TOKEN: ", token)
-    if(addr && token) {
-      fetch(`/api/getPendingRequests?address=${addr}&accessToken=${token}`).then(res => res.json()).then(data => {
-        console.log("REQUESTS: ", data)
-  
-        setRequests(data.data)
-        return data
-      }).catch((e) => {
-        toast.error("Token expired, login again")
-        router.push(
-          "/"
-        )
-      })
+    if (addr && token) {
+      fetch(`/api/getPendingRequests?address=${addr}&accessToken=${token}`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("REQUESTS: ", data)
+
+          setRequests(data.data)
+          return data
+        })
+        .catch((e) => {
+          toast.error("Token expired, login again")
+          router.push("/")
+        })
     }
   }
 
@@ -123,9 +133,17 @@ const RequestModal = ({
           data: {
             token: selectedTokenData[0].address,
             chain: selectedChainData[0].id,
-            receiver: connectedWallet === "evm" ? address : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
+            receiver:
+              connectedWallet === "evm"
+                ? address
+                : connectedWallet === "solana"
+                  ? publicKey?.toBase58()
+                  : account?.address.toString(),
             amount: {
-              amount: parseUnits(searchParams.get("amount") as string, selectedTokenData[0].decimals).toString(),
+              amount: parseUnits(
+                searchParams.get("amount") as string,
+                selectedTokenData[0].decimals
+              ).toString(),
               currency: "CRYPTO",
             },
           },
@@ -139,8 +157,8 @@ const RequestModal = ({
       method: "POST",
       body: JSON.stringify(request),
       headers: {
-        "content-type": "application/json"
-      }
+        "content-type": "application/json",
+      },
     })
 
     const res = await req.json()
@@ -187,16 +205,18 @@ const RequestModal = ({
       method: "POST",
       body: JSON.stringify(request),
       headers: {
-        "content-type": "application/json"
-      }
+        "content-type": "application/json",
+      },
     })
 
     const res2 = await req2.json()
 
-    if(req2.status >= 200 && req2.status <= 299) {
+    if (req2.status >= 200 && req2.status <= 299) {
       toast.success(`Request successfully created with id ${res2.data.id}!`)
       fetchPendingRequests()
-      navigator.clipboard.writeText(`https://request.fetcch.xyz/request/${res2.data.id}`)
+      navigator.clipboard.writeText(
+        `https://request.fetcch.xyz/request/${res2.data.id}`
+      )
       setOpen(false)
     }
 
@@ -247,7 +267,9 @@ const RequestModal = ({
                   <input
                     className="pointer-events-none overflow-clip truncate border-none bg-transparent text-primary outline-none placeholder:text-[#6893F0] focus:outline-none group-hover:placeholder:text-primary"
                     placeholder={
-                      searchParams.get("address") ?? "steve.patrick@metamask"
+                      requestAddress.length > 0
+                        ? requestAddress
+                        : "steve.patrick@metamask"
                     }
                     readOnly
                   />
@@ -331,18 +353,17 @@ const RequestModal = ({
                   <div className="w-full">
                     <input
                       className="overflow-clip truncate border-none bg-transparent text-lg text-primary outline-none placeholder:text-[#6893F0] focus:outline-none group-hover:placeholder:text-primary"
-                      onChange={(e) => 
-                        router.push(
-                          pathname + "?" + createQueryString("amount", e.target.value)
-                        )
-                      }
+                      onChange={(e) => setAmount(e.target.value)}
                       type="number"
                       placeholder="0"
                     />
                   </div>
                 </div>
               </div>
-              <button onClick={() => request()} className="w-full flex justify-center items-center rounded-full bg-primary py-4 text-white">
+              <button
+                onClick={() => request()}
+                className="flex w-full items-center justify-center rounded-full bg-primary py-4 text-white"
+              >
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Request
               </button>
