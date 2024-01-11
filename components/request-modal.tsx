@@ -104,8 +104,8 @@ const RequestModal = ({
       addr = account?.address.toString() as string
     }
     console.log("TOKEN: ", token)
-    if (addr && token) {
-      fetch(`/api/getPendingRequests?address=${addr}&accessToken=${token}`)
+    if (addr) {
+      fetch(`/api/getPendingRequests?address=${addr}`)
         .then((res) => res.json())
         .then((data) => {
           console.log("REQUESTS: ", data)
