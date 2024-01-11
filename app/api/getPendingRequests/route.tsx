@@ -65,7 +65,7 @@ export async function GET(req: Request) {
       method: "GET",
       headers: {
         "secret-key": process.env.FETCCH_API_KEY,
-        "Authorization": `Bearer ${accessToken}`,
+        // "Authorization": `Bearer ${accessToken}`,
         "Content-Type": "application/json",
         Accept: "application/json",
       },
