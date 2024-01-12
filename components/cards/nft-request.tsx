@@ -24,7 +24,7 @@ export default function NFTRequest({
   action: any
   id: string
 }) {
-  const [tokenData, setTokenData] = useState<Token>()
+  const [tokenData, setTokenData] = useState<any>()
   const [chainData, setChainData] = useState<Chain>()
   const [openRequestModal, setOpenRequestModal] = useState(false)
   const { setChain, setToken } = useDetailStore()
