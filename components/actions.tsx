@@ -2,18 +2,54 @@
 
 // import SendPayment from "./send-payment";
 import React, { useCallback, useEffect, useState } from "react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import * as Accordion from "@radix-ui/react-accordion"
 import * as ScrollArea from "@radix-ui/react-scroll-area"
 import classNames from "classnames"
 import { Bell, ChevronDownIcon, User } from "lucide-react"
 import { formatUnits } from "viem"
 
-import SendPayment from "@/components/send-payment"
-import { Chain, Token, aptosChainData, evmChainData, solanaChainData } from "@/lib/data"
-import SendModal from "./send-modal"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useConnectedWallet } from "./providers/providers"
+import {
+  aptosChainData,
+  Chain,
+  evmChainData,
+  solanaChainData,
+  Token,
+} from "@/lib/data"
+
+import NFTRequest from "./cards/nft-request"
+import OtherRequest from "./cards/other-request"
+import PaymentRequest from "./cards/payment-request"
 import ConnectWalletButton from "./connect-wallet-button"
+import { useConnectedWallet } from "./providers/providers"
+import SendModal from "./send-modal"
+
+function PaymentRequests() {
+  return (
+    <div className="container mx-auto rounded-xl bg-[#3562FF] p-2">
+      <p className="mx-2 font-semibold text-white">Payment Requests</p>
+      <PaymentRequest />
+    </div>
+  )
+}
+
+function NFTRequests() {
+  return (
+    <div className="container mx-auto rounded-xl bg-[#F98430] p-2">
+      <p className="mx-2 font-semibold text-white">NFT</p>
+      <NFTRequest />
+    </div>
+  )
+}
+
+function OtherRequests() {
+  return (
+    <div className="container mx-auto rounded-xl bg-[#3F2ABE] p-2">
+      <p className="mx-2 font-semibold text-white">Other</p>
+      <OtherRequest />
+    </div>
+  )
+}
 
 const AccordionTrigger = React.forwardRef(
   ({ children, className, ...props }: any, forwardedRef) => (
@@ -26,7 +62,7 @@ const AccordionTrigger = React.forwardRef(
         {...props}
         ref={forwardedRef}
       >
-        <p className="text-[32px] font-bold w-full truncate">{children}</p>
+        <p className="w-full truncate text-[32px] font-bold">{children}</p>
         <ChevronDownIcon className="AccordionChevron" aria-hidden />
       </Accordion.Trigger>
     </Accordion.Header>
@@ -36,11 +72,16 @@ const AccordionTrigger = React.forwardRef(
 const AccordionContent = React.forwardRef(
   ({ children, className, ...props }: any, forwardedRef) => (
     <Accordion.Content
-      className={classNames("flex w-full flex-row items-center justify-between", className)}
+      className={classNames(
+        "flex w-full flex-row items-center justify-between",
+        className
+      )}
       {...props}
       ref={forwardedRef}
     >
-      <div className="flex w-full flex-row items-center justify-between">{children}</div>
+      <div className="flex w-full flex-row items-center justify-between">
+        {children}
+      </div>
     </Accordion.Content>
   )
 )
@@ -53,46 +94,50 @@ const AccordionItem = ({
   token,
   chain,
   action,
-  id
+  id,
 }: {
   receiver: string
   message: string
   label: string
   amount: string
   token: string
-  chain: number,
-  action: any,
+  chain: number
+  action: any
   id: string
 }) => {
-    const [tokenData, setTokenData] = useState<Token>()
-    const [chainData, setChainData] = useState<Chain>()
-    const [openRequestModal, setOpenRequestModal] = useState(false)
-    const router = useRouter()
-    const pathname = usePathname()
-    const searchParams = useSearchParams()!
+  const [tokenData, setTokenData] = useState<Token>()
+  const [chainData, setChainData] = useState<Chain>()
+  const [openRequestModal, setOpenRequestModal] = useState(false)
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()!
 
-    const createQueryString = useCallback(
-        (name: string, value: string) => {
-          const params = new URLSearchParams(searchParams)
-          params.set(name, value)
-    
-          return params.toString()
-        },
-        [searchParams]
-      )
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams)
+      params.set(name, value)
 
-    useEffect(() => {
-      console.log(action, "ACTION")
-        if(token) {
-          const chainData = [...evmChainData, ...solanaChainData, ...aptosChainData].find(chain => chain.id === action[0].data.chain)
+      return params.toString()
+    },
+    [searchParams]
+  )
 
-          setTokenData(action[0].data.tokenData)
-          console.log(action[0].data.tokenData)
-          setChainData(chainData)
-        }
-    }, [token])
+  useEffect(() => {
+    console.log(action, "ACTION")
+    if (token) {
+      const chainData = [
+        ...evmChainData,
+        ...solanaChainData,
+        ...aptosChainData,
+      ].find((chain) => chain.id === action[0].data.chain)
 
-    const { connectedWallet } = useConnectedWallet()
+      setTokenData(action[0].data.tokenData)
+      console.log(action[0].data.tokenData)
+      setChainData(chainData)
+    }
+  }, [token])
+
+  const { connectedWallet } = useConnectedWallet()
 
   return (
     <Accordion.Root
@@ -105,10 +150,14 @@ const AccordionItem = ({
         className="mx-auto flex h-full w-full flex-col items-start justify-start space-y-5 rounded-xl border border-primary bg-[#E1EBFF] p-5 shadow-[0px_0px_35px_-9px_rgba(0,0,0,0.25)] md:w-[694px]"
         value="item-1"
       >
-        <AccordionTrigger><p className="w-48 md:w-full truncate">{label} - {tokenData?.symbol as string}</p></AccordionTrigger>
+        <AccordionTrigger>
+          <p className="w-48 truncate md:w-full">
+            {label} - {tokenData?.symbol as string}
+          </p>
+        </AccordionTrigger>
         <AccordionContent>
           <div className="flex h-full w-full flex-col items-start justify-start space-y-5">
-            <div className="w-full h-full flex items-center space-x-3">
+            <div className="flex h-full w-full items-center space-x-3">
               <div className="relative">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#B0C8FE] md:h-[60px] md:w-[60px]">
                   <User />
@@ -119,38 +168,77 @@ const AccordionItem = ({
                 <h4 className="font-manrope text-sm font-bold md:text-base">
                   Receipient
                 </h4>
-                <span className="text-xs md:text-sm w-48 md:w-full truncate">{receiver}</span>
+                <span className="w-48 truncate text-xs md:w-full md:text-sm">
+                  {receiver}
+                </span>
               </div>
             </div>
-            <div className="w-full flex items-center space-x-3">
+            <div className="flex w-full items-center space-x-3">
               <div className="relative">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#B0C8FE] md:h-[60px] md:w-[60px]">
                   <User />
                 </div>
                 <div className="absolute bottom-0 right-0 h-6 w-6 rounded-full bg-red-400" />
               </div>
-              <div className="w-full flex justify-between items-center">
-                <div className="flex flex-col items-start w-fit">
-                    <h4 className="font-manrope text-sm font-bold md:text-base">
-                      Chain & Amount
-                    </h4>
-                    <span className="w-full flex space-x-1 text-xs md:text-sm"><p>{formatUnits(BigInt(amount), Number(tokenData?.decimals))}</p> <span className="w-20 flex justify-start items-start truncate"> {tokenData?.symbol as string}</span></span>
+              <div className="flex w-full items-center justify-between">
+                <div className="flex w-fit flex-col items-start">
+                  <h4 className="font-manrope text-sm font-bold md:text-base">
+                    Chain & Amount
+                  </h4>
+                  <span className="flex w-full space-x-1 text-xs md:text-sm">
+                    <p>
+                      {formatUnits(BigInt(amount), Number(tokenData?.decimals))}
+                    </p>{" "}
+                    <span className="flex w-20 items-start justify-start truncate">
+                      {" "}
+                      {tokenData?.symbol as string}
+                    </span>
+                  </span>
                 </div>
-                {connectedWallet ? 
-                  <button onClick={() => {
+                {connectedWallet ? (
+                  <button
+                    onClick={() => {
                       router.push(
-                          pathname + "?" + createQueryString("chain", chainData!.name) + "&" + createQueryString("token", action[0].data.token)
+                        pathname +
+                          "?" +
+                          createQueryString("chain", chainData!.name) +
+                          "&" +
+                          createQueryString("token", action[0].data.token)
                       )
                       setOpenRequestModal(true)
-                  }} className="rounded-full border-none bg-primary px-4 py-2 text-sm text-white shadow-[inset_0px_6px_4px_0px_rgba(255,255,255,0.2)] outline-none focus-visible:outline-none md:px-7 md:py-4 md:text-base">
-                      Pay
+                    }}
+                    className="rounded-full border-none bg-primary px-4 py-2 text-sm text-white shadow-[inset_0px_6px_4px_0px_rgba(255,255,255,0.2)] outline-none focus-visible:outline-none md:px-7 md:py-4 md:text-base"
+                  >
+                    Pay
                   </button>
-                : <ConnectWalletButton />}
+                ) : (
+                  <ConnectWalletButton />
+                )}
               </div>
             </div>
           </div>
           {/* {openRequestModal &&  */}
-            <SendModal id={id} open={openRequestModal} setOpen={setOpenRequestModal} address={receiver} token={tokenData ? tokenData : { address: token, name: token, chainId: chain, logoURI: "", symbol: token, decimals: 18 }} amount={amount} chain={chainData!} action={action} />
+          <SendModal
+            id={id}
+            open={openRequestModal}
+            setOpen={setOpenRequestModal}
+            address={receiver}
+            token={
+              tokenData
+                ? tokenData
+                : {
+                    address: token,
+                    name: token,
+                    chainId: chain,
+                    logoURI: "",
+                    symbol: token,
+                    decimals: 18,
+                  }
+            }
+            amount={amount}
+            chain={chainData!}
+            action={action}
+          />
           {/* } */}
         </AccordionContent>
       </Accordion.Item>
@@ -158,40 +246,52 @@ const AccordionItem = ({
   )
 }
 
-const Actions = ({
-  id,
-}: {
-  id: string
-}) => {
-    const [actions, setActions] = useState<{ receiver: string; amount: string; token: string; chain: number }[]>([])
-    const [originalActions, setOriginalActions] = useState<any[]>()
-    const [request, setRequest] = useState<any>()
+const Actions = ({ id }: { id: string }) => {
+  const [actions, setActions] = useState<
+    { receiver: string; amount: string; token: string; chain: number }[]
+  >([])
+  const [originalActions, setOriginalActions] = useState<any[]>()
+  const [request, setRequest] = useState<any>()
 
-    useEffect(() => {
-        fetch(`/api/getPaymentRequest?id=${id}`).then(res => res.json()).then(res => {
-            console.log("RES: ", res)
+  useEffect(() => {
+    fetch(`/api/getPaymentRequest?id=${id}`)
+      .then((res) => res.json())
+      .then((res) => {
+        console.log("RES: ", res)
 
-            setActions(res.data.actions.filter((action: any) => action.type === "PAYMENT").map((action: any) => ({
-                receiver: action.data.receiver,
-                amount: action.data.amount.amount,
-                token: action.data.token,
-                chain: Number(action.data.chain)
-            })))
+        setActions(
+          res.data.actions
+            .filter((action: any) => action.type === "PAYMENT")
+            .map((action: any) => ({
+              receiver: action.data.receiver,
+              amount: action.data.amount.amount,
+              token: action.data.token,
+              chain: Number(action.data.chain),
+            }))
+        )
 
-            setRequest(res.data)
+        setRequest(res.data)
 
-            console.log(res.data.actions.filter((action: any) => action.type === "PAYMENT").map((action: any) => ({
-                receiver: action.data.receiver,
-                amount: action.data.amount.amount,
-                token: action.data.token,
-                chain: Number(action.data.chain)
-            })))
+        console.log(
+          res.data.actions
+            .filter((action: any) => action.type === "PAYMENT")
+            .map((action: any) => ({
+              receiver: action.data.receiver,
+              amount: action.data.amount.amount,
+              token: action.data.token,
+              chain: Number(action.data.chain),
+            }))
+        )
 
-            setOriginalActions(res.data.actions.filter((action: any) => action.type === "PAYMENT").map((action: any) => ({ data: action.data, type: action.type })))
+        setOriginalActions(
+          res.data.actions
+            .filter((action: any) => action.type === "PAYMENT")
+            .map((action: any) => ({ data: action.data, type: action.type }))
+        )
 
-            return
-        })
-    }, [id])
+        return
+      })
+  }, [id])
 
   return (
     <>
@@ -200,7 +300,13 @@ const Actions = ({
           <ScrollArea.Viewport className="h-full w-full rounded">
             <div className="flex flex-col space-y-3">
               {actions.map((action) => (
-                <AccordionItem {...action} message={request.message} label={request.label} action={originalActions} id={id} />
+                <AccordionItem
+                  {...action}
+                  message={request.message}
+                  label={request.label}
+                  action={originalActions}
+                  id={id}
+                />
               ))}
             </div>
           </ScrollArea.Viewport>
