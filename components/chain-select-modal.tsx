@@ -1,8 +1,9 @@
 "use client"
 
-import React, { Suspense, useCallback } from "react"
+import React, { Suspense, useCallback, useEffect } from "react"
 import Image from "next/image"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import useDetailStore from "@/store"
 import { ChevronLeft } from "lucide-react"
 
 import type { Chain } from "@/lib/data"
@@ -22,6 +23,7 @@ const ChainSelectModal = ({
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()!
+  const { setChain } = useDetailStore()
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -34,6 +36,10 @@ const ChainSelectModal = ({
   )
 
   const selectedChain = searchParams.get("chain") ?? chains[0].name
+
+  useEffect(() => {
+    setChain(chains[0].name)
+  }, [])
 
   return (
     <>
@@ -58,9 +64,7 @@ const ChainSelectModal = ({
               }
             )}
             onClick={() => {
-              router.push(
-                pathname + "?" + createQueryString("chain", chain.name)
-              )
+              setChain(chain.name)
             }}
           >
             <Suspense

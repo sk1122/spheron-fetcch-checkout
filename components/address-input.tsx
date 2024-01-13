@@ -1,45 +1,28 @@
 "use client"
 
-import React, {
-  useCallback,
-  useDeferredValue,
-  useEffect,
-  useState,
-} from "react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import useDetailStore from "@/store"
 import { useWallet as useAptosWallet } from "@aptos-labs/wallet-adapter-react"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { Loader2 } from "lucide-react"
+import {
+  useDeferredValue,
+  useEffect,
+  useState
+} from "react"
 import { useAccount } from "wagmi"
 
+import RequestModal from "@/components/request-modal"
 import {
-  verifyAddress,
   verifyAptosAddress,
   verifyEvmAddress,
-  verifySolanaAddress,
+  verifySolanaAddress
 } from "@/lib/verifyAddress"
-import RequestModal from "@/components/request-modal"
 
 import { useConnectedWallet } from "./providers/providers"
 import { Button } from "./ui/button"
 import WalletsModal from "./wallets-modal"
 
 const AddressInput = () => {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()!
-
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams)
-      params.set(name, value)
-
-      return params.toString()
-    },
-    [searchParams]
-  )
-
   const [walletAddress, setWalletAddress] = useState<string>("")
   const address = useDeferredValue(walletAddress)
   const [error, setError] = useState("")
@@ -78,8 +61,6 @@ const AddressInput = () => {
 
   const verifyWalletAddress = () => {
     try {
-      router.push(pathname)
-
       if (
         walletAddress.length > 1 &&
         walletAddress !== null &&

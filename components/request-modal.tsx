@@ -41,10 +41,15 @@ const RequestModal = ({
   ])
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const pathname = usePathname()
   const { addressChain, connectedWallet, setRequests, token } =
     useConnectedWallet()
-  const { requestAddress, setAmount } = useDetailStore()
+  const {
+    requestAddress,
+    setAmount,
+    amount,
+    chain: selectedChain,
+    token: selectedToken,
+  } = useDetailStore()
 
   useEffect(() => {
     console.log("addressChain: ", addressChain)
@@ -58,9 +63,6 @@ const RequestModal = ({
   }, [addressChain, open])
 
   const searchParams = useSearchParams()
-
-  const selectedChain = searchParams.get("chain")
-  const selectedToken = searchParams.get("token")
 
   let { contains } = useFilter({
     sensitivity: "base",
@@ -121,117 +123,112 @@ const RequestModal = ({
   }
 
   const request = async () => {
-    setLoading(true)
-
-    let request: any = {
-      // receiver: connectedWallet === "evm" ? address : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
-      receiver: searchParams.get("address"),
-      // payer: searchParams.get("address"),
-      actions: [
-        {
-          type: "PAYMENT",
-          data: {
-            token: selectedTokenData[0].address,
-            chain: selectedChainData[0].id,
-            receiver:
-              connectedWallet === "evm"
-                ? address
-                : connectedWallet === "solana"
-                  ? publicKey?.toBase58()
-                  : account?.address.toString(),
-            amount: {
-              amount: parseUnits(
-                searchParams.get("amount") as string,
-                selectedTokenData[0].decimals
-              ).toString(),
-              currency: "CRYPTO",
+    try {
+      setLoading(true)
+      let request: any = {
+        // receiver: connectedWallet === "evm" ? address : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
+        receiver: requestAddress,
+        // payer: searchParams.get("address"),
+        actions: [
+          {
+            type: "PAYMENT",
+            data: {
+              token: selectedTokenData[0].address,
+              chain: selectedChainData[0].id,
+              receiver:
+                connectedWallet === "evm"
+                  ? address
+                  : connectedWallet === "solana"
+                    ? publicKey?.toBase58()
+                    : account?.address.toString(),
+              amount: {
+                amount: parseUnits(
+                  amount,
+                  selectedTokenData[0].decimals
+                ).toString(),
+                currency: "CRYPTO",
+              },
             },
           },
+        ],
+        message: "Message from request.fetcch.xyz",
+        label: "request.fetcch.xyz",
+      }
+
+      const req = await fetch("/api/generateMessage", {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+          "content-type": "application/json",
         },
-      ],
-      message: "Message from request.fetcch.xyz",
-      label: "request.fetcch.xyz",
-    }
-
-    const req = await fetch("/api/generateMessage", {
-      method: "POST",
-      body: JSON.stringify(request),
-      headers: {
-        "content-type": "application/json",
-      },
-    })
-
-    const res = await req.json()
-
-    const message = res.data.data.message
-    const timestamp = res.data.data.timestamp
-
-    console.log(res, message)
-
-    let hash = ""
-    if (connectedWallet === "evm") {
-      if (chainD?.id !== selectedChainData[0].chainId)
-        await switchNetworkAsync!(selectedChainData[0].chainId)
-      console.log(message, "MESSAFGE")
-      const signature = await signMessageAsync({
-        message: message,
       })
 
-      console.log(signature)
+      const res = await req.json()
 
-      hash = signature
-    } else if (connectedWallet === "solana") {
-      const signature = base58.encode(await signMessage!(Buffer.from(message)))
+      const message = res.data.data.message
+      const timestamp = res.data.data.timestamp
 
-      console.log(signature)
+      console.log(res, message)
 
-      hash = signature
-    } else if (connectedWallet === "aptos") {
-      const signature =
-        "0x" +
-        (await signAptosMessage({
+      let hash = ""
+      if (connectedWallet === "evm") {
+        if (chainD?.id !== selectedChainData[0].chainId)
+          await switchNetworkAsync!(selectedChainData[0].chainId)
+        console.log(message, "MESSAFGE")
+        const signature = await signMessageAsync({
           message: message,
-          nonce: timestamp,
-        })!)!.signature
+        })
 
-      console.log(signature)
+        console.log(signature)
 
-      hash = signature
+        hash = signature
+      } else if (connectedWallet === "solana") {
+        const signature = base58.encode(
+          await signMessage!(Buffer.from(message))
+        )
+
+        console.log(signature)
+
+        hash = signature
+      } else if (connectedWallet === "aptos") {
+        const signature =
+          "0x" +
+          (await signAptosMessage({
+            message: message,
+            nonce: timestamp,
+          })!)!.signature
+
+        console.log(signature)
+
+        hash = signature
+      }
+
+      request.signature = hash
+
+      const req2 = await fetch("/api/createRequest", {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+          "content-type": "application/json",
+        },
+      })
+
+      const res2 = await req2.json()
+
+      if (req2.status >= 200 && req2.status <= 299) {
+        toast.success(`Request successfully created with id ${res2.data.id}!`)
+        fetchPendingRequests()
+        navigator.clipboard.writeText(
+          `https://request.fetcch.xyz/request/${res2.data.id}`
+        )
+        setOpen(false)
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false)
     }
-
-    request.signature = hash
-
-    const req2 = await fetch("/api/createRequest", {
-      method: "POST",
-      body: JSON.stringify(request),
-      headers: {
-        "content-type": "application/json",
-      },
-    })
-
-    const res2 = await req2.json()
-
-    if (req2.status >= 200 && req2.status <= 299) {
-      toast.success(`Request successfully created with id ${res2.data.id}!`)
-      fetchPendingRequests()
-      navigator.clipboard.writeText(
-        `https://request.fetcch.xyz/request/${res2.data.id}`
-      )
-      setOpen(false)
-    }
-
-    setLoading(false)
   }
-
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams)
-      params.set(name, value)
-
-      return params.toString()
-    },
-    [searchParams]
-  )
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
