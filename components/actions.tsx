@@ -168,6 +168,7 @@ const Actions = ({
     const [request, setRequest] = useState<any>()
 
     useEffect(() => {
+      console.log(id, "id")
         fetch(`/api/getPaymentRequest?id=${id}`).then(res => res.json()).then(res => {
             console.log("RES: ", res)
 

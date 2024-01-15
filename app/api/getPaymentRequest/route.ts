@@ -76,8 +76,9 @@ export async function GET(req: Request) {
 
     for(let j = 0; j < reqs.actions.length; j++) {
       const action = reqs.actions[j].data
+      console.log(action, action.token)
       const chain = [...evmChainData, ...solanaChainData].find(chain => chain.id === action.chain)!
-      console.log(action.token, chain.id)
+      console.log(action.token, chain.id, 123)
       if(cachedTokens[action.token]) {
         reqs.actions[j].data.tokenData = cachedTokens[action.token]
       } else {

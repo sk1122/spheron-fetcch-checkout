@@ -99,6 +99,48 @@ export const evmChainData: Chain[] = [
       },
     ],
   },
+
+  {
+    id: 3,
+    chainId: 56,
+    name: "Binance",
+    rpc: `https://bscrpc.com`,
+    logoURI: "/assets/tokens/binance.webp",
+    tokens: [
+      {
+        name: "USDC",
+        address: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+        chainId: 56,
+        symbol: "USDC",
+        logoURI: "/assets/tokens/usdc.webp",
+        decimals: 18
+      },
+      {
+        name: "USDT",
+        address: "0x55d398326f99059fF775485246999027B3197955",
+        chainId: 56,
+        symbol: "USDT",
+        logoURI: "/assets/tokens/usdt.webp",
+        decimals: 18
+      },
+      {
+        name: "DAI",
+        address: "0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3",
+        chainId: 56,
+        symbol: "DAI",
+        logoURI: "/assets/tokens/dai.webp",
+        decimals: 18
+      },
+      {
+        name: "BNB",
+        address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        chainId: 56,
+        symbol: "ETH",
+        logoURI: "/assets/tokens/ethereum.webp",
+        decimals: 18
+      },
+    ],
+  },
   {
     id: 4,
     chainId: 43114,
