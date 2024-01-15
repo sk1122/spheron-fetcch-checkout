@@ -2,6 +2,7 @@
 
 import React, { Dispatch, SetStateAction } from "react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import aptos from "@/public/assets/aptos.svg"
 import type { Wallet, WalletName } from "@aptos-labs/wallet-adapter-react"
 import {
@@ -34,7 +35,7 @@ const AptosConnectButton = ({ setIsWalletsModalOpen }: WalletBtnProps) => {
     <Dialog>
       <DialogTrigger>
         <button
-          className="focus:border-primary relative flex h-56 w-60 flex-col items-center justify-center rounded-[20px] bg-[#E3ECFF] focus:border-[3px] focus:bg-[#D4E2FF] focus:outline-none"
+          className="relative flex h-56 w-60 flex-col items-center justify-center rounded-[20px] bg-[#E3ECFF] focus:border-[3px] focus:border-primary focus:bg-[#D4E2FF] focus:outline-none"
           type="button"
         >
           <Image
@@ -44,7 +45,7 @@ const AptosConnectButton = ({ setIsWalletsModalOpen }: WalletBtnProps) => {
             width={128}
             height={128}
           />
-          <span className="font-manrope absolute bottom-4 text-xl font-semibold">
+          <span className="absolute bottom-4 font-manrope text-xl font-semibold">
             {isConnected
               ? truncatePublicKey(account?.address as string)
               : "Aptos"}
@@ -59,7 +60,7 @@ const AptosConnectButton = ({ setIsWalletsModalOpen }: WalletBtnProps) => {
           <DialogClose
             className={buttonVariants({ variant: "outline", size: "icon" })}
           >
-            <X className="text-primary h-4 w-4 font-bold" strokeWidth={4} />
+            <X className="h-4 w-4 font-bold text-primary" strokeWidth={4} />
             <span className="sr-only">Close</span>
           </DialogClose>
         </DialogHeader>
@@ -85,6 +86,7 @@ const WalletView = ({
 }) => {
   const { connectedWallet, setConnectedWallet } = useConnectedWallet()
   const { connect } = useWallet()
+  const router = useRouter()
   const isWalletReady =
     wallet.readyState === WalletReadyState.Installed ||
     wallet.readyState === WalletReadyState.Loadable
@@ -111,6 +113,7 @@ const WalletView = ({
             onWalletConnectRequest(wallet.name).then(() => {
               if (connectedWallet === null) {
                 setConnectedWallet("aptos")
+                router.push("/requests")
               }
             })
           }
