@@ -1,7 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { Bell } from "lucide-react"
+import React, { useEffect, useState } from "react"
+import * as Accordion from "@radix-ui/react-accordion"
+import { Bell, ChevronDownIcon } from "lucide-react"
 
 import NFTRequest from "./cards/nft-request"
 import OtherRequest from "./cards/other-request"
@@ -9,10 +10,7 @@ import PaymentRequest from "./cards/payment-request"
 
 function PaymentRequests({ request }: { request: any }) {
   return (
-    <div className="rounded-xl bg-[#3562FF] p-2">
-      <p className="mx-2 text-left font-semibold text-white">
-        Payment Requests
-      </p>
+    <>
       {request?.actions?.length > 0 &&
         request?.actions?.map((action: any) => {
           if (action?.type === "PAYMENT") {
@@ -26,14 +24,13 @@ function PaymentRequests({ request }: { request: any }) {
             )
           }
         })}
-    </div>
+    </>
   )
 }
 
 function NFTRequests({ request }: { request: any }) {
   return (
-    <div className="mx-auto mt-4 max-w-3xl rounded-xl bg-[#F98430] p-2">
-      <p className="mx-2 text-left font-semibold text-white">NFT</p>
+    <>
       {request?.actions?.length > 0 &&
         request?.actions?.map((action: any) => {
           if (action?.type === "PAYMENT") {
@@ -47,14 +44,13 @@ function NFTRequests({ request }: { request: any }) {
             )
           }
         })}
-    </div>
+    </>
   )
 }
 
 function OtherRequests({ request }: { request: any }) {
   return (
-    <div className="mx-auto mt-4 max-w-3xl rounded-xl bg-[#3F2ABE] p-2">
-      <p className="mx-2 text-left font-semibold text-white">Other</p>
+    <>
       {request?.actions?.length > 0 &&
         request?.actions?.map((action: any) => {
           if (action?.type === "PAYMENT") {
@@ -68,7 +64,7 @@ function OtherRequests({ request }: { request: any }) {
             )
           }
         })}
-    </div>
+    </>
   )
 }
 
@@ -89,9 +85,46 @@ const Actions = ({ id }: { id: string }) => {
     <>
       {true ? (
         <div className="mx-auto mt-4 max-w-3xl">
-          <PaymentRequests request={request} />
-          <NFTRequests request={request} />
-          <OtherRequests request={request} />
+          <Accordion.Root type="single" collapsible>
+            <Accordion.Item
+              className="rounded-xl bg-[#3562FF] p-2"
+              value="item-1"
+            >
+              <Accordion.Trigger className="flex w-full items-center justify-between px-2">
+                <p className="text-left font-semibold text-white">
+                  Payment Requestss
+                </p>
+                <ChevronDownIcon className="text-white" aria-hidden />
+              </Accordion.Trigger>
+              <Accordion.Content>
+                <PaymentRequests request={request} />
+              </Accordion.Content>
+            </Accordion.Item>
+            <Accordion.Item
+              className="mt-4 rounded-xl bg-[#F98430] p-2"
+              value="item-2"
+            >
+              <Accordion.Trigger className="flex w-full items-center justify-between px-2">
+                <p className="mx-2 text-left font-semibold text-white">NFT</p>
+                <ChevronDownIcon className="text-white" aria-hidden />
+              </Accordion.Trigger>
+              <Accordion.Content>
+                <NFTRequests request={request} />
+              </Accordion.Content>
+            </Accordion.Item>
+            <Accordion.Item
+              className="mt-4 rounded-xl bg-[#3F2ABE] p-2"
+              value="item-3"
+            >
+              <Accordion.Trigger className="flex w-full items-center justify-between px-2">
+                <p className="mx-2 text-left font-semibold text-white">Other</p>
+                <ChevronDownIcon className="text-white" aria-hidden />
+              </Accordion.Trigger>
+              <Accordion.Content>
+                <OtherRequests request={request} />
+              </Accordion.Content>
+            </Accordion.Item>
+          </Accordion.Root>
         </div>
       ) : (
         <>
