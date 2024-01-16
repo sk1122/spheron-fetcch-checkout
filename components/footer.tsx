@@ -5,7 +5,7 @@ import siteLogo from "@/public/assets/fetcch.svg"
 
 const Footer = () => {
   return (
-    <footer className="z-50 h-fit w-full pt-12">
+    <footer className="z-100 h-fit w-full pt-12">
       <div className="mx-auto px-6 pb-12 xl:px-20">
         <div className="min-h-32 flex h-fit flex-col items-start justify-between pb-12 md:flex-row">
           <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0">

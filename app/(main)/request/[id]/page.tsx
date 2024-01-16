@@ -1,11 +1,11 @@
 import React from "react"
-
 import { Toaster } from "react-hot-toast"
+
 import Actions from "@/components/actions"
 
-const RequestsPage = async ({ params }: { params: { id: string } }) => {  
-    return (
-    <div>
+const RequestsPage = async ({ params }: { params: { id: string } }) => {
+  return (
+    <div className="min-h-[calc(100vh-112px)]">
       <Toaster />
       <div className="relative z-20 mt-20 w-full px-6 text-center lg:px-0">
         <h1 className="text-center font-manrope text-5xl font-bold md:text-6xl xl:text-7xl 2xl:text-8xl">
