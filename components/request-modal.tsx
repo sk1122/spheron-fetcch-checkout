@@ -155,55 +155,55 @@ const RequestModal = ({
         label: "request.fetcch.xyz",
       }
 
-      const req = await fetch("/api/generateMessage", {
-        method: "POST",
-        body: JSON.stringify(request),
-        headers: {
-          "content-type": "application/json",
-        },
-      })
+      // const req = await fetch("/api/generateMessage", {
+      //   method: "POST",
+      //   body: JSON.stringify(request),
+      //   headers: {
+      //     "content-type": "application/json",
+      //   },
+      // })
 
-      const res = await req.json()
+      // const res = await req.json()
 
-      const message = res.data.data.message
-      const timestamp = res.data.data.timestamp
+      // const message = res.data.data.message
+      // const timestamp = res.data.data.timestamp
 
-      console.log(res, message)
+      // console.log(res, message)
 
-      let hash = ""
-      if (connectedWallet === "evm") {
-        if (chainD?.id !== selectedChainData[0].chainId)
-          await switchNetworkAsync!(selectedChainData[0].chainId)
-        console.log(message, "MESSAFGE")
-        const signature = await signMessageAsync({
-          message: message,
-        })
+      // let hash = ""
+      // if (connectedWallet === "evm") {
+      //   if (chainD?.id !== selectedChainData[0].chainId)
+      //     await switchNetworkAsync!(selectedChainData[0].chainId)
+      //   console.log(message, "MESSAFGE")
+      //   const signature = await signMessageAsync({
+      //     message: message,
+      //   })
 
-        console.log(signature)
+      //   console.log(signature)
 
-        hash = signature
-      } else if (connectedWallet === "solana") {
-        const signature = base58.encode(
-          await signMessage!(Buffer.from(message))
-        )
+      //   hash = signature
+      // } else if (connectedWallet === "solana") {
+      //   const signature = base58.encode(
+      //     await signMessage!(Buffer.from(message))
+      //   )
 
-        console.log(signature)
+      //   console.log(signature)
 
-        hash = signature
-      } else if (connectedWallet === "aptos") {
-        const signature =
-          "0x" +
-          (await signAptosMessage({
-            message: message,
-            nonce: timestamp,
-          })!)!.signature
+      //   hash = signature
+      // } else if (connectedWallet === "aptos") {
+      //   const signature =
+      //     "0x" +
+      //     (await signAptosMessage({
+      //       message: message,
+      //       nonce: timestamp,
+      //     })!)!.signature
 
-        console.log(signature)
+      //   console.log(signature)
 
-        hash = signature
-      }
+      //   hash = signature
+      // }
 
-      request.signature = hash
+      // request.signature = hash
 
       const req2 = await fetch("/api/createRequest", {
         method: "POST",
