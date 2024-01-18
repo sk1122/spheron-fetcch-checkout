@@ -308,3 +308,9 @@ export const explorerLinks: any = {
   7: "https://solana.fm/tx/",
   8: "https://explorer.aptoslabs.com/txn/"
 }
+
+export const chainData: Chain[] = [
+  ...evmChainData,
+  ...solanaChainData,
+  ...aptosChainData
+]

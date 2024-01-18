@@ -7,6 +7,7 @@ import { Bell, ChevronDownIcon } from "lucide-react"
 import NFTRequest from "./cards/nft-request"
 import OtherRequest from "./cards/other-request"
 import PaymentRequest from "./cards/payment-request"
+import RequestCard from "./cards/request-card"
 
 function PaymentRequests({ request }: { request: any }) {
   return (
@@ -85,7 +86,7 @@ const Actions = ({ id }: { id: string }) => {
     <>
       {true ? (
         <div className="mx-auto mt-4 max-w-3xl">
-          <Accordion.Root type="single" collapsible>
+          {/* <Accordion.Root type="single" collapsible>
             <Accordion.Item
               className="rounded-xl bg-[#3562FF] p-2"
               value="item-1"
@@ -124,7 +125,8 @@ const Actions = ({ id }: { id: string }) => {
                 <OtherRequests request={request} />
               </Accordion.Content>
             </Accordion.Item>
-          </Accordion.Root>
+          </Accordion.Root> */}
+          <RequestCard />
         </div>
       ) : (
         <>

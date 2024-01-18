@@ -14,24 +14,26 @@ const MainNav = () => {
       <ul className="hidden items-center space-x-6 md:flex xl:space-x-12">
         <Link
           href="#"
-          className="hover:text-primary text-[#363C46] transition-all duration-200"
+          className="text-[#363C46] transition-all duration-200 hover:text-primary"
         >
           Products
         </Link>
         <Link
           href="#"
-          className="hover:text-primary text-[#363C46] transition-all duration-200"
+          className="text-[#363C46] transition-all duration-200 hover:text-primary"
         >
           Learn
         </Link>
         <Link
           href="#"
-          className="hover:text-primary text-[#363C46] transition-all duration-200"
+          className="text-[#363C46] transition-all duration-200 hover:text-primary"
         >
           Use Cases
         </Link>
       </ul>
-      <ConnectWalletButton />
+      <div className="max-w-fit">
+        <ConnectWalletButton />
+      </div>
     </div>
   )
 }

@@ -8,14 +8,21 @@ const RequestsPage = async ({ params }: { params: { id: string } }) => {
     <div className="min-h-[calc(100vh-112px)]">
       <Toaster />
       <div className="relative z-20 mt-20 w-full px-6 text-center lg:px-0">
-        <h1 className="text-center font-manrope text-5xl font-bold md:text-6xl xl:text-7xl 2xl:text-8xl">
-          Payment Actions
+        <h1 className="text-center font-manrope text-3xl font-bold md:text-4xl xl:text-5xl 2xl:text-6xl">
+          Create Link, <span className="text-[#FF7D1F]">Request</span> your
+          crypto
         </h1>
-        <p className="mx-auto mt-8 w-full max-w-md text-center text-[18px] md:max-w-lg xl:max-w-xl 2xl:max-w-full">
-          Let&apos;s understand the user experience flow of{" "}
-          <span className="text-[#FF7D1F]">request button</span> in wallets
-          integrated with Fetcch.{" "}
-        </p>
+        <div className="mx-auto mt-8 w-full max-w-md text-center md:max-w-lg xl:max-w-xl 2xl:max-w-full">
+          <p className="font-manrope text-xl">
+            Connect your wallet,{" "}
+            <span className="line-through">choose chain, Set the amount,</span>{" "}
+            sign the transaction.
+          </p>
+          <p className="font-manrope text-xl">
+            your requester will get the payment “Crypto made easy : Click ,
+            Send, Done!”
+          </p>
+        </div>
         {/* <h3 className="mt-12 font-manrope text-2xl font-semibold">
           Your Pending Requests
         </h3> */}
