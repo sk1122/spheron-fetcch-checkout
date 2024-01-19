@@ -1,4 +1,4 @@
-export default async function updatePaymentRequest(id: string, payer: string, actions: any[]) {
+export default async function updatePaymentRequest(id: number, payer: string, actions: any[]) {
   try {
     const res = await fetch("/api/updatePaymentRequest", {
       method: "POST",

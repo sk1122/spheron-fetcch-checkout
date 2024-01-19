@@ -5,14 +5,19 @@ import "./solana-wallet.css"
 import "@rainbow-me/rainbowkit/styles.css"
 
 import type { Metadata } from "next"
-import { Inter, Manrope } from "next/font/google"
+import { Architects_Daughter, Inter, Manrope } from "next/font/google"
+import { Toaster } from "react-hot-toast"
 
 import Footer from "@/components/footer"
 import Providers from "@/components/providers/providers"
-import { Toaster } from "react-hot-toast"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" })
+const architects_daughter = Architects_Daughter({
+  subsets: ["latin"],
+  variable: "--architects_daughter",
+  weight: "400",
+})
 
 export const metadata: Metadata = {
   title: "Fetcch",
@@ -30,11 +35,12 @@ export default function RootLayout({
         className={cn(
           "min-h-screen w-full font-sans antialiased",
           inter.variable,
-          manrope.variable
+          manrope.variable,
+          architects_daughter.variable
         )}
       >
         <Providers>
-        <Toaster />
+          <Toaster />
           {children}
         </Providers>
       </body>

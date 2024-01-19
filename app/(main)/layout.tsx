@@ -18,7 +18,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         src={decoration}
         alt="decoration"
         priority
-        className="absolute -right-16 bottom-12 hidden w-1/3 rotate-90 select-none md:w-1/4 xl:block xl:w-1/6 -z-10"
+        className="absolute -right-16 top-1/4 -z-10 hidden w-1/3 rotate-90 select-none md:w-1/4 xl:block xl:w-1/6"
       />
       {children}
     </main>

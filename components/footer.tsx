@@ -7,7 +7,7 @@ const Footer = () => {
   return (
     <footer className="z-100 h-fit w-full pt-12">
       <div className="mx-auto px-6 pb-12 xl:px-20">
-        <div className="min-h-32 flex h-fit flex-col items-start justify-between pb-12 md:flex-row">
+        <div className="flex h-fit min-h-32 flex-col items-start justify-between pb-12 md:flex-row">
           <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0">
             <Image src={decoration} alt="decoration" className="w-32" />
             <div className="flex flex-col justify-center sm:ml-8">
@@ -15,29 +15,26 @@ const Footer = () => {
               <p className="mt-4 text-sm">A Web3 Pull Layer Platform</p>
             </div>
           </div>
-          <div className="mt-6 flex w-full max-w-sm flex-col items-center justify-center md:mt-0">
-            {/* <form
-              id="emailForm"
-              className="flex w-full flex-col space-y-2 rounded-full p-1 sm:border-neutral-600 md:w-fit md:flex-row md:space-y-0 md:border"
-            >
+          {/* <div className="mt-6 flex w-full max-w-sm flex-col items-center justify-center md:mt-0">
+            <div className="flex w-full flex-col space-y-2 rounded-full p-1 sm:border-gray-200 md:w-fit md:flex-row md:space-y-0 md:border">
               <input
                 type="email"
                 id="subEmail"
                 pattern="[^ @]*@[^ @]*"
                 placeholder="Enter your Email"
-                className="rounded-full border border-neutral-600 px-4 text-sm outline-none ring-0 focus:border-none focus:outline-none focus:ring-0 md:rounded-l-full md:border-none"
+                className="rounded-full bg-transparent px-4 text-sm outline-none ring-0 focus:border-none focus:outline-none focus:ring-0 md:rounded-l-full md:border-none"
               />
               <button className="cursor-pointer rounded-full bg-primary px-3 py-2 text-sm text-white lg:px-6 lg:py-3">
                 Subscribe
               </button>
-            </form> */}
+            </div>
             <p
               id="successMsg"
               className="mt-1 hidden text-center text-xs text-primary"
             >
               Successfully Added Email to Waitlist!
             </p>
-          </div>
+          </div> */}
         </div>
 
         <ul className="grid grid-cols-2 flex-wrap gap-x-4 md:flex md:items-center md:gap-x-0 md:space-x-4 lg:space-x-8">

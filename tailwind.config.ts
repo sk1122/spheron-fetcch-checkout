@@ -12,6 +12,7 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-inter)", ...fontFamily.sans],
         manrope: ["var(--font-manrope)", ...fontFamily.sans],
+        architects_daughter: ["var(--architects_daughter)", ...fontFamily.sans]
       },
       colors: {
         primary: "#2B67E8",
