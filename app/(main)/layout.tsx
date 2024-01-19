@@ -2,6 +2,8 @@ import React from "react"
 import Image from "next/image"
 import decoration from "@/public/assets/decoration.avif"
 
+import Demo from "@/components/demo"
+import Footer from "@/components/footer"
 import MainNav from "@/components/main-nav"
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
@@ -21,6 +23,8 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         className="absolute -right-16 top-1/4 -z-10 hidden w-1/3 rotate-90 select-none md:w-1/4 xl:block xl:w-1/6"
       />
       {children}
+      <Demo />
+      <Footer />
     </main>
   )
 }

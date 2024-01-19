@@ -1,9 +1,31 @@
-import React from "react"
+"use client"
+
+import { useState } from "react"
 import Image from "next/image"
 import decoration from "@/public/assets/decoration.avif"
 import siteLogo from "@/public/assets/fetcch.svg"
+import Subscribe from "@/utils/subscribe"
+import toast from "react-hot-toast"
+
+const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g
 
 const Footer = () => {
+  const [email, setEmail] = useState("")
+
+  async function handleSubmit() {
+    if (email.length === 0) {
+      toast.error("Please enter an email")
+    }
+    if (!EMAIL_REGEX.test(email)) {
+      toast.error("Please enter a valid email")
+    }
+    const data = await Subscribe(email)
+    if (data.status === "created") {
+      setEmail("")
+      toast.success("Successfully Added Email to Waitlist!")
+    }
+  }
+
   return (
     <footer className="z-100 h-fit w-full pt-12">
       <div className="mx-auto px-6 pb-12 xl:px-20">
@@ -15,7 +37,7 @@ const Footer = () => {
               <p className="mt-4 text-sm">A Web3 Pull Layer Platform</p>
             </div>
           </div>
-          {/* <div className="mt-6 flex w-full max-w-sm flex-col items-center justify-center md:mt-0">
+          <div className="mt-6 flex w-full max-w-sm flex-col items-center justify-center md:mt-0">
             <div className="flex w-full flex-col space-y-2 rounded-full p-1 sm:border-gray-200 md:w-fit md:flex-row md:space-y-0 md:border">
               <input
                 type="email"
@@ -23,18 +45,16 @@ const Footer = () => {
                 pattern="[^ @]*@[^ @]*"
                 placeholder="Enter your Email"
                 className="rounded-full bg-transparent px-4 text-sm outline-none ring-0 focus:border-none focus:outline-none focus:ring-0 md:rounded-l-full md:border-none"
+                onChange={(e) => setEmail(e.target.value)}
               />
-              <button className="cursor-pointer rounded-full bg-primary px-3 py-2 text-sm text-white lg:px-6 lg:py-3">
+              <button
+                className="cursor-pointer rounded-full bg-primary px-3 py-2 text-sm text-white lg:px-6 lg:py-3"
+                onClick={handleSubmit}
+              >
                 Subscribe
               </button>
             </div>
-            <p
-              id="successMsg"
-              className="mt-1 hidden text-center text-xs text-primary"
-            >
-              Successfully Added Email to Waitlist!
-            </p>
-          </div> */}
+          </div>
         </div>
 
         <ul className="grid grid-cols-2 flex-wrap gap-x-4 md:flex md:items-center md:gap-x-0 md:space-x-4 lg:space-x-8">
