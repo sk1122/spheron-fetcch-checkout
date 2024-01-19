@@ -18,7 +18,7 @@ import {
 } from "wagmi"
 
 import { Action, Request } from "@/types/request"
-import { chainData } from "@/lib/data"
+import { chainData, explorerLinks } from "@/lib/data"
 import formatAddress from "@/lib/formatAddress"
 
 import ConnectWalletButton from "../connect-wallet-button"
@@ -26,15 +26,7 @@ import ChainModal from "../modals/chain-modal"
 import TokenModal from "../modals/token-modal"
 import { useConnectedWallet } from "../providers/providers"
 
-export default function RequestCard({
-  request,
-  action,
-}: {
-  request: Request
-  action: Action
-}) {
-  const [selectedChain, setSelectedChain] = useState(0)
-  const [selectedToken, setSelectedToken] = useState(0)
+export default function RequestCard({ request }: { request: Request }) {
   const { connectedWallet } = useConnectedWallet()
   const {
     connected: isSolanaConnected,
@@ -52,126 +44,20 @@ export default function RequestCard({
   const { sendTransactionAsync } = useSendTransaction()
 
   const amount = formatUnits(
-    BigInt(action.data?.amount?.amount),
-    Number(action.data?.tokenData?.decimals)
+    BigInt(request?.actions[0].data?.amount?.amount),
+    Number(request?.actions[0].data?.tokenData?.decimals)
   ).toString()
 
   const requestedChain = chainData.find(
-    (chain) => chain.id === action?.data?.chain
+    (chain) => chain.id === request?.actions[0]?.data?.chain
   )
 
   const requestedToken = requestedChain?.tokens.find(
-    (token) => token.address === action?.data?.token
+    (token) => token.address === request?.actions[0]?.data?.token
   )
 
-  async function handlePayment() {
-    const toastId = toast.loading("Executing payment...")
-    try {
-      const actions = request?.actions.map((action: any) => ({
-        ...action,
-        data: {
-          ...action.data,
-          payer:
-            connectedWallet === "evm"
-              ? accountAddress
-              : connectedWallet === "solana"
-                ? publicKey?.toBase58()
-                : account?.address.toString(),
-          fromChain: chainData[selectedChain].id,
-          fromToken: chainData[selectedChain].tokens[selectedToken].address,
-        },
-      }))
-      console.log(actions)
-      const data = await buildTransaction(actions)
-      const transactions = data.data[0]
-
-      for (let i = 0; i < transactions.length; i++) {
-        const tx = transactions[i]
-
-        console.log(tx, "transaction")
-
-        let hash = ""
-        if (connectedWallet === "evm") {
-          if (chainID?.id !== chainData[selectedChain].chainId)
-            await switchNetworkAsync!(chainData[selectedChain].chainId)
-
-          console.log({
-            ...tx.tx,
-            gasPrice: undefined,
-          })
-          const transaction = await sendTransactionAsync({
-            ...tx.tx,
-            gasPrice: undefined,
-          })
-
-          console.log(transaction)
-
-          hash = transaction.hash
-        } else if (connectedWallet === "solana") {
-          const txData = VersionedTransaction.deserialize(base58.decode(tx.tx))
-          const connection = new Connection(
-            "https://solana-mainnet.g.alchemy.com/v2/LZLe8tHrIZ06MnZlxn-L4Fo5aj7iIdgI"
-          )
-
-          const transaction = await sendTransaction!(txData, connection)
-
-          console.log(transaction)
-
-          hash = transaction
-        } else if (connectedWallet === "aptos") {
-          const txData = aptos.TxnBuilderTypes.RawTransaction.deserialize(
-            new aptos.BCS.Deserializer(base58.decode(tx.tx))
-          )
-
-          const transaction = await signAndSubmitBCSTransaction(txData)
-
-          console.log(transaction)
-
-          hash = transaction
-        }
-
-        if (
-          transactions.length === 1 ||
-          (tx.type &&
-            (tx.type === "PAYMENT_TOKEN" ||
-              tx.type === "OTHER" ||
-              tx.type === "PAYMENT_NATIVE"))
-        ) {
-          const actions = [
-            {
-              type: request?.actions[0].type,
-              data: request?.actions[0].data,
-              executionData: {
-                hash,
-                chain: request?.actions[0]?.data?.chain,
-                timestamp: new Date().getTime() * 1000,
-              },
-            },
-          ]
-          const payer =
-            connectedWallet === "evm"
-              ? accountAddress
-              : connectedWallet === "solana"
-                ? publicKey?.toBase58()
-                : account?.address.toString()
-
-          const data = await updatePaymentRequest(request?.id, payer!, actions)
-
-          toast.success("Payment successfully done!", {
-            id: toastId,
-          })
-        }
-      }
-    } catch (error) {
-      console.log(error)
-      toast.error("Payment not successfully executed!", {
-        id: toastId,
-      })
-    }
-  }
-
   return (
-    <section className="mx-auto max-w-md rounded-xl border border-primary bg-white px-4 py-6 text-left">
+    <section className="mx-auto w-96 rounded-xl border border-primary bg-white px-4 py-6 text-left">
       <div className="relative">
         <div className="flex items-center justify-between border-b border-gray-200 pb-2">
           <div className="flex items-center gap-2">
@@ -203,15 +89,12 @@ export default function RequestCard({
           <img src={requestedChain?.logoURI} alt="" className="h-8 w-8" />
         </div>
         <p className="my-6 text-sm font-semibold text-[hsl(240,3%,19%)]">
-          {formatAddress(request?.recevier?.owner)} requesting {amount}{" "}
-          {action.data?.tokenData?.symbol} on {requestedChain?.name}
+          You requested {amount} {request?.actions[0]?.data?.tokenData?.symbol}{" "}
+          on {requestedChain?.name}
         </p>
         <div className="flex items-center justify-between">
           <p className="font-semibold text-gray-600">Requested</p>
-          <p className="font-semibold text-gray-600">Choose Token</p>
-        </div>
-        <div className="mt-3 flex items-center justify-between border-b border-gray-200 pb-4">
-          <div className="flex items-center gap-2">
+          <div className="mt-3 flex items-center gap-2 border-b border-gray-200 pb-4">
             <img
               src={requestedToken?.logoURI}
               alt=""
@@ -219,24 +102,6 @@ export default function RequestCard({
             />
             <p className="text-xl font-semibold md:text-4xl">{amount}</p>
           </div>
-          <TokenModal
-            selectedChain={selectedChain}
-            selectedToken={selectedToken}
-            setSelectedToken={setSelectedToken}
-          />
-        </div>
-        <div className="mt-6 flex items-start justify-between border-b border-gray-200 pb-6">
-          <div className="">
-            <p className="md:text-md text-sm font-semibold">Choose Chain</p>
-            <p className="max-w-28 text-xs md:max-w-xs md:text-sm">
-              Select desired chain to send assets
-            </p>
-          </div>
-          <ChainModal
-            selectedChain={selectedChain}
-            setSelectedChain={setSelectedChain}
-            setSelectedToken={setSelectedToken}
-          />
         </div>
         <div
           className={`${
@@ -244,28 +109,26 @@ export default function RequestCard({
           } absolute inset-0 h-full w-full bg-white bg-opacity-40`}
         ></div>
       </div>
-      <div className="mt-4 flex flex-wrap justify-end">
-        {connectedWallet ? (
-          <>
-            <div className="mb-2 w-full md:mb-0 md:w-1/2 md:pr-2">
-              <button className="w-full rounded-full border border-gray-800 py-2 font-medium text-gray-800">
-                Decline
-              </button>
-            </div>
-            <div className="w-full md:w-1/2 md:pl-2">
-              <button
-                className="w-full rounded-full border border-[#2B67E8] bg-[#2B67E8] py-2 font-medium text-white"
-                onClick={handlePayment}
-              >
-                Pay
-              </button>
-            </div>
-          </>
-        ) : (
-          <div className="w-full">
-            <ConnectWalletButton />
-          </div>
-        )}
+      <div className="mt-4">
+        <button
+          className="w-full rounded-full border border-[#2B67E8] bg-[#2B67E8] py-2 font-medium text-white"
+          onClick={() => {
+            {
+              request.executed
+                ? window.navigator.clipboard.writeText(
+                    `${
+                      explorerLinks[request?.actions[0]?.executionData?.chain]
+                    }${request?.actions[0]?.executionData?.hash}`
+                  )
+                : window.navigator.clipboard.writeText(
+                    `https://request.fetcch.xyz/request/${request.id}`
+                  )
+              toast.success("Copied link")
+            }
+          }}
+        >
+          Copy link
+        </button>
       </div>
     </section>
   )

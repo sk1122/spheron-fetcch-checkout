@@ -1,22 +1,18 @@
 "use client"
 
+import { useDeferredValue, useEffect, useState } from "react"
 import useDetailStore from "@/store"
 import { useWallet as useAptosWallet } from "@aptos-labs/wallet-adapter-react"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { Loader2 } from "lucide-react"
-import {
-  useDeferredValue,
-  useEffect,
-  useState
-} from "react"
 import { useAccount } from "wagmi"
 
-import RequestModal from "@/components/request-modal"
 import {
   verifyAptosAddress,
   verifyEvmAddress,
-  verifySolanaAddress
+  verifySolanaAddress,
 } from "@/lib/verifyAddress"
+import RequestModal from "@/components/request-modal"
 
 import { useConnectedWallet } from "./providers/providers"
 import { Button } from "./ui/button"
@@ -105,12 +101,10 @@ const AddressInput = () => {
 
   return (
     <div className="mt-7 flex h-full w-full max-w-[699px] flex-col items-start justify-center">
-      <label className="px-4">Request address</label>
       <div className="relative mx-auto flex h-16 w-full max-w-[699px] items-center rounded-full border border-primary p-8 shadow-[inset_0px_1px_4px_1px_rgba(0,0,0,0.25)]">
         <input
           type="text"
           placeholder="Request address"
-          value={walletAddress}
           spellCheck={false}
           onChange={(e) => setWalletAddress(e.target.value)}
           className="placeholder:text-muted-foreground block w-full bg-transparent pr-24 text-lg ring-0 placeholder:text-[#777777] focus-visible:outline-none focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 md:pr-36"

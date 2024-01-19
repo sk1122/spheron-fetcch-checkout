@@ -16,6 +16,7 @@ export interface Request {
 }
 
 export interface Action {
+  executionData: any
   data: Data
   type: string
 }

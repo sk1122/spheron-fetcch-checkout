@@ -6,6 +6,7 @@ import { Bell } from "lucide-react"
 
 import { Request } from "@/types/request"
 
+import PaymentCard from "./cards/payment-card"
 import RequestCard from "./cards/request-card"
 
 const Actions = ({ id }: { id: string }) => {
@@ -27,7 +28,7 @@ const Actions = ({ id }: { id: string }) => {
     <>
       <div className="mt-8">
         {request && (
-          <RequestCard request={request} action={request.actions[0]} />
+          <PaymentCard request={request} action={request.actions[0]} />
         )}
       </div>
       <div className="mx-auto my-10 flex w-fit items-center gap-2 rounded-full border border-neutral-300 bg-neutral-200 px-7 py-4">
@@ -52,7 +53,7 @@ const Actions = ({ id }: { id: string }) => {
         <div className="container mx-auto mb-20 flex flex-wrap items-center justify-between">
           {request?.actions?.map((action, index) => {
             if (index === 0) return
-            return <RequestCard request={request} action={action} />
+            return <PaymentCard request={request} action={action} />
           })}
         </div>
       ) : (
