@@ -16,10 +16,12 @@ import {
   useSendTransaction,
   useSwitchNetwork,
 } from "wagmi"
+import { number } from "zod"
 
 import { Action, Request } from "@/types/request"
 import { chainData, explorerLinks } from "@/lib/data"
 import formatAddress from "@/lib/formatAddress"
+import formatAmount from "@/lib/formatAmount"
 
 import ConnectWalletButton from "../connect-wallet-button"
 import ChainModal from "../modals/chain-modal"
@@ -46,7 +48,7 @@ export default function RequestCard({ request }: { request: Request }) {
   const amount = formatUnits(
     BigInt(request?.actions[0].data?.amount?.amount),
     Number(request?.actions[0].data?.tokenData?.decimals)
-  ).toString()
+  )
 
   const requestedChain = chainData.find(
     (chain) => chain.id === request?.actions[0]?.data?.chain
@@ -89,18 +91,21 @@ export default function RequestCard({ request }: { request: Request }) {
           <img src={requestedChain?.logoURI} alt="" className="h-8 w-8" />
         </div>
         <p className="my-6 text-sm font-semibold text-[hsl(240,3%,19%)]">
-          You requested {amount} {request?.actions[0]?.data?.tokenData?.symbol}{" "}
-          on {requestedChain?.name}
+          You requested {formatAmount(parseInt(amount))}{" "}
+          {request?.actions[0]?.data?.tokenData?.symbol} on{" "}
+          {requestedChain?.name}
         </p>
-        <div className="flex items-center justify-between">
-          <p className="font-semibold text-gray-600">Requested</p>
+        <div className="">
+          <p className="font-semibold text-gray-600">Requested amount</p>
           <div className="mt-3 flex items-center gap-2 border-b border-gray-200 pb-4">
             <img
               src={requestedToken?.logoURI}
               alt=""
               className="h-6 w-6 rounded-full md:h-10 md:w-10"
             />
-            <p className="text-xl font-semibold md:text-4xl">{amount}</p>
+            <p className="text-xl font-semibold md:text-4xl">
+              {formatAmount(parseInt(amount))}
+            </p>
           </div>
         </div>
         <div

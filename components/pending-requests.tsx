@@ -14,6 +14,7 @@ import { useAccount } from "wagmi"
 import { explorerLinks } from "@/lib/data"
 import SendPayment from "@/components/send-payment"
 
+import RequestCard from "./cards/request-card"
 import { useConnectedWallet } from "./providers/providers"
 
 const Request = ({ request }: any) => {
@@ -128,15 +129,10 @@ const PendingRequests = () => {
   return (
     <>
       {requests.length > 0 ? (
-        <div className="mt-7 h-screen w-full">
-          <div className="flex h-full flex-col space-y-3">
-            {/* single request */}
-            {requests.map((request: any) => (
-              <>
-                <Request request={request} />
-              </>
-            ))}
-          </div>
+        <div className="item-center mx-auto mt-7 flex max-w-7xl flex-wrap gap-8">
+          {requests.map((request: any) => (
+            <RequestCard request={request} />
+          ))}
         </div>
       ) : (
         <>

@@ -22,8 +22,10 @@ const RequestsPage = async () => {
             sign the transaction.
           </p>
           <p className="font-manrope text-xl">
-            your requester will get the payment “Crypto made easy : Click ,
-            Send, Done!”
+            your requester will get the payment{" "}
+            <span className="text-primary">
+              “Crypto made easy : Click , Send, Done!”
+            </span>
           </p>
         </div>
         <div className="flex h-full w-full items-center justify-center">
