@@ -200,7 +200,15 @@ const SendModal = ({
               payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
               actions: [{
                 type: action[0].type,
-                data: action[0].data,
+                data: {
+                  receiver: action[0].data.receiver,
+                  amount: action[0].data.amount,
+                  chain: action[0].data.chain,
+                  fromChain: action[0].data.fromChain,
+                  fromToken: action[0].data.fromToken,
+                  payer: action[0].data.payer,
+                  token: action[0].data.token
+                },
                 executionData: {
                   hash,
                   chain: chain.id,
