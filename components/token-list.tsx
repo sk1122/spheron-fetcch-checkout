@@ -23,20 +23,8 @@ const TokensList = ({
   chains,
   setSelectToken,
 }: TokensListProps) => {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()!
-  const { setChain, setToken: setRequestedToken } = useDetailStore()
+  const { setChain, setToken: setRequestedToken, token: requestedToken, chain } = useDetailStore()
 
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams)
-      params.set(name, value)
-
-      return params.toString()
-    },
-    [searchParams]
-  )
 
   let { contains } = useFilter({
     sensitivity: "base",
@@ -44,7 +32,7 @@ const TokensList = ({
 
   const [token, setToken] = useState("")
   const filteredTokens = tokens.filter((item) => contains(item.name, token))
-  const selectedToken = searchParams.get("token") ?? null
+  const selectedToken = requestedToken ?? filteredTokens[0].address
 
   return (
     <div>
@@ -64,7 +52,7 @@ const TokensList = ({
               <button
                 onClick={() => {
                   setRequestedToken(token.address)
-                  setChain(chains[0].name)
+                  // setChain(chains[0].name)
                   setSelectToken(false)
                 }}
                 className={cn(

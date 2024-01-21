@@ -131,17 +131,10 @@ const SendModal = ({
     setLoading(true)
     const toastId = toast.loading("Executing payment...")
     try {
-      console.log({
-        ...action.data,
-        payer:
-          connectedWallet === "evm"
-            ? accountAddress
-            : connectedWallet === "solana"
-              ? publicKey?.toBase58()
-              : account?.address.toString(),
-        fromChain: selectedChainData[0].id,
-        fromToken: (selectedTokenData![0] as Token).address,
-      })
+      console.log(selectedChainData[0], "HERE 12")
+      if(selectedChainData[0].id === 7 && connectedWallet !== "solana") throw new Error("")
+      else if (selectedChainData[0].id === 8 && connectedWallet !== "aptos") throw new Error()
+
       const req = await fetch("/api/buildTransaction", {
         method: "POST",
         body: JSON.stringify({

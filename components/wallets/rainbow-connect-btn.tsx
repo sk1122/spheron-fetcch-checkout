@@ -2,7 +2,7 @@
 
 import React from "react"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import ethereum from "@/public/assets/ethereum.svg"
 import { useConnectModal } from "@rainbow-me/rainbowkit"
 import { useAccount, useDisconnect } from "wagmi"
@@ -21,7 +21,8 @@ const RainbowConnectBtutton = ({ setIsWalletsModalOpen }: WalletBtnProps) => {
   const { connectedWallet, setConnectedWallet } = useConnectedWallet()
   const { openConnectModal } = useConnectModal()
   const router = useRouter()
-
+  const pathname = usePathname()
+  
   return (
     <button
       className="relative flex h-56 w-60 flex-col items-center justify-center rounded-[20px] bg-[#E3ECFF] focus:border-[3px] focus:border-primary focus:bg-[#D4E2FF] focus:outline-none"
@@ -35,6 +36,7 @@ const RainbowConnectBtutton = ({ setIsWalletsModalOpen }: WalletBtnProps) => {
             openConnectModal!()
             if (connectedWallet === null) {
               setConnectedWallet("evm")
+              if(pathname.includes("/request/")) return
               router.push("/requests")
             }
           } catch (err) {

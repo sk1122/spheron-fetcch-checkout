@@ -16,10 +16,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog"
+import { usePathname, useRouter } from "next/navigation"
 
 const SolanaAccountModal = () => {
   const { setConnectedWallet } = useConnectedWallet()
   const { publicKey, disconnect } = useWallet()
+  const pathname = usePathname()
+  const router = useRouter()
   return (
     <Dialog>
       <DialogTrigger>
@@ -53,7 +56,11 @@ const SolanaAccountModal = () => {
           <button
             className="w-full rounded-md bg-input p-4 text-left hover:text-primary"
             onClick={async () => {
-              await disconnect().then(() => setConnectedWallet(null))
+              await disconnect().then(() => {
+                setConnectedWallet(null)
+                if(pathname.includes("/request/")) return
+                router.push("/")
+              })
             }}
           >
             Disconnect

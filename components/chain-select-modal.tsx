@@ -20,26 +20,13 @@ const ChainSelectModal = ({
   chains: Chain[]
   children: React.ReactNode
 }) => {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()!
-  const { setChain } = useDetailStore()
+  const { setChain, chain } = useDetailStore()
 
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams)
-      params.set(name, value)
+  const selectedChain = chain ?? chains[0].name
 
-      return params.toString()
-    },
-    [searchParams]
-  )
-
-  const selectedChain = searchParams.get("chain") ?? chains[0].name
-
-  useEffect(() => {
-    setChain(chains[0].name)
-  }, [])
+  // useEffect(() => {
+  //   setChain(chains[0].name)
+  // }, [])
 
   return (
     <>

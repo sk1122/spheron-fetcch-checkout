@@ -29,11 +29,6 @@ const AddressInput = () => {
   const { publicKey } = useWallet()
   const { account } = useAptosWallet()
 
-  const isUserAddress =
-    address.toLowerCase() === evmAddress?.toLowerCase() ||
-    address.toLowerCase() === publicKey?.toBase58().toLowerCase() ||
-    address.toLowerCase() === account?.address.toLowerCase()
-
   const { connectedWallet, addressChain, setAddressChain } =
     useConnectedWallet()
   const [openRequestModal, setOpenRequestModal] = useState(false)
@@ -53,7 +48,7 @@ const AddressInput = () => {
     } else if (connectedWallet == "aptos") {
       setWalletAddress(account?.address.toString() as string)
     }
-  }, [connectedWallet, address, publicKey, account])
+  }, [connectedWallet])
 
   const verifyWalletAddress = () => {
     try {

@@ -2,7 +2,7 @@
 
 import React, { Dispatch, SetStateAction } from "react"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import aptos from "@/public/assets/aptos.svg"
 import type { Wallet, WalletName } from "@aptos-labs/wallet-adapter-react"
 import {
@@ -101,6 +101,8 @@ const WalletView = ({
     }
   }
 
+  const pathname = usePathname()
+
   if (!isWalletReady && isRedirectable()) {
     // wallet has mobile app
     if (mobileSupport) {
@@ -113,6 +115,7 @@ const WalletView = ({
             onWalletConnectRequest(wallet.name).then(() => {
               if (connectedWallet === null) {
                 setConnectedWallet("aptos")
+                if(pathname.includes("/request/")) return
                 router.push("/requests")
               }
             })

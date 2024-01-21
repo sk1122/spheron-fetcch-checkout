@@ -95,6 +95,11 @@ const SendPayment = ({
     const toastId = toast.loading("Executing payment...")
     try {
       setLoading(true)
+
+      console.log(selectedChainData[0], "HERE 11")
+      if(selectedChainData[0].id === 7 && connectedWallet !== "solana") throw new Error("")
+      else if (selectedChainData[0].id === 8 && connectedWallet !== "aptos") throw new Error()
+
       const actions = {
         actions: [
           {

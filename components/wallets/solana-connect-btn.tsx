@@ -9,7 +9,7 @@ import { useWalletModal } from "@solana/wallet-adapter-react-ui"
 import { truncatePublicKey } from "@/lib/utils"
 
 import { useConnectedWallet } from "../providers/providers"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 
 interface WalletBtnProps {
   setIsWalletsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -20,6 +20,7 @@ const SolanaConnectBtutton = ({ setIsWalletsModalOpen }: WalletBtnProps) => {
   const { connectedWallet, setConnectedWallet } = useConnectedWallet()
   const { setVisible } = useWalletModal()
   const router = useRouter()
+  const pathname = usePathname()
 
   const isConnected = connected && publicKey && wallet
 
@@ -36,6 +37,7 @@ const SolanaConnectBtutton = ({ setIsWalletsModalOpen }: WalletBtnProps) => {
             setVisible(true)
             if (connectedWallet === null) {
               setConnectedWallet("solana")
+              if(pathname.includes("/request/")) return
               router.push("/requests")
             }
           } catch (err) {

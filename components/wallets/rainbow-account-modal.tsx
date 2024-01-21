@@ -18,11 +18,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog"
+import { usePathname, useRouter } from "next/navigation"
 
 const RainbowAccountModal = () => {
   const { address, connector: activeConnector } = useAccount()
   const { disconnectAsync } = useDisconnect()
   const { setConnectedWallet } = useConnectedWallet()
+  const pathname = usePathname()
+  const router = useRouter()
 
   return (
     <Dialog>
@@ -57,7 +60,11 @@ const RainbowAccountModal = () => {
           <button
             className="bg-input hover:text-primary w-full rounded-md p-4 text-left"
             onClick={async () => {
-              await disconnectAsync().then(() => setConnectedWallet(null))
+              await disconnectAsync().then(() => {
+                setConnectedWallet(null)
+                if(pathname.includes("/request/")) return
+                router.push("/")
+              })
             }}
           >
             Disconnect

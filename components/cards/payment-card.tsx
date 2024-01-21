@@ -67,6 +67,20 @@ export default function PaymentCard({
   async function handlePayment() {
     const toastId = toast.loading("Executing payment...")
     try {
+
+      if(chainData[selectedChain].id === 7 && connectedWallet !== "solana") {
+        toast.error("Connect your solana wallet")
+        throw new Error("")
+      }
+      else if (chainData[selectedChain].id === 8 && connectedWallet !== "aptos") {
+        toast.error("Connect your aptos wallet")
+        throw new Error()
+      }
+      else if((chainData[selectedChain].id <= 6 || chainData[selectedChain].id === 9) && connectedWallet !== "evm") {
+        toast.error("Connect your evm wallet")
+        throw new Error()
+      }
+
       const actions = request?.actions.map((action: any) => ({
         ...action,
         data: {
@@ -81,7 +95,7 @@ export default function PaymentCard({
           fromToken: chainData[selectedChain].tokens[selectedToken].address,
         },
       }))
-      console.log(actions)
+      
       const data = await buildTransaction(actions)
       const transactions = data.data[0]
 
@@ -112,6 +126,8 @@ export default function PaymentCard({
           const connection = new Connection(
             "https://solana-mainnet.g.alchemy.com/v2/LZLe8tHrIZ06MnZlxn-L4Fo5aj7iIdgI"
           )
+          const blockhash = await connection.getLatestBlockhash()
+          txData.message.recentBlockhash = blockhash.blockhash
 
           const transaction = await sendTransaction!(txData, connection)
 

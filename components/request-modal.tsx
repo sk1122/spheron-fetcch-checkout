@@ -62,8 +62,6 @@ const RequestModal = ({
     }
   }, [addressChain, open])
 
-  const searchParams = useSearchParams()
-
   let { contains } = useFilter({
     sensitivity: "base",
   })
@@ -136,11 +134,7 @@ const RequestModal = ({
               token: selectedTokenData[0].address,
               chain: selectedChainData[0].id,
               receiver:
-                connectedWallet === "evm"
-                  ? address
-                  : connectedWallet === "solana"
-                    ? publicKey?.toBase58()
-                    : account?.address.toString(),
+              requestAddress,
               amount: {
                 amount: parseUnits(
                   amount,
