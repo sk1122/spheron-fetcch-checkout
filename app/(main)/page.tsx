@@ -24,14 +24,25 @@ const LandingPage = () => {
           priority
           className="absolute hidden select-none lg:-top-60 lg:right-56 lg:block lg:w-3/12 xl:-top-64 xl:right-72 2xl:-top-72 2xl:right-96 2xl:w-1/5"
         />
-        <h1 className="text-left font-manrope text-5xl font-bold md:text-6xl lg:text-center xl:text-7xl 2xl:text-8xl">
-          Payment Requests
-        </h1>
-        <p className="mt-8 w-full max-w-md text-left text-[18px] md:max-w-lg lg:mx-auto lg:text-center xl:max-w-xl 2xl:max-w-full">
-          Let&apos;s understand the user experience flow of{" "}
-          <span className="text-[#FF7D1F]">request button</span> in wallets
-          integrated with Fetcch.{" "}
-        </p>
+        <h1 className="text-center font-manrope text-3xl font-bold md:text-4xl xl:text-5xl 2xl:text-6xl">
+            Create Link, <span className="text-[#FF7D1F]">Request</span> your
+            crypto
+          </h1>
+          <div className="mx-auto mt-8 w-full max-w-md text-center md:max-w-lg xl:max-w-xl 2xl:max-w-full">
+            <p className="font-manrope text-xl">
+              Connect your wallet,{" "}
+              <span className="font-architects_daughter line-through">
+                choose chain, Set the amount,
+              </span>{" "}
+              sign the transaction.
+            </p>
+            <p className="font-manrope text-xl">
+              your requester will get the payment{" "}
+              <span className="text-primary">
+                “Crypto made easy : Click , Send, Done!”
+              </span>
+            </p>
+          </div>
         <Image
           src={collection3}
           alt="collection1"
