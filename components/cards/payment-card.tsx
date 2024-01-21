@@ -18,7 +18,7 @@ import {
 } from "wagmi"
 
 import { Action, Request } from "@/types/request"
-import { chainData } from "@/lib/data"
+import { chainData, explorerLinks } from "@/lib/data"
 import formatAddress from "@/lib/formatAddress"
 
 import ConnectWalletButton from "../connect-wallet-button"
@@ -245,6 +245,30 @@ export default function PaymentCard({
         ></div>
       </div>
       <div className="mt-4 flex flex-wrap justify-end">
+        {request.executed ? 
+          <div className="mb-2 w-full md:mb-0 md:pr-2">
+          <button
+            className={(request.executed ? "bg-gray-500" : "bg-[#2B67E8]") + " w-full rounded-full border border-[#2B67E8] py-2 font-medium text-white"}
+            onClick={() => {
+              {
+                request.executed
+                  ? window.navigator.clipboard.writeText(
+                      `${
+                        explorerLinks[request?.actions[0]?.executionData?.chain]
+                      }${request?.actions[0]?.executionData?.hash}`
+                    )
+                  : window.navigator.clipboard.writeText(
+                      `https://request.fetcch.xyz/request/${request.id}`
+                    )
+                toast.success("Copied link")
+              }
+            }}
+          >
+            {request.executed ? "Copy Transaction Link" : "Copy Request Link"}
+          </button>
+        </div>
+        :
+        <>
         {connectedWallet ? (
           <>
             <div className="mb-2 w-full md:mb-0 md:w-1/2 md:pr-2">
@@ -266,6 +290,8 @@ export default function PaymentCard({
             <ConnectWalletButton />
           </div>
         )}
+        </>
+        }
       </div>
     </section>
   )
