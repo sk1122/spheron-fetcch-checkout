@@ -91,7 +91,7 @@ export default function RequestCard({ request }: { request: Request }) {
           <img src={requestedChain?.logoURI} alt="" className="h-8 w-8" />
         </div>
         <p className="my-6 text-sm font-semibold text-[hsl(240,3%,19%)]">
-          You requested {formatAmount(parseInt(amount))}{" "}
+          You requested {formatAmount(Number(amount))}{" "}
           {request?.actions[0]?.data?.tokenData?.symbol} on{" "}
           {requestedChain?.name}
         </p>
@@ -104,7 +104,7 @@ export default function RequestCard({ request }: { request: Request }) {
               className="h-6 w-6 rounded-full md:h-10 md:w-10"
             />
             <p className="text-xl font-semibold md:text-4xl">
-              {formatAmount(parseInt(amount))}
+              {formatAmount(Number(amount))}
             </p>
           </div>
         </div>
@@ -116,7 +116,7 @@ export default function RequestCard({ request }: { request: Request }) {
       </div>
       <div className="mt-4">
         <button
-          className="w-full rounded-full border border-[#2B67E8] bg-[#2B67E8] py-2 font-medium text-white"
+          className={(request.executed ? "bg-gray-500" : "bg-[#2B67E8]") + " w-full rounded-full border border-[#2B67E8] py-2 font-medium text-white"}
           onClick={() => {
             {
               request.executed
@@ -132,7 +132,7 @@ export default function RequestCard({ request }: { request: Request }) {
             }
           }}
         >
-          Copy link
+          {request.executed ? "Copy Transaction Link" : "Copy Request Link"}
         </button>
       </div>
     </section>
