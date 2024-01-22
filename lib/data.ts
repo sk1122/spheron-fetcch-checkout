@@ -296,7 +296,7 @@ export const solanaChainData: Chain[] = [
         chainId: 12465,
         symbol: "SOL",
         logoURI: "/assets/tokens/solana.webp",
-        decimals: 10
+        decimals: 9
       },
     ],
   },
