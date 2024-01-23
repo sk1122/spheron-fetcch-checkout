@@ -183,7 +183,15 @@ const SendPayment = ({
               payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
               actions: [{
                 type: actions.actions[0].type,
-                data: actions.actions[0].data,
+                data: {
+                  receiver: actions.actions[0].data.receiver,
+                  amount: actions.actions[0].data.amount,
+                  chain: actions.actions[0].data.chain,
+                  fromChain: actions.actions[0].data.fromChain,
+                  fromToken: actions.actions[0].data.fromToken,
+                  payer: actions.actions[0].data.payer,
+                  token: actions.actions[0].data.token
+                },
                 executionData: {
                   hash,
                   chain: chain,
