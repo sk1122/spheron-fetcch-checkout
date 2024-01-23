@@ -105,7 +105,7 @@ export const evmChainData: Chain[] = [
     chainId: 56,
     name: "Binance",
     rpc: `https://bscrpc.com`,
-    logoURI: "/assets/tokens/binance.webp",
+    logoURI: "/assets/tokens/binance.png",
     tokens: [
       {
         name: "USDC",
