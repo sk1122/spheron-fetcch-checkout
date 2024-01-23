@@ -18,10 +18,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog"
+import { useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 
 const AptosaccountModal = () => {
   const { account, disconnect } = useWallet()
   const { connectedWallet, setConnectedWallet } = useConnectedWallet()
+  const pathname = usePathname()
+  const router = useRouter()
+
   return (
     <Dialog>
       <DialogTrigger>
@@ -58,6 +63,8 @@ const AptosaccountModal = () => {
               disconnect()
               if (connectedWallet === "aptos") {
                 setConnectedWallet(null)
+                if(pathname.includes("/request/")) return
+                router.push("/")
               }
             }}
           >

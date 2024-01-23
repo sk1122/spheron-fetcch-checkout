@@ -4,6 +4,7 @@ import type { Dispatch, SetStateAction } from "react"
 import { Suspense, useCallback, useEffect, useState } from "react"
 import Image from "next/image"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import useDetailStore from "@/store"
 import * as ScrollArea from "@radix-ui/react-scroll-area"
 import { useFilter } from "@react-aria/i18n"
 import { Divide, ExternalLink, Search } from "lucide-react"
@@ -22,19 +23,8 @@ const TokensList = ({
   chains,
   setSelectToken,
 }: TokensListProps) => {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()!
+  const { setChain, setToken: setRequestedToken, token: requestedToken, chain } = useDetailStore()
 
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams)
-      params.set(name, value)
-
-      return params.toString()
-    },
-    [searchParams]
-  )
 
   let { contains } = useFilter({
     sensitivity: "base",
@@ -42,7 +32,7 @@ const TokensList = ({
 
   const [token, setToken] = useState("")
   const filteredTokens = tokens.filter((item) => contains(item.name, token))
-  const selectedToken = searchParams.get("token") ?? null
+  const selectedToken = requestedToken ?? filteredTokens[0].address
 
   return (
     <div>
@@ -61,9 +51,8 @@ const TokensList = ({
             {filteredTokens.map((token, idx) => (
               <button
                 onClick={() => {
-                  router.push(
-                    pathname + "?" + createQueryString("token", token.address) + "&" + createQueryString("chain", chains[0].name)
-                  )
+                  setRequestedToken(token.address)
+                  // setChain(chains[0].name)
                   setSelectToken(false)
                 }}
                 className={cn(

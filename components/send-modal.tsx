@@ -1,13 +1,24 @@
 "use client"
+
 import React, { useEffect, useState } from "react"
 import Image from "next/image"
 import { useSearchParams } from "next/navigation"
+import useDetailStore from "@/store"
+import { useWallet as useAptosWallet } from "@aptos-labs/wallet-adapter-react"
 import { Close as DialogClose } from "@radix-ui/react-dialog"
 import { useFilter } from "@react-aria/i18n"
-import { Loader2, User, X } from "lucide-react"
-import { useWallet as useAptosWallet } from "@aptos-labs/wallet-adapter-react"
+import { useWallet } from "@solana/wallet-adapter-react"
+import { Connection, VersionedTransaction } from "@solana/web3.js"
 import * as aptos from "aptos"
-import { useSwitchNetwork, useNetwork } from "wagmi"
+import base58 from "bs58"
+import { Loader2, User, X } from "lucide-react"
+import toast from "react-hot-toast"
+import {
+  useAccount,
+  useNetwork,
+  useSendTransaction,
+  useSwitchNetwork,
+} from "wagmi"
 
 import {
   aptosChainData,
@@ -21,11 +32,6 @@ import TokensList from "@/components/token-list"
 
 import { useConnectedWallet } from "./providers/providers"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog"
-import { useWallet } from "@solana/wallet-adapter-react"
-import { useSendTransaction, useAccount } from "wagmi"
-import { Connection, VersionedTransaction } from "@solana/web3.js"
-import base58 from "bs58"
-import toast from "react-hot-toast"
 
 const SendModal = ({
   open,
@@ -35,21 +41,26 @@ const SendModal = ({
   token,
   amount,
   action,
-  id
+  id,
 }: {
   open: boolean
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>,
-  address: string,
-  chain: Chain,
-  token: Token,
-  amount: string,
-  action: any,
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  address: string
+  chain: Chain
+  token: Token
+  amount: string
+  action: any
   id: string
 }) => {
   const [chainSelect, setChainSelect] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [chainData, setChainData] = useState<Chain[]>([...evmChainData,  ...solanaChainData, ...aptosChainData])
+  const [chainData, setChainData] = useState<Chain[]>([
+    ...evmChainData,
+    ...solanaChainData,
+    ...aptosChainData,
+  ])
   const { addressChain, connectedWallet } = useConnectedWallet()
+  const { chain: selectedChain, token: selectedToken } = useDetailStore()
 
   const { address: accountAddress } = useAccount()
   const {
@@ -78,27 +89,24 @@ const SendModal = ({
 
   const searchParams = useSearchParams()
 
-  const selectedChain = searchParams.get("chain")
-  const selectedToken = searchParams.get("token")
-
   console.log(selectedChain, selectedToken, "dsa")
 
   let { contains } = useFilter({
     sensitivity: "base",
   })
 
-  const selectedChainData: Chain[] =
-    (selectedChain) ?
-    chainData.filter((chain) => contains(chain.name, selectedChain)) : []
+  const selectedChainData: Chain[] = selectedChain
+    ? chainData.filter((chain) => contains(chain.name, selectedChain))
+    : []
 
   let selectedTokenData: Token[] =
-    ((selectedChainData &&
-    selectedToken) ?
-    selectedChainData[0].tokens.filter((token) =>
-      contains(token.address, selectedToken)
-    ) : []) ?? []
+    (selectedChainData && selectedToken
+      ? selectedChainData[0].tokens.filter((token) =>
+          contains(token.address, selectedToken)
+        )
+      : []) ?? []
 
-  if(!selectedTokenData) {
+  if (!selectedTokenData) {
     selectedTokenData = [
       {
         address: token.address,
@@ -106,8 +114,8 @@ const SendModal = ({
         logoURI: token.logoURI,
         chainId: token.chainId,
         symbol: token.symbol,
-        decimals: 18
-      }
+        decimals: 18,
+      },
     ]
   }
 
@@ -123,12 +131,10 @@ const SendModal = ({
     setLoading(true)
     const toastId = toast.loading("Executing payment...")
     try {
-      console.log({
-        ...action.data,
-        payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
-        fromChain: selectedChainData[0].id,
-        fromToken: (selectedTokenData![0] as Token).address
-      })
+      console.log(selectedChainData[0], "HERE 12")
+      if(selectedChainData[0].id === 7 && connectedWallet !== "solana") throw new Error("")
+      else if (selectedChainData[0].id === 8 && connectedWallet !== "aptos") throw new Error()
+
       const req = await fetch("/api/buildTransaction", {
         method: "POST",
         body: JSON.stringify({
@@ -136,63 +142,77 @@ const SendModal = ({
             ...action,
             data: {
               ...action.data,
-              payer: connectedWallet === "evm" ? accountAddress : connectedWallet === "solana" ? publicKey?.toBase58() : account?.address.toString(),
+              payer:
+                connectedWallet === "evm"
+                  ? accountAddress
+                  : connectedWallet === "solana"
+                    ? publicKey?.toBase58()
+                    : account?.address.toString(),
               fromChain: selectedChainData[0].id,
-              fromToken: (selectedTokenData![0] as Token).address
-            }
-          }))
-        })
+              fromToken: (selectedTokenData![0] as Token).address,
+            },
+          })),
+        }),
       })
-  
+
       const res = await req.json()
-  
+
       const transactions = res.data[0]
-  
+
       console.log(res, transactions)
-  
-      for(let i = 0; i < transactions.length; i++) {
+
+      for (let i = 0; i < transactions.length; i++) {
         const tx = transactions[i]
-  
+
         console.log(tx, "transaction")
-  
-        let hash = ''
-        if(connectedWallet === "evm") {
-          if(chainD?.id !== selectedChainData[0].chainId) await switchNetworkAsync!(selectedChainData[0].chainId)
-  
+
+        let hash = ""
+        if (connectedWallet === "evm") {
+          if (chainD?.id !== selectedChainData[0].chainId)
+            await switchNetworkAsync!(selectedChainData[0].chainId)
+
           console.log({
             ...tx.tx,
-            gasPrice: undefined
+            gasPrice: undefined,
           })
           const transaction = await sendTransactionAsync({
             ...tx.tx,
-            gasPrice: undefined
+            gasPrice: undefined,
           })
-  
+
           console.log(transaction)
-  
+
           hash = transaction.hash
         } else if (connectedWallet === "solana") {
           const txData = VersionedTransaction.deserialize(base58.decode(tx.tx))
-          const connection = new Connection("https://solana-mainnet.g.alchemy.com/v2/LZLe8tHrIZ06MnZlxn-L4Fo5aj7iIdgI")
-  
+          const connection = new Connection(
+            "https://solana-mainnet.g.alchemy.com/v2/LZLe8tHrIZ06MnZlxn-L4Fo5aj7iIdgI"
+          )
+
           const transaction = await sendTransaction!(txData, connection)
-  
+
           console.log(transaction)
-  
+
           hash = transaction
         } else if (connectedWallet === "aptos") {
           const txData = aptos.TxnBuilderTypes.RawTransaction.deserialize(
             new aptos.BCS.Deserializer(base58.decode(tx.tx))
           )
-  
+
           const transaction = await signAndSubmitBCSTransaction(txData)
-  
+
           console.log(transaction)
-  
+
           hash = transaction
         }
-  
-        if(transactions.length === 1 || (tx.type && (tx.type === "PAYMENT_TOKEN" || tx.type === "OTHER" || tx.type === "PAYMENT_NATIVE"))) {
+
+        if (
+          transactions.length === 1 ||
+          (tx.type &&
+            (tx.type === "PAYMENT_TOKEN" ||
+              tx.type === "OTHER" ||
+              tx.type === "PAYMENT_NATIVE"))
+        ) {
           await fetch("/api/updatePaymentRequest", {
             method: "POST",
             body: JSON.stringify({
@@ -218,16 +238,16 @@ const SendModal = ({
               executed: true
             })
           })
-    
+
           toast.success("Payment successfully done!", {
-            id: toastId
+            id: toastId,
           })
           setOpen(false)
         }
       }
     } catch (e) {
       toast.error("Payment not successfully executed!", {
-        id: toastId
+        id: toastId,
       })
       setLoading(false)
     }
@@ -268,9 +288,7 @@ const SendModal = ({
                   </div>
                   <input
                     className="pointer-events-none overflow-clip truncate border-none bg-transparent text-primary outline-none placeholder:text-[#6893F0] focus:outline-none group-hover:placeholder:text-primary"
-                    placeholder={
-                      address
-                    }
+                    placeholder={address}
                     readOnly
                   />
                 </div>
@@ -312,14 +330,24 @@ const SendModal = ({
                     </div>
                     <input
                       className="pointer-events-none overflow-clip truncate border-none bg-transparent text-primary outline-none placeholder:text-[#6893F0] focus:outline-none group-hover:placeholder:text-primary"
-                      placeholder={(selectedChainData.length > 0 && selectedTokenData.length > 0) ? `${selectedChainData[0].name} and ${selectedTokenData![0].name}` : "Select Chain and token"}
+                      placeholder={
+                        selectedChainData.length > 0 &&
+                        selectedTokenData.length > 0
+                          ? `${selectedChainData[0].name} and ${
+                              selectedTokenData![0].name
+                            }`
+                          : "Select Chain and token"
+                      }
                       type="text"
                       readOnly
                     />
                   </div>
                 </div>
               </button>
-              <button onClick={() => pay()} className="w-full flex justify-center items-center rounded-full bg-primary py-4 text-white">
+              <button
+                onClick={() => pay()}
+                className="flex w-full items-center justify-center rounded-full bg-primary py-4 text-white"
+              >
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Pay
               </button>

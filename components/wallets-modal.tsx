@@ -1,13 +1,14 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
+import { redirect, useRouter } from "next/navigation"
 import { useWallet as useAptosWallet } from "@aptos-labs/wallet-adapter-react"
 import { Close as DialogClose } from "@radix-ui/react-dialog"
+import { useConnectModal } from "@rainbow-me/rainbowkit"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { encode } from "bs58"
 import { Loader2, X } from "lucide-react"
 import { useAccount, useSignMessage } from "wagmi"
-import { useRouter } from "next/navigation"
 
 import { useIsMounted } from "@/lib/useIsMounted"
 import { cn } from "@/lib/utils"
@@ -24,8 +25,6 @@ import { Button, buttonVariants } from "./ui/button"
 import AptosConnectButton from "./wallets/aptos-connect-btn"
 import RainbowConnectButton from "./wallets/rainbow-connect-btn"
 import SolanaConnectBtutton from "./wallets/solana-connect-btn"
-import { redirect } from "next/navigation"
-import { useConnectModal } from "@rainbow-me/rainbowkit"
 
 const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
   const [isWalletsModalOpen, setIsWalletsModalOpen] = useState(false)
@@ -72,7 +71,12 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
     } else {
       setConnectedWallet(null)
     }
-  }, [isAnyWalletConncted, isRainbowConnected, isSolanaConnected, isAptosConnected])
+  }, [
+    isAnyWalletConncted,
+    isRainbowConnected,
+    isSolanaConnected,
+    isAptosConnected,
+  ])
 
   useEffect(() => {
     if (address) {
@@ -99,66 +103,66 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
 
   const handleGetStartedClick = async () => {
     try {
-      setLoading(true)
-  
-      console.log("Owner address: ", connectedWalletAddress)
-  
-      const authData = await fetch("/api/getAuthMessage", {
-        method: "POST",
-        body: JSON.stringify({
-          ownerAddress: connectedWalletAddress,
-        }),
-      })
-  
-      const signedData = await authData
-        .json()
-        .then(
-          async ({
-            data: { message, timestamp },
-          }: {
-            data: { message: string; timestamp: number }
-          }) => {
-            if (connectedWallet === "evm") {
-              let signedMsg = await signMessageAsync({ message })
-              return { signedMsg, timestamp }
-            } else if (connectedWallet === "solana") {
-              const solanaSignedArray = await signMessageSolana!(
-                Buffer.from(message)
-              )
-              let signedMsg = encode(Uint8Array.from(solanaSignedArray))
-              return { signedMsg, timestamp }
-            } else if (connectedWallet === "aptos") {
-              const aptosSignedMsg = await signAptosMessage({
-                message: message,
-                nonce: timestamp.toString(),
-              })
-  
-              console.log("APTOS SINGED MSG: ", aptosSignedMsg)
-              let signedMsg = aptosSignedMsg?.signature as string
-  
-              console.log("APTOS: ", signedMsg)
-              return { signedMsg, timestamp }
-            }
-          }
-        )
-  
-      const getAuthToken = await fetch("/api/getAuthToken", {
-        method: "POST",
-        body: JSON.stringify({
-          ownerAddress: connectedWalletAddress,
-          signature: signedData?.signedMsg,
-          timestamp: signedData?.timestamp,
-        }),
-      })
-  
-      const res = await getAuthToken.json()
-  
-      console.log("TOKEN: ", res)
-  
-      setToken(res.data.accessToken)
-  
-      setLoading(false)
-  
+      // setLoading(true)
+
+      // console.log("Owner address: ", connectedWalletAddress)
+
+      // const authData = await fetch("/api/getAuthMessage", {
+      //   method: "POST",
+      //   body: JSON.stringify({
+      //     ownerAddress: connectedWalletAddress,
+      //   }),
+      // })
+
+      // const signedData = await authData
+      //   .json()
+      //   .then(
+      //     async ({
+      //       data: { message, timestamp },
+      //     }: {
+      //       data: { message: string; timestamp: number }
+      //     }) => {
+      //       if (connectedWallet === "evm") {
+      //         let signedMsg = await signMessageAsync({ message })
+      //         return { signedMsg, timestamp }
+      //       } else if (connectedWallet === "solana") {
+      //         const solanaSignedArray = await signMessageSolana!(
+      //           Buffer.from(message)
+      //         )
+      //         let signedMsg = encode(Uint8Array.from(solanaSignedArray))
+      //         return { signedMsg, timestamp }
+      //       } else if (connectedWallet === "aptos") {
+      //         const aptosSignedMsg = await signAptosMessage({
+      //           message: message,
+      //           nonce: timestamp.toString(),
+      //         })
+
+      //         console.log("APTOS SINGED MSG: ", aptosSignedMsg)
+      //         let signedMsg = aptosSignedMsg?.signature as string
+
+      //         console.log("APTOS: ", signedMsg)
+      //         return { signedMsg, timestamp }
+      //       }
+      //     }
+      //   )
+
+      // const getAuthToken = await fetch("/api/getAuthToken", {
+      //   method: "POST",
+      //   body: JSON.stringify({
+      //     ownerAddress: connectedWalletAddress,
+      //     signature: signedData?.signedMsg,
+      //     timestamp: signedData?.timestamp,
+      //   }),
+      // })
+
+      // const res = await getAuthToken.json()
+
+      // console.log("TOKEN: ", res)
+
+      // setToken(res.data.accessToken)
+
+      // setLoading(false)
+
       push("/requests")
     } catch (e) {
       setLoading(false)
@@ -172,7 +176,7 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
           onClick={() => handleGetStartedClick()}
           className={cn(
             buttonVariants(),
-            "mt-12 w-fit text-lg flex justify-center items-center",
+            "mt-12 flex w-fit items-center justify-center text-lg",
             triggerClasses
           )}
         >

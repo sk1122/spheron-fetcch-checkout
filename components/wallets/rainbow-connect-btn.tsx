@@ -2,13 +2,14 @@
 
 import React from "react"
 import Image from "next/image"
+import { usePathname, useRouter } from "next/navigation"
 import ethereum from "@/public/assets/ethereum.svg"
+import { useConnectModal } from "@rainbow-me/rainbowkit"
 import { useAccount, useDisconnect } from "wagmi"
 
 import { truncatePublicKey } from "@/lib/utils"
 
 import { useConnectedWallet } from "../providers/providers"
-import { useConnectModal } from "@rainbow-me/rainbowkit"
 
 interface WalletBtnProps {
   setIsWalletsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -19,10 +20,12 @@ const RainbowConnectBtutton = ({ setIsWalletsModalOpen }: WalletBtnProps) => {
   const { isConnected, address } = useAccount()
   const { connectedWallet, setConnectedWallet } = useConnectedWallet()
   const { openConnectModal } = useConnectModal()
-
+  const router = useRouter()
+  const pathname = usePathname()
+  
   return (
     <button
-      className="focus:border-primary relative flex h-56 w-60 flex-col items-center justify-center rounded-[20px] bg-[#E3ECFF] focus:border-[3px] focus:bg-[#D4E2FF] focus:outline-none"
+      className="relative flex h-56 w-60 flex-col items-center justify-center rounded-[20px] bg-[#E3ECFF] focus:border-[3px] focus:border-primary focus:bg-[#D4E2FF] focus:outline-none"
       type="button"
       onClick={async () => {
         setIsWalletsModalOpen(false)
@@ -33,6 +36,8 @@ const RainbowConnectBtutton = ({ setIsWalletsModalOpen }: WalletBtnProps) => {
             openConnectModal!()
             if (connectedWallet === null) {
               setConnectedWallet("evm")
+              if(pathname.includes("/request/")) return
+              router.push("/requests")
             }
           } catch (err) {
             console.error(err)
@@ -47,10 +52,8 @@ const RainbowConnectBtutton = ({ setIsWalletsModalOpen }: WalletBtnProps) => {
         width={128}
         height={128}
       />
-      <span className="font-manrope absolute bottom-4 text-xl font-semibold">
-        {isConnected
-          ? truncatePublicKey(address!)
-          : "Ethereum"}
+      <span className="absolute bottom-4 font-manrope text-xl font-semibold">
+        {isConnected ? truncatePublicKey(address!) : "Ethereum"}
       </span>
     </button>
   )

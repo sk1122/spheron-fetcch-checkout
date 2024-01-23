@@ -1,13 +1,35 @@
-import React from "react"
+"use client"
+
+import { useState } from "react"
 import Image from "next/image"
 import decoration from "@/public/assets/decoration.avif"
 import siteLogo from "@/public/assets/fetcch.svg"
+import Subscribe from "@/utils/subscribe"
+import toast from "react-hot-toast"
+
+const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g
 
 const Footer = () => {
+  const [email, setEmail] = useState("")
+
+  async function handleSubmit() {
+    if (email.length === 0) {
+      toast.error("Please enter an email")
+    }
+    if (!EMAIL_REGEX.test(email)) {
+      toast.error("Please enter a valid email")
+    }
+    const data = await Subscribe(email)
+    if (data.status === "created") {
+      setEmail("")
+      toast.success("Successfully Added Email to Waitlist!")
+    }
+  }
+
   return (
-    <footer className="z-50 h-fit w-full pt-12">
+    <footer className="z-100 h-fit w-full pt-12">
       <div className="mx-auto px-6 pb-12 xl:px-20">
-        <div className="min-h-32 flex h-fit flex-col items-start justify-between pb-12 md:flex-row">
+        <div className="flex h-fit min-h-32 flex-col items-start justify-between pb-12 md:flex-row">
           <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0">
             <Image src={decoration} alt="decoration" className="w-32" />
             <div className="flex flex-col justify-center sm:ml-8">
@@ -16,27 +38,22 @@ const Footer = () => {
             </div>
           </div>
           <div className="mt-6 flex w-full max-w-sm flex-col items-center justify-center md:mt-0">
-            {/* <form
-              id="emailForm"
-              className="flex w-full flex-col space-y-2 rounded-full p-1 sm:border-neutral-600 md:w-fit md:flex-row md:space-y-0 md:border"
-            >
+            <div className="flex w-full flex-col space-y-2 rounded-full p-1 sm:border-gray-200 md:w-fit md:flex-row md:space-y-0 md:border">
               <input
                 type="email"
                 id="subEmail"
                 pattern="[^ @]*@[^ @]*"
                 placeholder="Enter your Email"
-                className="rounded-full border border-neutral-600 px-4 text-sm outline-none ring-0 focus:border-none focus:outline-none focus:ring-0 md:rounded-l-full md:border-none"
+                className="rounded-full bg-transparent px-4 text-sm outline-none ring-0 focus:border-none focus:outline-none focus:ring-0 md:rounded-l-full md:border-none"
+                onChange={(e) => setEmail(e.target.value)}
               />
-              <button className="cursor-pointer rounded-full bg-primary px-3 py-2 text-sm text-white lg:px-6 lg:py-3">
+              <button
+                className="cursor-pointer rounded-full bg-primary px-3 py-2 text-sm text-white lg:px-6 lg:py-3"
+                onClick={handleSubmit}
+              >
                 Subscribe
               </button>
-            </form> */}
-            <p
-              id="successMsg"
-              className="mt-1 hidden text-center text-xs text-primary"
-            >
-              Successfully Added Email to Waitlist!
-            </p>
+            </div>
           </div>
         </div>
 

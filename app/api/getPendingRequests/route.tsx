@@ -58,14 +58,14 @@ const getToken = async (address: string, id: number, rpc: string) => {
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url)
     const address = searchParams.get('address')
-    const accessToken = searchParams.get("accessToken")
-    console.log("🍕 ", address, accessToken, `${process.env.FETCCH_BASE_URL}/transaction-request?payer=${address}`)
+    // const accessToken = searchParams.get("accessToken")
+    console.log("🍕 ", address, `${process.env.FETCCH_BASE_URL}/transaction-request?payer=${address}`)
   
     const myReq = await fetch(`${process.env.FETCCH_BASE_URL}/transaction-request?receiver=${address}`, {
       method: "GET",
       headers: {
         "secret-key": process.env.FETCCH_API_KEY,
-        "Authorization": `Bearer ${accessToken}`,
+        // "Authorization": `Bearer ${accessToken}`,
         "Content-Type": "application/json",
         Accept: "application/json",
       },

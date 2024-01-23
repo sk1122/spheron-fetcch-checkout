@@ -2,11 +2,13 @@ import React from "react"
 import Image from "next/image"
 import decoration from "@/public/assets/decoration.avif"
 
+import Demo from "@/components/demo"
+import Footer from "@/components/footer"
 import MainNav from "@/components/main-nav"
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <main className="relative h-full w-full">
+    <main className="relative h-full w-full overflow-x-hidden">
       <MainNav />
       <Image
         src={decoration}
@@ -18,9 +20,11 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         src={decoration}
         alt="decoration"
         priority
-        className="absolute -right-16 bottom-12 hidden w-1/3 rotate-90 select-none md:w-1/4 xl:block xl:w-1/6"
+        className="absolute -right-16 top-1/4 -z-10 hidden w-1/3 rotate-90 select-none md:w-1/4 xl:block xl:w-1/6"
       />
       {children}
+      <Demo />
+      <Footer />
     </main>
   )
 }
