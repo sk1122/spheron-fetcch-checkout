@@ -50,6 +50,7 @@ export default function PaymentCard({
   const { chain: chainID } = useNetwork()
   const { switchNetworkAsync } = useSwitchNetwork()
   const { sendTransactionAsync } = useSendTransaction()
+  const [isExecuted, setIsExecuted] = useState(request?.executed || false)
 
   const amount = formatUnits(
     BigInt(action.data?.amount?.amount),
@@ -173,6 +174,10 @@ export default function PaymentCard({
 
           const data = await updatePaymentRequest(request?.id, payer!, actions)
 
+          if(data){
+            setIsExecuted(true)
+          }
+
           toast.success("Payment successfully done!", {
             id: toastId,
           })
@@ -261,7 +266,7 @@ export default function PaymentCard({
         ></div>
       </div>
       <div className="mt-4 flex flex-wrap justify-end">
-        {request.executed ? 
+        {isExecuted ? 
           <div className="mb-2 w-full md:mb-0 md:pr-2">
           <button
             className={(request.executed ? "bg-gray-500" : "bg-[#2B67E8]") + " w-full rounded-full border border-[#2B67E8] py-2 font-medium text-white"}
@@ -280,7 +285,7 @@ export default function PaymentCard({
               }
             }}
           >
-            {request.executed ? "Copy Transaction Link" : "Copy Request Link"}
+            {isExecuted ? "Copy Transaction Link" : "Copy Request Link"}
           </button>
         </div>
         :
