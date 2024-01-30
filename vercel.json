@@ -1,6 +1,6 @@
 {
     "functions": {
-      "api/buildTransaction": {
+      "api/buildTransaction/**/*.ts": {
         "maxDuration": 30
       }
     }
