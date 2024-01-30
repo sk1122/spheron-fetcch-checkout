@@ -1,0 +1,8 @@
+{
+    "functions": {
+      "api/buildTransaction.ts": {
+        "maxDuration": 30
+      }
+    }
+  }
+  
