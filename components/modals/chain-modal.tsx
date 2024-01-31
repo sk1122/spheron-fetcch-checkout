@@ -2,7 +2,7 @@ import { useState } from "react"
 import * as Dialog from "@radix-ui/react-dialog"
 import { ChevronDown, Search, X } from "lucide-react"
 
-import { chainData } from "@/lib/data"
+import { Chain, chainData, evmChainData, solanaChainData } from "@/lib/data"
 
 export default function ChainModal({
   selectedChain,
@@ -14,7 +14,10 @@ export default function ChainModal({
   setSelectedToken: (selectedToken: number) => void
 }) {
   const [searchItem, setSearchItem] = useState("")
-  const [filteredChains, setFilteredChains] = useState(chainData)
+  const [filteredChains, setFilteredChains] = useState<Chain[]>([
+    ...evmChainData,
+    ...solanaChainData,
+  ])
 
   const handleInputChange = (e: { target: { value: string } }) => {
     const searchTerm = e.target.value
@@ -66,6 +69,7 @@ export default function ChainModal({
             </div>
             <div className="mt-4">
               {filteredChains.map((chain, index) => {
+                if (chain.id === 9) return
                 return (
                   <Dialog.Close
                     asChild

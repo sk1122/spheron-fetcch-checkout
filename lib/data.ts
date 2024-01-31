@@ -264,6 +264,55 @@ export const evmChainData: Chain[] = [
       },
     ],
   },
+  {
+    id: 9,
+    chainId: 169,
+    name: "Manta",
+    rpc: `https://pacific-rpc.manta.network/http`,
+    logoURI: "/assets/tokens/manta.webp",
+    tokens: [
+      {
+        name: "USDC",
+        address: "0xb73603C5d87fA094B7314C74ACE2e64D165016fb",
+        chainId: 169,
+        symbol: "USDC",
+        logoURI: "/assets/tokens/usdc.webp",
+        decimals: 6
+      },
+      {
+        name: "USDT",
+        address: "0xf417F5A458eC102B90352F697D6e2Ac3A3d2851f",
+        chainId: 169,
+        symbol: "USDT",
+        logoURI: "/assets/tokens/usdt.webp",
+        decimals: 6
+      },
+      {
+        name: "DAI",
+        address: "0x1c466b9371f8aBA0D7c458bE10a62192Fcb8Aa71",
+        chainId: 169,
+        symbol: "DAI",
+        logoURI: "/assets/tokens/dai.webp",
+        decimals: 6
+      },
+      {
+        name: "ETH",
+        address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        chainId: 169,
+        symbol: "ETH",
+        logoURI: "/assets/tokens/ethereum.webp",
+        decimals: 18
+      },
+      {
+        name: "MANTA",
+        address: "0x95CeF13441Be50d20cA4558CC0a27B601aC544E5",
+        chainId: 169,
+        symbol: "MANTA",
+        logoURI: "/assets/tokens/manta.webp",
+        decimals: 18
+      },
+    ],
+  },
 ]
 
 export const solanaChainData: Chain[] = [
@@ -348,7 +397,8 @@ export const explorerLinks: any = {
   5: "https://optimistic.etherscan.io/tx/",
   6: "https://arbiscan.io/tx/",
   7: "https://solana.fm/tx/",
-  8: "https://explorer.aptoslabs.com/txn/"
+  8: "https://explorer.aptoslabs.com/txn/",
+  9: "https://pacific-explorer.manta.network/tx/"
 }
 
 export const chainData: Chain[] = [

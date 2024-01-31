@@ -7,7 +7,7 @@ import {
   RainbowKitProvider,
 } from "@rainbow-me/rainbowkit"
 import { configureChains, createConfig, WagmiConfig } from "wagmi"
-import { arbitrum, avalanche, mainnet, optimism, polygon } from "wagmi/chains"
+import { arbitrum, avalanche, mainnet, manta, optimism, polygon } from "wagmi/chains"
 import { alchemyProvider } from "wagmi/providers/alchemy"
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 
@@ -18,7 +18,7 @@ export default function RainbowProvider({
 }) {
   const { chains, publicClient } = configureChains(
     // @ts-ignore
-    [mainnet, polygon, arbitrum, optimism, avalanche],
+    [mainnet, polygon, arbitrum, optimism, avalanche, manta],
     [jsonRpcProvider({
       rpc: (chain: any) => ({
         http: `https://rpc.ankr.com/${chain.name}`
