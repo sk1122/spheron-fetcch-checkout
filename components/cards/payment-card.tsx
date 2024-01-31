@@ -33,8 +33,12 @@ export default function PaymentCard({
   request: Request
   action: Action
 }) {
-  const [selectedChain, setSelectedChain] = useState(0)
-  const [selectedToken, setSelectedToken] = useState(0)
+  const [selectedChain, setSelectedChain] = useState(chainData.findIndex(
+    (chain) => chain.id === action?.data?.chain
+  ))
+  const [selectedToken, setSelectedToken] = useState(chainData[selectedChain].tokens.findIndex(
+    (token) => token.address === action?.data?.token
+  ))
   const { connectedWallet } = useConnectedWallet()
   const {
     connected: isSolanaConnected,
@@ -221,7 +225,7 @@ export default function PaymentCard({
             </svg>
             <p className="font-medium text-primary">Payment Request</p>
           </div>
-          <img src={requestedChain?.logoURI} alt="" className="h-8 w-8" />
+          <img src={requestedChain?.logoURI} alt="" className="h-8 w-8 rounded-full" />
         </div>
         <p className="my-6 text-sm font-semibold text-[hsl(240,3%,19%)]">
           {formatAddress(request?.recevier?.owner)} requesting {amount}{" "}
