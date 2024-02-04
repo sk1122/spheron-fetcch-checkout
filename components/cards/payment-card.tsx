@@ -306,12 +306,12 @@ export default function PaymentCard({
           <div className="mb-2 w-full md:mb-0 md:pr-2">
             <button
               className={
-                (request.executed ? "bg-gray-500" : "bg-[#2B67E8]") +
+                (isExecuted ? "bg-gray-500" : "bg-[#2B67E8]") +
                 " w-full rounded-full border border-[#2B67E8] py-2 font-medium text-white"
               }
               onClick={() => {
                 {
-                  request.executed
+                  isExecuted
                     ? window.navigator.clipboard.writeText(
                         `${
                           explorerLinks[
