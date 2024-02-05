@@ -170,7 +170,7 @@ export default function PaymentCard({
               data: request?.actions[0].data,
               executionData: {
                 hash,
-                chain: request?.actions[0]?.data?.chain,
+                chain: chainData[selectedChain].id,
                 timestamp: new Date().getTime() * 1000,
               },
             },
@@ -254,7 +254,7 @@ export default function PaymentCard({
             />
             <p className="text-xl font-semibold md:text-4xl">{amount}</p>
           </div>
-          {requestedChain?.id === 8 || requestedChain?.id === 9 ? (
+          {requestedChain?.id === 8 || requestedChain?.id === 9 || isExecuted ? (
             <div className="flex items-center justify-between gap-2 rounded-full bg-[#EBEBEF] px-3 py-2">
               <img
                 src={requestedToken?.logoURI}
@@ -278,7 +278,7 @@ export default function PaymentCard({
               Select desired chain to send assets
             </p>
           </div>
-          {requestedChain?.id === 8 || requestedChain?.id === 9 ? (
+          {requestedChain?.id === 8 || requestedChain?.id === 9 || isExecuted ? (
             <div className="flex items-center justify-between gap-2 rounded-full bg-[#EBEBEF] px-3 py-2">
               <img
                 src={requestedChain?.logoURI}
@@ -306,8 +306,8 @@ export default function PaymentCard({
           <div className="mb-2 w-full md:mb-0 md:pr-2">
             <button
               className={
-                (isExecuted ? "bg-gray-500" : "bg-[#2B67E8]") +
-                " w-full rounded-full border border-[#2B67E8] py-2 font-medium text-white"
+                (isExecuted ? "bg-gray-500 border-gray-500]" : "bg-[#2B67E8] border-[#2B67E8]") +
+                " w-full rounded-full border py-2 font-medium text-white"
               }
               onClick={() => {
                 {
