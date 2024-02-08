@@ -38,7 +38,7 @@ const getToken = async (address: string, id: number, rpc: string) => {
     }
   }
 
-  if (id === 9) {
+  if (id !== 9) {
     const reqs = await fetch(rpc, {
       method: "POST",
       body: JSON.stringify({
@@ -95,6 +95,8 @@ export async function GET(req: Request) {
       },
     }
   )
+
+  console.log(myReq)
 
   let res = await myReq.json()
 

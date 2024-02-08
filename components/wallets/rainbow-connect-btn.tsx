@@ -37,7 +37,6 @@ const RainbowConnectBtutton = ({ setIsWalletsModalOpen }: WalletBtnProps) => {
             if (connectedWallet === null) {
               setConnectedWallet("evm")
               if(pathname.includes("/request/")) return
-              router.push("/requests")
             }
           } catch (err) {
             console.error(err)

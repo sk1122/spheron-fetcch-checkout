@@ -176,7 +176,7 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
           onClick={() => handleGetStartedClick()}
           className={cn(
             buttonVariants(),
-            "mt-12 flex w-fit items-center justify-center text-lg",
+            "mt-12 flex w-fit items-center justify-center text-lg mx-auto",
             triggerClasses
           )}
         >
@@ -186,7 +186,7 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
       ) : (
         <Dialog open={isWalletsModalOpen} onOpenChange={setIsWalletsModalOpen}>
           <DialogTrigger asChild>
-            <Button className={cn("mt-12 text-lg", triggerClasses)}>
+            <Button className={cn("mt-12 text-lg mx-auto", triggerClasses)}>
               Connect Wallet
             </Button>
           </DialogTrigger>
