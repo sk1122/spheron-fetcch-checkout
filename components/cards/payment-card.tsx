@@ -20,6 +20,7 @@ import {
 import { Action, Request } from "@/types/request"
 import { chainData, explorerLinks } from "@/lib/data"
 import formatAddress from "@/lib/formatAddress"
+import getViemPublicClient from "@/lib/getViemPublicClient"
 
 import ConnectWalletButton from "../connect-wallet-button"
 import ChainModal from "../modals/chain-modal"
@@ -57,6 +58,7 @@ export default function PaymentCard({
   const { switchNetworkAsync } = useSwitchNetwork()
   const { sendTransactionAsync } = useSendTransaction()
   const [isExecuted, setIsExecuted] = useState(request?.executed || false)
+  const [hash, setHash] = useState(request?.actions[0]?.executionData?.hash)
 
   const amount = formatUnits(
     BigInt(action.data?.amount?.amount),
@@ -115,7 +117,6 @@ export default function PaymentCard({
 
         console.log(tx, "transaction")
 
-        let hash = ""
         if (connectedWallet === "evm") {
           if (chainID?.id !== chainData[selectedChain].chainId)
             await switchNetworkAsync!(chainData[selectedChain].chainId)
@@ -129,9 +130,13 @@ export default function PaymentCard({
             gasPrice: undefined,
           })
 
-          console.log(transaction)
+          const client = getViemPublicClient(selectedChain)
 
-          hash = transaction.hash
+          await client.waitForTransactionReceipt({
+            hash: transaction.hash,
+          })
+
+          setHash(transaction.hash)
         } else if (connectedWallet === "solana") {
           const txData = VersionedTransaction.deserialize(base58.decode(tx.tx))
           const connection = new Connection(
@@ -144,7 +149,7 @@ export default function PaymentCard({
 
           console.log(transaction)
 
-          hash = transaction
+          setHash(transaction)
         } else if (connectedWallet === "aptos") {
           const txData = aptos.TxnBuilderTypes.RawTransaction.deserialize(
             new aptos.BCS.Deserializer(base58.decode(tx.tx))
@@ -152,9 +157,7 @@ export default function PaymentCard({
 
           const transaction = await signAndSubmitBCSTransaction(txData)
 
-          console.log(transaction)
-
-          hash = transaction
+          setHash(transaction)
         }
 
         if (
@@ -254,7 +257,9 @@ export default function PaymentCard({
             />
             <p className="text-xl font-semibold md:text-4xl">{amount}</p>
           </div>
-          {requestedChain?.id === 8 || requestedChain?.id === 9 || isExecuted ? (
+          {requestedChain?.id === 8 ||
+          requestedChain?.id === 9 ||
+          isExecuted ? (
             <div className="flex items-center justify-between gap-2 rounded-full bg-[#EBEBEF] px-3 py-2">
               <img
                 src={requestedToken?.logoURI}
@@ -278,7 +283,9 @@ export default function PaymentCard({
               Select desired chain to send assets
             </p>
           </div>
-          {requestedChain?.id === 8 || requestedChain?.id === 9 || isExecuted ? (
+          {requestedChain?.id === 8 ||
+          requestedChain?.id === 9 ||
+          isExecuted ? (
             <div className="flex items-center justify-between gap-2 rounded-full bg-[#EBEBEF] px-3 py-2">
               <img
                 src={requestedChain?.logoURI}
@@ -306,27 +313,16 @@ export default function PaymentCard({
           <div className="mb-2 w-full md:mb-0 md:pr-2">
             <button
               className={
-                (isExecuted ? "bg-gray-500 border-gray-500]" : "bg-[#2B67E8] border-[#2B67E8]") +
-                " w-full rounded-full border py-2 font-medium text-white"
+                "border-gray-500] w-full rounded-full border bg-gray-500 py-2 font-medium text-white"
               }
               onClick={() => {
-                {
-                  isExecuted
-                    ? window.navigator.clipboard.writeText(
-                        `${
-                          explorerLinks[
-                            request?.actions[0]?.executionData?.chain
-                          ]
-                        }${request?.actions[0]?.executionData?.hash}`
-                      )
-                    : window.navigator.clipboard.writeText(
-                        `https://request.fetcch.xyz/request/${request.id}`
-                      )
-                  toast.success("Copied link")
-                }
+                window.navigator.clipboard.writeText(
+                  `${explorerLinks[chainData[selectedChain].id]}${hash}`
+                )
+                toast.success("Copied link")
               }}
             >
-              {isExecuted ? "Copy Transaction Link" : "Copy Request Link"}
+              Copy Transaction Link
             </button>
           </div>
         ) : (
