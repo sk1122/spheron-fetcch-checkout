@@ -8,9 +8,9 @@ const RequestsPage = ({ params }: { params: { id: string } }) => {
       <div className="min-h-[calc(100vh-112px)]">
         <Toaster />
         <div className="relative z-20 mt-20 w-full px-6 text-center lg:px-0">
-          <h1 className="text-center font-manrope text-3xl font-bold md:text-4xl xl:text-5xl 2xl:text-6xl">
-            Create Link, <span className="text-[#FF7D1F]">Request</span> your
-            crypto
+          <h1 className="font-syne mx-auto max-w-7xl text-center text-3xl font-bold md:text-4xl xl:text-7xl 2xl:text-8xl">
+            Complete the checkout for{" "}
+            <span className="text-primary">spheron</span>
           </h1>
           <div className="mx-auto mt-8 w-full max-w-md text-center md:max-w-lg xl:max-w-xl 2xl:max-w-full">
             <p className="font-manrope text-xl">

@@ -186,7 +186,7 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
       ) : (
         <Dialog open={isWalletsModalOpen} onOpenChange={setIsWalletsModalOpen}>
           <DialogTrigger asChild>
-            <Button className={cn("mt-12 text-lg mx-auto", triggerClasses)}>
+            <Button className={cn("mt-12 text-lg mx-auto uppercase", triggerClasses)}>
               Connect Wallet
             </Button>
           </DialogTrigger>

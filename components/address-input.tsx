@@ -95,29 +95,16 @@ const AddressInput = () => {
   console.log("😎 ", addressChain)
 
   return (
-    <div className="mt-7 flex h-full w-full max-w-[699px] flex-col items-start justify-center">
-      <div className="relative mx-auto flex h-16 w-full max-w-[699px] items-center rounded-full border border-primary p-8 shadow-[inset_0px_1px_4px_1px_rgba(0,0,0,0.25)]">
-        <input
-          type="text"
-          placeholder="Your address"
-          spellCheck={false}
-          value={walletAddress}
-          onChange={(e) => setWalletAddress(e.target.value)}
-          className="placeholder:text-muted-foreground block w-full bg-transparent pr-24 text-lg ring-0 placeholder:text-[#777777] focus-visible:outline-none focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 md:pr-36"
-        />
-        {connectedWallet === null ? (
-          <WalletsModal triggerClasses="mt-0 text-sm absolute right-[6px]" />
-        ) : (
-          <Button
-            className="absolute right-[6px]"
-            onClick={verifyWalletAddress}
-          >
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Request
-          </Button>
-        )}
-        <RequestModal open={openRequestModal} setOpen={setOpenRequestModal} />
-      </div>
+    <div className="mt-8">
+      <RequestModal open={openRequestModal} setOpen={setOpenRequestModal} />
+      {connectedWallet === null ? (
+        <WalletsModal triggerClasses="mt-0 text-sm" />
+      ) : (
+        <Button onClick={verifyWalletAddress}>
+          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          Generate a link
+        </Button>
+      )}
       {error && (
         <span className="mt-4 text-sm text-destructive/80">{error}</span>
       )}

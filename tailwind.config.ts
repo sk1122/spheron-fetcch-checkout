@@ -12,10 +12,10 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-inter)", ...fontFamily.sans],
         manrope: ["var(--font-manrope)", ...fontFamily.sans],
-        architects_daughter: ["var(--architects_daughter)", ...fontFamily.sans]
+        syne: ["var(--font-syne)", ...fontFamily.sans]
       },
       colors: {
-        primary: "#2B67E8",
+        primary: "#0057FF",
         input: "#E3ECFF",
         success: "#0A9A38",
         destructive: "#E70000",
