@@ -8,7 +8,7 @@ const RequestsPage = async () => {
   return (
     <div>
       <Toaster />
-      <div className="relative z-20 my-20 w-full px-6 text-center lg:px-0">
+      <div className="z-20 my-20 w-full px-6 text-center lg:px-0">
         <h1 className="mx-auto max-w-7xl text-center font-syne text-3xl font-bold md:text-4xl xl:text-7xl 2xl:text-8xl">
           Complete the checkout for{" "}
           <span className="text-primary">spheron</span>
@@ -31,7 +31,14 @@ const RequestsPage = async () => {
         <div className="flex h-full w-full items-center justify-center">
           <AddressInput />
         </div>
-        <h3 className="mt-12 font-inter text-2xl font-semibold">
+        <div className="mt-8 flex items-center justify-center gap-2">
+          <p>
+            <span className="font-michroma text-primary">Checkout</span> powered
+            by
+          </p>
+          <img src="/assets/fetcch.svg" alt="" className="h-6" />
+        </div>
+        <h3 className="font-inter mt-12 text-2xl font-semibold">
           Your Pending Links
         </h3>
         <PendingRequests />

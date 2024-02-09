@@ -8,7 +8,7 @@ const RequestsPage = ({ params }: { params: { id: string } }) => {
       <div className="min-h-[calc(100vh-112px)]">
         <Toaster />
         <div className="relative z-20 mt-20 w-full px-6 text-center lg:px-0">
-          <h1 className="font-syne mx-auto max-w-7xl text-center text-3xl font-bold md:text-4xl xl:text-7xl 2xl:text-8xl">
+          <h1 className="mx-auto max-w-7xl text-center font-syne text-3xl font-bold md:text-4xl xl:text-7xl 2xl:text-8xl">
             Complete the checkout for{" "}
             <span className="text-primary">spheron</span>
           </h1>
@@ -28,6 +28,13 @@ const RequestsPage = ({ params }: { params: { id: string } }) => {
             </p>
           </div>
           <Actions id={params.id} />
+          <div className="mt-8 flex items-center justify-center gap-2">
+            <p>
+              <span className="font-michroma text-primary">Checkout</span>{" "}
+              powered by
+            </p>
+            <img src="/assets/fetcch.svg" alt="" className="h-6" />
+          </div>
         </div>
       </div>
     </>

@@ -28,6 +28,12 @@ const LandingPage = () => {
             </p>
           </div>
           <WalletsModal triggerClasses="flex items-start mx-auto lg:items-center" />
+          <div className="flex items-center gap-2 justify-center mt-8">
+            <p>
+              <span className="font-michroma text-primary">Checkout</span> powered by
+            </p>
+            <img src="/assets/fetcch.svg" alt="" className="h-6" />
+          </div>
         </div>
       </div>
     </div>

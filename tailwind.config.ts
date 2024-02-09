@@ -12,7 +12,8 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-inter)", ...fontFamily.sans],
         manrope: ["var(--font-manrope)", ...fontFamily.sans],
-        syne: ["var(--font-syne)", ...fontFamily.sans]
+        syne: ["var(--font-syne)", ...fontFamily.sans],
+        michroma: ["var(--font-michroma)", ...fontFamily.sans]
       },
       colors: {
         primary: "#0057FF",

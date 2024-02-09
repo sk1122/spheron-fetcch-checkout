@@ -5,7 +5,7 @@ import "./solana-wallet.css"
 import "@rainbow-me/rainbowkit/styles.css"
 
 import type { Metadata } from "next"
-import { Architects_Daughter, Inter, Manrope, Syne } from "next/font/google"
+import { Architects_Daughter, Inter, Manrope, Michroma, Syne } from "next/font/google"
 import { Toaster } from "react-hot-toast"
 
 import Footer from "@/components/footer"
@@ -17,6 +17,11 @@ const architects_daughter = Architects_Daughter({
   subsets: ["latin"],
   variable: "--architects_daughter",
   weight: "400",
+})
+const michroma = Michroma({
+  weight: '400',
+  subsets: ["latin"],
+  variable: "--font-michroma"
 })
 const syne = Syne({ subsets: ["latin"], variable: "--font-syne" })
 
@@ -38,7 +43,8 @@ export default function RootLayout({
           inter.variable,
           manrope.variable,
           architects_daughter.variable,
-          syne.variable
+          syne.variable,
+          michroma.variable
         )}
       >
         <Providers>
