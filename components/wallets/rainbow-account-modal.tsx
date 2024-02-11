@@ -30,14 +30,7 @@ const RainbowAccountModal = () => {
   return (
     <Dialog>
       <DialogTrigger>
-        <button className="bg-input flex flex-shrink-0 items-center space-x-2 rounded-full p-2">
-          <Image
-            src={ethereum}
-            alt="ethereum_image"
-            className="h-8 w-8 rounded-full"
-            width={32}
-            height={32}
-          />
+        <button className="bg-primary text-white flex flex-shrink-0 items-center rounded py-2 px-4">
           <span>{truncatePublicKey(address as string)}</span>
         </button>
       </DialogTrigger>

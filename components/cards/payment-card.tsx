@@ -236,8 +236,8 @@ export default function PaymentCard({
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <div className="bg-primary bg-opacity-20 px-2 py-1 rounded">
-                <p className="text-xs text-primary">SpehronID39</p>
+              <div className="rounded bg-primary bg-opacity-20 px-2 py-1">
+                <p className="text-xs text-primary">{request.label}</p>
               </div>
               <img
                 src={requestedChain?.logoURI}

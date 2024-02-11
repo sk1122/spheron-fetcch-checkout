@@ -1,5 +1,6 @@
 import React from "react"
 import Image from "next/image"
+import { usePathname, useRouter } from "next/navigation"
 import solana from "@/public/assets/tokens/solana.webp"
 import { Close as DialogClose } from "@radix-ui/react-dialog"
 import { useWallet } from "@solana/wallet-adapter-react"
@@ -16,7 +17,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog"
-import { usePathname, useRouter } from "next/navigation"
 
 const SolanaAccountModal = () => {
   const { setConnectedWallet } = useConnectedWallet()
@@ -26,14 +26,7 @@ const SolanaAccountModal = () => {
   return (
     <Dialog>
       <DialogTrigger>
-        <button className="flex flex-shrink-0 items-center space-x-2 rounded-full bg-input p-2">
-          <Image
-            src={solana}
-            alt="solana_image"
-            className="h-8 w-8 rounded-full"
-            width={32}
-            height={32}
-          />
+        <button className="flex flex-shrink-0 items-center rounded bg-primary px-4 py-2 text-white">
           <span>{truncatePublicKey(publicKey?.toBase58() as string)}</span>
         </button>
       </DialogTrigger>
@@ -58,7 +51,7 @@ const SolanaAccountModal = () => {
             onClick={async () => {
               await disconnect().then(() => {
                 setConnectedWallet(null)
-                if(pathname.includes("/request/")) return
+                if (pathname.includes("/request/")) return
                 router.push("/")
               })
             }}
