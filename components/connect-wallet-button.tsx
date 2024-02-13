@@ -59,7 +59,7 @@ const ConnectWalletButton = () => {
           {isAptosConnected && <AptosaccountModal />}
         </>
       ) : (
-        <WalletsModal triggerClasses="mt-0 text-sm w-full" />
+        <WalletsModal triggerClasses="mt-0 text-[10px] px-2 py-2 sm:px-4 md:text-sm w-full" />
       )}
     </>
   )

@@ -27,14 +27,25 @@ const Footer = () => {
   }
 
   return (
-    <footer className="bg-[#F5F6FF] py-4">
-      <div className="mx-auto flex max-w-7xl items-center justify-between">
-        <div className="flex items-center gap-2">
-          <p>Privacy Policy</p>
-          <p>Terms of Conditions</p>
+    <footer className="bg-[#F5F6FF] p-4">
+      <div className="items-center lg:flex container mx-auto">
+        <div className="mb-6 flex items-center lg:mb-0">
+          <a
+            className="mr-4 inline-block text-sm font-semibold text-gray-500 hover:text-gray-600 sm:mr-10"
+            href="http://fetcch.xyz/privacy-policy"
+          >
+            Privacy Policy
+          </a>
+          <a
+            className="mr-4 inline-block text-sm font-semibold text-gray-500 hover:text-gray-600 sm:mr-10"
+            href="http://fetcch.xyz/terms-and-conditions"
+          >
+            Terms & Conditions
+          </a>
         </div>
-        <img src="/assets/fetcch.svg" alt="" className="h-6" />
-        <p>Fetcch. All rights reserved.</p>
+        <span className="ml-auto inline-block text-sm text-gray-500">
+          © All Rights Reserved
+        </span>
       </div>
     </footer>
   )
