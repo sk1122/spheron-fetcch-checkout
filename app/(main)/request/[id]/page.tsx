@@ -28,7 +28,7 @@ const RequestsPage = ({ params }: { params: { id: string } }) => {
             </p>
           </div>
           <Actions id={params.id} />
-          <div className="mt-8 flex items-center justify-center gap-2">
+          <div className="mt-8 flex items-center justify-center gap-2 mb-4">
             <p>
               <span className="font-michroma text-primary">Checkout</span>{" "}
               powered by
