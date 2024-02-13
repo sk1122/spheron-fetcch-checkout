@@ -73,6 +73,32 @@ export default function PaymentCard({
     (token) => token.address === action?.data?.token
   )
 
+  async function updateDB(transactionhash: string) {
+    const actions = [
+      {
+        type: request?.actions[0].type,
+        data: request?.actions[0].data,
+        executionData: {
+          hash: transactionhash,
+          chain: chainData[selectedChain].id,
+          timestamp: new Date().getTime() * 1000,
+        },
+      },
+    ]
+    const payer =
+      connectedWallet === "evm"
+        ? accountAddress
+        : connectedWallet === "solana"
+          ? publicKey?.toBase58()
+          : account?.address.toString()
+
+    const data = await updatePaymentRequest(request?.id, payer!, actions)
+
+    if (data) {
+      setIsExecuted(true)
+    }
+  }
+
   async function handlePayment() {
     const toastId = toast.loading("Executing payment...")
     try {
@@ -136,6 +162,16 @@ export default function PaymentCard({
             hash: transaction.hash,
           })
 
+          if (
+            transactions.length === 1 ||
+            (tx.type &&
+              (tx.type === "PAYMENT_TOKEN" ||
+                tx.type === "OTHER" ||
+                tx.type === "PAYMENT_NATIVE"))
+          ) {
+            await updateDB(transaction.hash)
+          }
+
           setHash(transaction.hash)
         } else if (connectedWallet === "solana") {
           const txData = VersionedTransaction.deserialize(base58.decode(tx.tx))
@@ -149,6 +185,16 @@ export default function PaymentCard({
 
           console.log(transaction)
 
+          if (
+            transactions.length === 1 ||
+            (tx.type &&
+              (tx.type === "PAYMENT_TOKEN" ||
+                tx.type === "OTHER" ||
+                tx.type === "PAYMENT_NATIVE"))
+          ) {
+            await updateDB(transaction)
+          }
+
           setHash(transaction)
         } else if (connectedWallet === "aptos") {
           const txData = aptos.TxnBuilderTypes.RawTransaction.deserialize(
@@ -157,44 +203,22 @@ export default function PaymentCard({
 
           const transaction = await signAndSubmitBCSTransaction(txData)
 
+          if (
+            transactions.length === 1 ||
+            (tx.type &&
+              (tx.type === "PAYMENT_TOKEN" ||
+                tx.type === "OTHER" ||
+                tx.type === "PAYMENT_NATIVE"))
+          ) {
+            await updateDB(transaction)
+          }
+
           setHash(transaction)
         }
 
-        if (
-          transactions.length === 1 ||
-          (tx.type &&
-            (tx.type === "PAYMENT_TOKEN" ||
-              tx.type === "OTHER" ||
-              tx.type === "PAYMENT_NATIVE"))
-        ) {
-          const actions = [
-            {
-              type: request?.actions[0].type,
-              data: request?.actions[0].data,
-              executionData: {
-                hash,
-                chain: chainData[selectedChain].id,
-                timestamp: new Date().getTime() * 1000,
-              },
-            },
-          ]
-          const payer =
-            connectedWallet === "evm"
-              ? accountAddress
-              : connectedWallet === "solana"
-                ? publicKey?.toBase58()
-                : account?.address.toString()
-
-          const data = await updatePaymentRequest(request?.id, payer!, actions)
-
-          if (data) {
-            setIsExecuted(true)
-          }
-
-          toast.success("Payment successfully done!", {
-            id: toastId,
-          })
-        }
+        toast.success("Payment successfully done!", {
+          id: toastId,
+        })
       }
     } catch (error) {
       console.log(error)
@@ -234,45 +258,16 @@ export default function PaymentCard({
             </svg>
             <p className="font-medium text-primary">Payment Request</p>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <div className="rounded bg-primary bg-opacity-20 px-2 py-1">
-                <p className="text-xs text-primary">{request.label}</p>
-              </div>
-              <img
-                src={requestedChain?.logoURI}
-                alt=""
-                className="h-8 w-8 rounded-full"
-              />
-            </div>
-          </div>
+          <img
+            src={requestedChain?.logoURI}
+            alt=""
+            className="h-8 w-8 rounded-full"
+          />
         </div>
-        <div className="flex items-center gap-2">
-          <svg
-            width="40"
-            height="40"
-            viewBox="0 0 40 40"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <g clip-path="url(#clip0_115_6951)">
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M0.833252 20C0.833252 9.41458 9.41446 0.833374 19.9999 0.833374C30.5854 0.833374 39.1666 9.41458 39.1666 20C39.1666 25.3664 36.9579 30.2214 33.4064 33.6978C29.9526 37.0785 25.2176 39.1667 19.9999 39.1667C14.7822 39.1667 10.0472 37.0785 6.59347 33.6978C3.04195 30.2214 0.833252 25.3664 0.833252 20ZM14.1666 25C11.4424 25 9.00401 26.4158 7.68981 28.5737C8.22821 29.3451 8.8374 30.0637 9.50809 30.7202C12.2147 33.3696 15.9152 35 19.9999 35C24.0846 35 27.7851 33.3696 30.4918 30.7202C31.1624 30.0637 31.7716 29.3451 32.31 28.5737C30.9958 26.4158 28.5573 25 25.8332 25H14.1666ZM14.1666 16.6667C14.1666 13.445 16.7783 10.8334 19.9999 10.8334C23.2216 10.8334 25.8333 13.445 25.8333 16.6667C25.8333 19.8884 23.2216 22.5 19.9999 22.5C16.7783 22.5 14.1666 19.8884 14.1666 16.6667Z"
-                fill="#142DFF"
-              />
-            </g>
-            <defs>
-              <clipPath id="clip0_115_6951">
-                <rect width="40" height="40" fill="white" />
-              </clipPath>
-            </defs>
-          </svg>
-          <p className="my-6 text-sm font-semibold text-[hsl(240,3%,19%)]">
-            {formatAddress(request?.recevier?.owner)}
-          </p>
-        </div>
+        <p className="my-6 text-sm font-semibold text-[hsl(240,3%,19%)]">
+          {formatAddress(request?.recevier?.owner)} requesting {amount}{" "}
+          {action.data?.tokenData?.symbol} on {requestedChain?.name}
+        </p>
         <div className="flex items-center justify-between">
           <p className="font-semibold text-gray-600">Requested</p>
           <p className="font-semibold text-gray-600">Choose Token</p>
@@ -288,6 +283,7 @@ export default function PaymentCard({
           </div>
           {requestedChain?.id === 8 ||
           requestedChain?.id === 9 ||
+          requestedChain?.id === 7 ||
           isExecuted ? (
             <div className="flex items-center justify-between gap-2 rounded-full bg-[#EBEBEF] px-3 py-2">
               <img
@@ -314,6 +310,7 @@ export default function PaymentCard({
           </div>
           {requestedChain?.id === 8 ||
           requestedChain?.id === 9 ||
+          requestedChain?.id === 7 ||
           isExecuted ? (
             <div className="flex items-center justify-between gap-2 rounded-full bg-[#EBEBEF] px-3 py-2">
               <img
