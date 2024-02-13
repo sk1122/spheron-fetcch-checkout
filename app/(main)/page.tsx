@@ -8,7 +8,7 @@ const LandingPage = () => {
       <Toaster />
       <div className="z-20 flex h-[calc(100vh-128px)] w-full items-center justify-center px-6 text-center">
         <div>
-          <h1 className="mx-auto max-w-7xl text-center font-syne text-4xl font-bold md:text-4xl xl:text-7xl 2xl:text-8xl">
+          <h1 className="mx-auto max-w-7xl text-center font-syne text-4xl font-bold md:text-6xl xl:text-7xl 2xl:text-8xl">
             Complete the checkout for{" "}
             <span className="text-primary">spheron</span>
           </h1>
