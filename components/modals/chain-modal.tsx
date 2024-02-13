@@ -69,7 +69,7 @@ export default function ChainModal({
             </div>
             <div className="mt-4">
               {filteredChains.map((chain, index) => {
-                if (chain.id === 9) return
+                if (chain.id === 9 || chain.id === 1) return
                 return (
                   <Dialog.Close
                     asChild

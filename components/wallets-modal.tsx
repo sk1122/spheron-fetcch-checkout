@@ -172,8 +172,9 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
   return (
     <>
       {isAnyWalletConncted ? (
-        <Button
-          onClick={() => handleGetStartedClick()}
+        <a
+          href="https://fetcch.xyz"
+          target="_blank"
           className={cn(
             buttonVariants(),
             "mt-12 flex w-fit items-center justify-center text-lg mx-auto",
@@ -181,8 +182,8 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
           )}
         >
           {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Get Started
-        </Button>
+          Create a site like spheron
+        </a>
       ) : (
         <Dialog open={isWalletsModalOpen} onOpenChange={setIsWalletsModalOpen}>
           <DialogTrigger asChild>

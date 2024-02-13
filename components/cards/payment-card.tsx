@@ -258,11 +258,16 @@ export default function PaymentCard({
             </svg>
             <p className="font-medium text-primary">Payment Request</p>
           </div>
-          <img
-            src={requestedChain?.logoURI}
-            alt=""
-            className="h-8 w-8 rounded-full"
-          />
+          <div className="flex items-center gap-2">
+            <p className="bg-primary bg-opacity-20 px-2 py-1 text-xs text-primary rounded">
+              {request?.label}
+            </p>
+            <img
+              src={requestedChain?.logoURI}
+              alt=""
+              className="h-8 w-8 rounded-full"
+            />
+          </div>
         </div>
         <p className="my-6 text-sm font-semibold text-[hsl(240,3%,19%)]">
           {formatAddress(request?.recevier?.owner)} requesting {amount}{" "}
