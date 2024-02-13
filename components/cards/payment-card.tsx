@@ -283,7 +283,7 @@ export default function PaymentCard({
           </div>
           {requestedChain?.id === 8 ||
           requestedChain?.id === 9 ||
-          requestedChain?.id === 7 ||
+          requestedChain?.id === 1 ||
           isExecuted ? (
             <div className="flex items-center justify-between gap-2 rounded-full bg-[#EBEBEF] px-3 py-2">
               <img
@@ -310,7 +310,7 @@ export default function PaymentCard({
           </div>
           {requestedChain?.id === 8 ||
           requestedChain?.id === 9 ||
-          requestedChain?.id === 7 ||
+          requestedChain?.id === 1 ||
           isExecuted ? (
             <div className="flex items-center justify-between gap-2 rounded-full bg-[#EBEBEF] px-3 py-2">
               <img

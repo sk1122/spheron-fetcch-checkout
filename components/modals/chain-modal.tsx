@@ -16,6 +16,7 @@ export default function ChainModal({
   const [searchItem, setSearchItem] = useState("")
   const [filteredChains, setFilteredChains] = useState<Chain[]>([
     ...evmChainData,
+    ...solanaChainData,
   ])
 
   const handleInputChange = (e: { target: { value: string } }) => {
