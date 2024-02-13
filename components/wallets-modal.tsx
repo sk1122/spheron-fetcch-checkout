@@ -210,9 +210,9 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
               <SolanaConnectBtutton
                 setIsWalletsModalOpen={setIsWalletsModalOpen}
               />
-              <AptosConnectButton
+              {/* <AptosConnectButton
                 setIsWalletsModalOpen={setIsWalletsModalOpen}
-              />
+              /> */}
             </div>
           </DialogContent>
         </Dialog>
