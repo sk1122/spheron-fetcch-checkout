@@ -101,74 +101,6 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
       </Button>
     )
 
-  const handleGetStartedClick = async () => {
-    try {
-      // setLoading(true)
-
-      // console.log("Owner address: ", connectedWalletAddress)
-
-      // const authData = await fetch("/api/getAuthMessage", {
-      //   method: "POST",
-      //   body: JSON.stringify({
-      //     ownerAddress: connectedWalletAddress,
-      //   }),
-      // })
-
-      // const signedData = await authData
-      //   .json()
-      //   .then(
-      //     async ({
-      //       data: { message, timestamp },
-      //     }: {
-      //       data: { message: string; timestamp: number }
-      //     }) => {
-      //       if (connectedWallet === "evm") {
-      //         let signedMsg = await signMessageAsync({ message })
-      //         return { signedMsg, timestamp }
-      //       } else if (connectedWallet === "solana") {
-      //         const solanaSignedArray = await signMessageSolana!(
-      //           Buffer.from(message)
-      //         )
-      //         let signedMsg = encode(Uint8Array.from(solanaSignedArray))
-      //         return { signedMsg, timestamp }
-      //       } else if (connectedWallet === "aptos") {
-      //         const aptosSignedMsg = await signAptosMessage({
-      //           message: message,
-      //           nonce: timestamp.toString(),
-      //         })
-
-      //         console.log("APTOS SINGED MSG: ", aptosSignedMsg)
-      //         let signedMsg = aptosSignedMsg?.signature as string
-
-      //         console.log("APTOS: ", signedMsg)
-      //         return { signedMsg, timestamp }
-      //       }
-      //     }
-      //   )
-
-      // const getAuthToken = await fetch("/api/getAuthToken", {
-      //   method: "POST",
-      //   body: JSON.stringify({
-      //     ownerAddress: connectedWalletAddress,
-      //     signature: signedData?.signedMsg,
-      //     timestamp: signedData?.timestamp,
-      //   }),
-      // })
-
-      // const res = await getAuthToken.json()
-
-      // console.log("TOKEN: ", res)
-
-      // setToken(res.data.accessToken)
-
-      // setLoading(false)
-
-      push("/requests")
-    } catch (e) {
-      setLoading(false)
-    }
-  }
-
   return (
     <>
       {isAnyWalletConncted ? (
@@ -191,9 +123,9 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
               Connect Wallet
             </Button>
           </DialogTrigger>
-          <DialogContent className="w-full p-9 sm:max-w-xl md:max-w-[874px]">
+          <DialogContent className="w-full p-9 sm:max-w-xl md:max-w-[600px]">
             <DialogHeader className="w-full flex-row items-center justify-between">
-              <DialogTitle className="font-manrope text-3xl font-bold">
+              <DialogTitle className="font-manrope text-xl sm:text-3xl font-bold">
                 Connect Wallet
               </DialogTitle>
               <DialogClose
@@ -203,7 +135,7 @@ const WalletsModal = ({ triggerClasses }: { triggerClasses?: string }) => {
                 <span className="sr-only">Close</span>
               </DialogClose>
             </DialogHeader>
-            <div className="flex flex-col items-center justify-between space-y-3 sm:flex-row">
+            <div className="flex flex-col items-center justify-center sm:flex-row gap-3">
               <RainbowConnectButton
                 setIsWalletsModalOpen={setIsWalletsModalOpen}
               />
