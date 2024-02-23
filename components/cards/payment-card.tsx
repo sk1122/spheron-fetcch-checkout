@@ -360,19 +360,12 @@ export default function PaymentCard({
           <>
             {connectedWallet ? (
               <>
-                <div className="mb-2 w-full md:mb-0 md:w-1/2 md:pr-2">
-                  <button className="w-full rounded-full border border-gray-800 py-2 font-medium text-gray-800">
-                    Decline
-                  </button>
-                </div>
-                <div className="w-full md:w-1/2 md:pl-2">
                   <button
                     className="w-full rounded-full border border-[#2B67E8] bg-[#2B67E8] py-2 font-medium text-white"
                     onClick={handlePayment}
                   >
                     Pay
                   </button>
-                </div>
               </>
             ) : (
               <div className="w-full">
