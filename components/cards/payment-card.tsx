@@ -231,8 +231,8 @@ export default function PaymentCard({
   return (
     <section className="mx-auto max-w-md rounded-xl border border-primary bg-white px-4 py-6 text-left">
       <div className="relative">
-        <div className="flex items-center justify-between border-b border-gray-200 pb-2 gap-2">
-          <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center justify-between gap-2 border-b border-gray-200 pb-2">
+          <div className="flex flex-wrap items-center gap-2">
             <svg
               width="24"
               height="24"
@@ -258,8 +258,8 @@ export default function PaymentCard({
             </svg>
             <p className="font-medium text-primary">Payment Request</p>
           </div>
-          <div className="flex items-center gap-2 flex-wrap-reverse">
-            <p className="bg-primary bg-opacity-20 px-2 py-1 text-xs text-primary rounded">
+          <div className="flex flex-wrap-reverse items-center gap-2">
+            <p className="rounded bg-primary bg-opacity-20 px-2 py-1 text-xs text-primary">
               {request?.label}
             </p>
             <img
@@ -286,25 +286,25 @@ export default function PaymentCard({
             />
             <p className="text-xl font-semibold md:text-4xl">{amount}</p>
           </div>
-          {requestedChain?.id === 8 ||
-          requestedChain?.id === 9 ||
-          requestedChain?.id === 1 ||
-          isExecuted ? (
-            <div className="flex items-center justify-between gap-2 rounded-full bg-[#EBEBEF] px-3 py-2">
-              <img
-                src={requestedToken?.logoURI}
-                alt=""
-                className="h-6 w-6 rounded-full"
-              />
-              <p className="font-medium">{requestedToken?.name}</p>
-            </div>
-          ) : (
-            <TokenModal
+          {/* {requestedChain?.id === 8 || */}
+          {/* requestedChain?.id === 9 || */}
+          {/* requestedChain?.id === 1 || */}
+          {/* isExecuted ? ( */}
+          <div className="flex items-center justify-between gap-2 rounded-full bg-[#EBEBEF] px-3 py-2">
+            <img
+              src={requestedToken?.logoURI}
+              alt=""
+              className="h-6 w-6 rounded-full"
+            />
+            <p className="font-medium">{requestedToken?.name}</p>
+          </div>
+          {/* ) : ( */}
+          {/* <TokenModal
               selectedChain={selectedChain}
               selectedToken={selectedToken}
               setSelectedToken={setSelectedToken}
-            />
-          )}
+            /> */}
+          {/* )} */}
         </div>
         <div className="mt-6 flex items-start justify-between border-b border-gray-200 pb-6">
           <div className="">
@@ -313,25 +313,25 @@ export default function PaymentCard({
               Select desired chain to send assets
             </p>
           </div>
-          {requestedChain?.id === 8 ||
-          requestedChain?.id === 9 ||
-          requestedChain?.id === 1 ||
-          isExecuted ? (
-            <div className="flex items-center justify-between gap-2 rounded-full bg-[#EBEBEF] px-3 py-2">
-              <img
-                src={requestedChain?.logoURI}
-                alt=""
-                className="h-6 w-6 rounded-full"
-              />
-              <p className="font-medium">{requestedChain?.name}</p>
-            </div>
-          ) : (
-            <ChainModal
+          {/* {requestedChain?.id === 8 || */}
+          {/* requestedChain?.id === 9 || */}
+          {/* requestedChain?.id === 1 || */}
+          {/* isExecuted ? ( */}
+          <div className="flex items-center justify-between gap-2 rounded-full bg-[#EBEBEF] px-3 py-2">
+            <img
+              src={requestedChain?.logoURI}
+              alt=""
+              className="h-6 w-6 rounded-full"
+            />
+            <p className="font-medium">{requestedChain?.name}</p>
+          </div>
+          {/* ) : ( */}
+          {/* <ChainModal
               selectedChain={selectedChain}
               setSelectedChain={setSelectedChain}
               setSelectedToken={setSelectedToken}
-            />
-          )}
+            /> */}
+          {/* )} */}
         </div>
         <div
           className={`${
@@ -360,12 +360,12 @@ export default function PaymentCard({
           <>
             {connectedWallet ? (
               <>
-                  <button
-                    className="w-full rounded-full border border-[#2B67E8] bg-[#2B67E8] py-2 font-medium text-white"
-                    onClick={handlePayment}
-                  >
-                    Pay
-                  </button>
+                <button
+                  className="w-full rounded-full border border-[#2B67E8] bg-[#2B67E8] py-2 font-medium text-white"
+                  onClick={handlePayment}
+                >
+                  Pay
+                </button>
               </>
             ) : (
               <div className="w-full">
